@@ -18,7 +18,7 @@ FeedPiper is a toolbox that provides two services:
 ### Configuration
 
 Configuration files are in the config folder.
-Make a copy of the config folder as config.local   
+Make a copy of the config files as local.*.php
 This will allow you to have your own configuration files that will not be commited to GitHub
 
 * conf.php is the global application configuration
