@@ -26,7 +26,7 @@ This will allow you to have your own configuration files that will not be commit
 
 ### Requirements
 
-* PHP 5.4+ (I'm working at making it backward compatible to PHP 5.3)
+* PHP 5.3+
 * Cache System (folder or db)
   * cache folder writable (0766)  
   * MySQL/Maria DB
@@ -42,4 +42,3 @@ This project relies on the following projects
 * Simple HTML DOM: A HTML DOM parser written in PHP5+ let you manipulate HTML in a very easy way!
   * [Official Site](http://simplehtmldom.sourceforge.net/)
   * [On SourceForge](https://sourceforge.net/projects/simplehtmldom/)
-    
