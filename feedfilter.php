@@ -2,7 +2,7 @@
 
 // Include configuration file
 require_once 'include/inc.lib.php';
-require_once 'config/feedpiper.conf.php';
+require_once 'config/feedfilter.conf.php';
 
 if (isset($_GET['feed']))
 {

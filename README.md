@@ -22,7 +22,7 @@ Make a copy of the config files as local.*.php
 This will allow you to have your own configuration files that will not be commited to GitHub
 
 * conf.php is the global application configuration
-* html2feed.conf.php and feedpiper.conf.php are the individual application configurations
+* html2feed.conf.php and feedfilter.conf.php are the individual application configurations
 
 ### Requirements
 
