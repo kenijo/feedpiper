@@ -23,5 +23,5 @@ require_once 'simple_html_dom/simple_html_dom.php';
 // Include the local configuration files that will overide those settings if they exists.
 // This prevents commiting your own configuration to GitHub
 @include_once './config/local.conf.php';
-@include_once './config/local.feedpiper.conf.php';
+@include_once './config/local.feedfilter.conf.php';
 @include_once './config/local.html2feed.conf.php';
