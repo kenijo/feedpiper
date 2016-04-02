@@ -74,7 +74,7 @@ class Entry
     // Add an thumbnail entry
     if ($this->get_entry_thumbnail())
     {
-      echo '    <media:thumbnail url="' . $$this->get_entry_thumbnail() . '" />' . PHP_EOL;
+      echo '    <media:thumbnail url="' . $this->get_entry_thumbnail() . '" />' . PHP_EOL;
     }
 
     // Identifies a related Web page. The type of relation is defined by the rel attribute.
