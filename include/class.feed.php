@@ -14,10 +14,11 @@ class Feed
   private $feed_logo              = null;
   private $feed_title             = null;
   private $feed_updated           = null;
+  private $feed_website_link      = null;
 
   function __construct($feed_format)
   {
-    $this->feed_format = $feed_format;
+    $this->set_feed_format($feed_format);
   }
 
   public function open_feed()
@@ -49,16 +50,17 @@ class Feed
     // Atom Syndication Format
     // http://atomenabled.org/developers/syndication/
     echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
-    echo '<feed xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom" >' . PHP_EOL;
+    echo '<feed xmlns:dc="http://purl.org/dc/elements/1.1/"' . PHP_EOL;
+    echo '      xmlns:media="http://search.yahoo.com/mrss/"' . PHP_EOL;
+    echo '      xmlns="http://www.w3.org/2005/Atom" >' . PHP_EOL;
 
     // Contains a human readable title for the feed.
     // Often the same as the title of the associated website.
     // This value should not be blank.
     echo '  <title type="text">' . $this->get_feed_title() . '</title>' . PHP_EOL;
 
-    $parsed_url = parse_url($this->get_feed_link_alternate());
-    $link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
-    echo '  <link type="text/html" title="' . $this->get_feed_title() . '" href="' . $link . '" rel="related" />' . PHP_EOL;
+    // Contains the link to the original website providing the feed
+    echo '  <link type="text/html" title="' . $this->get_feed_website_link() . '" href="' . $link . '" rel="related" />' . PHP_EOL;
 
     // RSS autodiscovery is a technique that makes it possible for web browsers and other software to automatically
     // find a site's RSS feed. Autodiscovery is a great way to inform users that a web site offers a syndication feed.
@@ -110,18 +112,17 @@ class Feed
 
     echo '    <title>' . $this->get_feed_title() . '</title>' . PHP_EOL;
 
-    //echo '    <link>' . $this->get_feed_link() . '</link>' . PHP_EOL;
-    echo '    <link>' . $this->get_feed_link_alternate() . '</link>' . PHP_EOL;
+    echo '    <link>' . $this->get_feed_website_link() . '</link>' . PHP_EOL;
 
     echo '    <description>' . $this->get_feed_title() . '</description>' . PHP_EOL;
 
     echo '    <pubDate>' . $this->get_feed_updated() . '</pubDate>' . PHP_EOL;
     echo '    <lastBuildDate>' . $this->get_feed_updated() . '</lastBuildDate>' . PHP_EOL;
-    
+
     echo '    <image>' . PHP_EOL;
     echo '      <url>' . $this->get_feed_logo() . '</url>' . PHP_EOL;
     echo '      <title>' . $this->get_feed_title() . '</title>' . PHP_EOL;
-    echo '      <link>' . $this->get_feed_link_alternate() . '</link>' . PHP_EOL;
+    echo '      <link>' . $this->get_feed_website_link() . '</link>' . PHP_EOL;
     echo '    </image>' . PHP_EOL;
 
     // Separate entries from the header for clarity
@@ -134,6 +135,7 @@ class Feed
     echo 'Feed Title:                ' . $this->get_feed_title() . PHP_EOL;
     echo 'Feed Link:                 ' . $this->get_feed_link() . PHP_EOL;
     echo 'Feed Link Alternative:     ' . $this->get_feed_link_alternate() . PHP_EOL;
+    echo 'Feed Website Link:         ' . $this->get_feed_website_link() . PHP_EOL;
     echo 'Feed Icon:                 ' . $this->get_feed_icon() . PHP_EOL;
     echo 'Feed Logo:                 ' . $this->get_feed_logo() . PHP_EOL;
     echo 'Feed Generator:            ' . $this->get_feed_generator_name() . ' ' . $this->get_feed_generator_version() . PHP_EOL;
@@ -150,6 +152,11 @@ class Feed
   {
     echo '  </channel>';
     echo '</rss>';
+  }
+
+  public function set_feed_format($value = null)
+  {
+    $this->feed_format = $value;
   }
 
   public function set_feed_generator_name($value = null)
@@ -200,6 +207,21 @@ class Feed
   public function set_feed_updated($value = null)
   {
     $this->feed_updated = $value;
+  }
+
+  public function set_feed_website_link($value = null)
+  {
+    $this->feed_website_link = $value;
+  }
+
+  public function get_feed_format()
+  {
+    if ($this->feed_format !== null)
+    {
+      return $this->feed_format;
+    } else {
+      return null;
+    }
   }
 
   public function get_feed_generator_name()
@@ -297,6 +319,16 @@ class Feed
     if ($this->feed_updated !== null)
     {
       return $this->feed_updated;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_feed_website_link()
+  {
+    if ($this->feed_website_link !== null)
+    {
+      return $this->feed_website_link;
     } else {
       return null;
     }
