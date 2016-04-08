@@ -99,7 +99,7 @@ if (isset($_GET['feed']))
     // Use GMT as the default time zone.
     $date = new DateTime('now', new DateTimezone('GMT'));
 
-    $newFilteredFeed = new FilteredFeed();
+    $newFilteredFeed = new FilteredFeed($cfg['feed_format']);
     $newFeed         = new Feed($cfg['feed_format']);
 
     // Cleanup the filters
@@ -123,7 +123,15 @@ if (isset($_GET['feed']))
     $newFeed->set_feed_link_alternate($myFeedConfig['url'][0]);
     $newFeed->set_feed_logo(url_dir_path() . '/favicon.png');
     $newFeed->set_feed_title($myFeedConfig['title']);
+    if ($cfg['feed_format'] == 'ATOM')
+    {
     $newFeed->set_feed_updated($date->format(DATE_ATOM));
+    }
+    elseif ($cfg['feed_format'] == 'RSS')
+    {
+      $newFeed->set_feed_updated($date->format(DATE_RSS));
+    }
+    var_dump($date->format(DATE_RSS));
 
     // Display or Debug feed
     if ($myFeedDebug === true)

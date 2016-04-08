@@ -8,6 +8,7 @@ class FilteredFeed
   private $content       = null;
   private $date          = null;
   private $entry         = null;
+  private $feed_format   = null;
   private $filter        = null;
   private $global_filter = null;
   private $id            = null;
@@ -18,6 +19,11 @@ class FilteredFeed
   private $thumbnail     = null;
   private $title         = null;
 
+  function __construct($feed_format)
+  {
+    $this->feed_format = $feed_format;
+  }
+  
   public function filter($entry)
   {
     $this->set_entry($entry);
@@ -130,6 +136,7 @@ class FilteredFeed
 
       // Use part of the title to generate categories
       $categories_from_title = Array();
+      /*
       if ($title = $this->get_title())
       {
         $title = html_entity_decode($title);
@@ -146,6 +153,7 @@ class FilteredFeed
 
         $categories_from_title = array_map('trim', explode(' ', $title));
       }
+      */
 
       $categories = array_merge($categories_from_link, $categories_from_title);
 
@@ -215,9 +223,17 @@ class FilteredFeed
     $this->content = $content;
   }
 
-  public function set_date($date_format = DATE_ATOM)
+  public function set_date()
   {
-    // All timestamps in ATOM must conform to RFC 3339
+    if ($this->feed_format == 'ATOM')
+    {
+      $date_format = DATE_ATOM;
+    }
+    elseif ($this->feed_format == 'RSS')
+    {
+      $date_format = DATE_RSS;
+    }
+    
     if ($date = $this->get_entry()->get_updated_gmdate($date_format))
     {
       $this->date = $date;
@@ -337,7 +353,7 @@ class FilteredFeed
       $summary = preg_replace('#'.'<div.*?></div>'.'#imu', '', $summary);
 
       // Filter out if there is no text summary
-      if (!preg_match('#'.'[a-z]+'.'#imu', $summary) || !preg_match('#'.'[a-z]+'.'#imu', strip_tags($summary)) || $summary == null)
+      if (!preg_match('#'.'[a-z]+'.'#imu', strip_tags($summary)) || $summary == null)
       {
         $this->set_skip(true);
         return;
