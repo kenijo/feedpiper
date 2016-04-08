@@ -110,11 +110,14 @@ class Feed
 
     echo '    <title>' . $this->get_feed_title() . '</title>' . PHP_EOL;
 
-    echo '    <link>' . $this->get_feed_link() . '</link>' . PHP_EOL;
-    //echo '    <link>' . $this->get_feed_link_alternate() . '</link>' . PHP_EOL;
+    //echo '    <link>' . $this->get_feed_link() . '</link>' . PHP_EOL;
+    echo '    <link>' . $this->get_feed_link_alternate() . '</link>' . PHP_EOL;
 
     echo '    <description>' . $this->get_feed_title() . '</description>' . PHP_EOL;
 
+    echo '    <pubDate>' . $this->get_feed_updated() . '</pubDate>' . PHP_EOL;
+    echo '    <lastBuildDate>' . $this->get_feed_updated() . '</lastBuildDate>' . PHP_EOL;
+    
     echo '    <image>' . PHP_EOL;
     echo '      <url>' . $this->get_feed_logo() . '</url>' . PHP_EOL;
     echo '      <title>' . $this->get_feed_title() . '</title>' . PHP_EOL;
