@@ -94,7 +94,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			'path' => '',
 			'extras' => array(
 				'prefix' => '',
-				'cache_purge_time' => 2592000
+				'cache_purge_time' => 864000
 			),
 		);
 		
