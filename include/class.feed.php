@@ -60,7 +60,7 @@ class Feed
     echo '  <title type="text">' . $this->get_feed_title() . '</title>' . PHP_EOL;
 
     // Contains the link to the original website providing the feed
-    echo '  <link type="text/html" title="' . $this->get_feed_website_link() . '" href="' . $link . '" rel="related" />' . PHP_EOL;
+    echo '  <link type="text/html" title="' . $this->get_feed_title() . '" href="' . $this->get_feed_website_link() . '" rel="related" />' . PHP_EOL;
 
     // RSS autodiscovery is a technique that makes it possible for web browsers and other software to automatically
     // find a site's RSS feed. Autodiscovery is a great way to inform users that a web site offers a syndication feed.
