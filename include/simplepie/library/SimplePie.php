@@ -516,7 +516,7 @@ class SimplePie
 	 * @see SimplePie::set_cache_duration()
 	 * @access private
 	 */
-	public static $cache_duration = 3600;
+	public $cache_duration = 3600;
 
 	/**
 	 * @var int Auto-discovery cache duration (in seconds)
@@ -874,7 +874,7 @@ class SimplePie
 	 */
 	public function set_cache_duration($seconds = 3600)
 	{
-		self::$cache_duration = (int) $seconds;
+		$this->cache_duration = (int) $seconds;
 	}
 
 	/**
@@ -1517,7 +1517,7 @@ class SimplePie
 					}
 				}
 				// Check if the cache has been updated
-				elseif ($cache->mtime() + self::$cache_duration < time())
+				elseif ($cache->mtime() + $this->cache_duration < time())
 				{
 					// Want to know if we tried to send last-modified and/or etag headers
 					// when requesting this file. (Note that it's up to the file to
