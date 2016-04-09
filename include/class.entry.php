@@ -3,7 +3,6 @@
 class Entry
 {
   // Property declaration
-  private $feed_format      = null;
   private $entry_authors    = null;
   private $entry_categories = null;
   private $entry_content    = null;
@@ -15,10 +14,11 @@ class Entry
   private $entry_thumbnail  = null;
   private $entry_title      = null;
   private $entry_updated    = null;
+  private $feed_format      = null;
 
   function __construct($feed_format)
   {
-    $this->feed_format = $feed_format;
+    $this->set_feed_format($feed_format);
   }
 
   public function create_entry()
@@ -75,6 +75,8 @@ class Entry
     if ($this->get_entry_thumbnail())
     {
       echo '    <media:thumbnail url="' . $this->get_entry_thumbnail() . '" />' . PHP_EOL;
+      // TODO:
+      // echo '    <enclosure url="' . $this->get_entry_thumbnail() . 'type="image/jpeg" />' . PHP_EOL;
     }
 
     // Identifies a related Web page. The type of relation is defined by the rel attribute.
@@ -161,6 +163,8 @@ class Entry
     if ($this->get_entry_thumbnail())
     {
       echo '    <media:thumbnail url="' . $this->get_entry_thumbnail() . '" />' . PHP_EOL;
+      // TODO:
+      // echo '    <enclosure url="' . $this->get_entry_thumbnail() . 'type="image/jpeg" />' . PHP_EOL;
     }
 
     if ($this->get_entry_link())
@@ -189,6 +193,10 @@ class Entry
     if ($this->get_entry_link())
     {
       echo '    <guid>' . $this->get_entry_link() . '</guid>' . PHP_EOL;
+    }
+    else
+    {
+      echo '    <guid>' . md5($this->get_entry_identifier()) . '</guid>' . PHP_EOL;
     }
 
     echo '    <dc:identifier>' . md5($this->get_entry_identifier()) . '</dc:identifier>' . PHP_EOL;
@@ -240,8 +248,6 @@ class Entry
 
   public function set_entry_content($value = null)
   {
-    $value = preg_replace('#'. '(\s)+' . '#imu', ' ', $value);
-    $value = trim($value);
     $this->entry_content = $value;
   }
 
@@ -252,10 +258,7 @@ class Entry
 
   public function set_entry_identifier($value = null)
   {
-    if($value)
-    {
-      $this->entry_identifier = $value;
-    }
+    $this->entry_identifier = $value;
   }
 
   public function set_entry_link($value = null)
@@ -270,8 +273,6 @@ class Entry
 
   public function set_entry_summary($value = null)
   {
-    $value = preg_replace('#'. '(\s)+' . '#imu', ' ', $value);
-    $value = trim($value);
     $this->entry_summary = $value;
   }
 
@@ -282,18 +283,17 @@ class Entry
 
   public function set_entry_thumbnail($value = null)
   {
-    if (isset($value))
-    {
-      $this->entry_thumbnail = $value;
-    }
+    $this->entry_thumbnail = $value;
   }
 
   public function set_entry_updated($value = null)
   {
-    if (isset($value))
-    {
-      $this->entry_updated = $value;
-    }
+    $this->entry_updated = $value;
+  }
+
+  public function set_feed_format($value = null)
+  {
+    $this->feed_format = $value;
   }
 
   public function get_entry_authors()
@@ -401,6 +401,16 @@ class Entry
     if ($this->entry_updated !== null)
     {
       return $this->entry_updated;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_feed_format()
+  {
+    if ($this->feed_format !== null)
+    {
+      return $this->feed_format;
     } else {
       return null;
     }
