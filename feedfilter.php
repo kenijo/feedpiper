@@ -205,8 +205,10 @@ if (isset($_GET['feed']))
         // END   - SPECIAL CODE
         $newEntry->set_entry_title($title);
 
-        // Set Thumbnail
-        $newEntry->set_entry_thumbnail($newFilteredFeed->get_thumbnail());
+        // Set Enclosure
+        $newEntry->set_entry_enclosure_length($newFilteredFeed->get_enclosure_length());
+        $newEntry->set_entry_enclosure_link($newFilteredFeed->get_enclosure_link());
+        $newEntry->set_entry_enclosure_type($newFilteredFeed->get_enclosure_type());
 
         // Set Auhtors
         $newEntry->set_entry_authors($newFilteredFeed->get_authors());

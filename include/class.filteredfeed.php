@@ -3,21 +3,23 @@
 class FilteredFeed
 {
   // Property declaration
-  private $authors       = null;
-  private $categories    = null;
-  private $content       = null;
-  private $date          = null;
-  private $entry         = null;
-  private $feed_format   = null;
-  private $filter        = null;
-  private $global_filter = null;
-  private $id            = null;
-  private $is_debug      = null;
-  private $link          = null;
-  private $skip          = null;
-  private $summary       = null;
-  private $thumbnail     = null;
-  private $title         = null;
+  private $authors          = null;
+  private $categories       = null;
+  private $content          = null;
+  private $date             = null;
+  private $enclosure_length = null;
+  private $enclosure_link   = null;
+  private $enclosure_type   = null;
+  private $entry            = null;
+  private $feed_format      = null;
+  private $filter           = null;
+  private $global_filter    = null;
+  private $id               = null;
+  private $is_debug         = null;
+  private $link             = null;
+  private $skip             = null;
+  private $summary          = null;
+  private $title            = null;
 
   function __construct($feed_format)
   {
@@ -35,11 +37,11 @@ class FilteredFeed
     $this->set_id();
     $this->set_link();
     $this->set_title();
-    $this->set_thumbnail();
     $this->set_authors();
     $this->set_categories();
     $this->set_summary();
     $this->set_content();
+    $this->set_enclosure();
   }
 
   public function debug_filter()
@@ -255,9 +257,44 @@ class FilteredFeed
     }
   }
 
-  public function set_skip($skip = false)
+  private function set_enclosure()
   {
-    $this->skip = $skip;
+    // Look for an entry enclosure
+    if ($enclosure = $this->entry->get_enclosure())
+    {
+      $this->set_enclosure_length($enclosure->get_length());
+      $this->set_enclosure_link($enclosure->get_link());
+      $this->set_enclosure_type($enclosure->get_type());
+
+      // If link == '//?#' then we nullify the link
+      if ( $this->get_enclosure_link() == '//?#')
+      {
+        $this->set_enclosure_link(null);
+      }
+    }
+    /* TODO: If there is no entry enclosure then try to extract image from content
+      //This regex selects the images in the SRC attribute of IMG elements
+      preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $entry->get_content(), $matches);
+      if ($matches)
+      {
+        $this->enclosure = urldecode($matches[2]);
+      }
+    */
+  }
+
+  public function set_enclosure_length($entry = null)
+  {
+    $this->enclosure_length = $entry;
+  }
+
+  public function set_enclosure_link($entry = null)
+  {
+    $this->enclosure_link = $entry;
+  }
+
+  public function set_enclosure_type($entry = null)
+  {
+    $this->enclosure_type = $entry;
   }
 
   public function set_entry($entry = null)
@@ -345,6 +382,11 @@ class FilteredFeed
     $this->link = $link;
   }
 
+  public function set_skip($skip = false)
+  {
+    $this->skip = $skip;
+  }
+
   public function set_summary()
   {
     $summary = null;
@@ -377,40 +419,6 @@ class FilteredFeed
     }
 
     $this->summary = $summary;
-  }
-
-  // TODO: Thumbnails - solve issues
-  public function set_thumbnail()
-  {
-    return;
-    // Look in the entry enclosure for a thumnail
-    if ($enclosure = $entry->get_enclosure())
-    {
-      // Get the thumbnail if it is available
-      foreach ((array) $enclosure->get_thumbnails() as $thumbnail)
-      {
-        $this->thumbnail = urldecode($thumbnail);
-      }
-      /*
-    // Get the image from url if it is available
-    foreach ((array) $enclosure->get_url() as $url)
-    {
-    echo $enclosure->get_type();
-    echo $enclosure->get_link();
-    $this->thumbnail = $url;
-    return;
-  }
-  */
-    } else if ($entry->get_content() != null)
-      // If there is no entry enclosure then try to extract image from content
-    {
-      //This regex selects the images in the SRC attribute of IMG elements
-      preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $entry->get_content(), $matches);
-      if ($matches)
-      {
-        $this->thumbnail = urldecode($matches[2]);
-      }
-    }
   }
 
   public function set_title()
@@ -471,11 +479,31 @@ class FilteredFeed
     }
   }
 
-  public function get_skip()
+  public function get_enclosure_length()
   {
-    if ($this->skip !== null)
+    if ($this->enclosure_length !== null)
     {
-      return $this->skip;
+      return $this->enclosure_length;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_enclosure_link()
+  {
+    if ($this->enclosure_link !== null)
+    {
+      return $this->enclosure_link;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_enclosure_type()
+  {
+    if ($this->enclosure_type !== null)
+    {
+      return $this->enclosure_type;
     } else {
       return null;
     }
@@ -531,21 +559,21 @@ class FilteredFeed
     }
   }
 
-  public function get_summary()
+  public function get_skip()
   {
-    if ($this->summary !== null)
+    if ($this->skip !== null)
     {
-      return $this->summary;
+      return $this->skip;
     } else {
       return null;
     }
   }
 
-  public function get_thumbnail()
+  public function get_summary()
   {
-    if ($this->thumbnail !== null)
+    if ($this->summary !== null)
     {
-      return $this->thumbnail;
+      return $this->summary;
     } else {
       return null;
     }

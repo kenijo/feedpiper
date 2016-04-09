@@ -3,18 +3,20 @@
 class Entry
 {
   // Property declaration
-  private $entry_authors    = null;
-  private $entry_categories = null;
-  private $entry_content    = null;
-  private $entry_id         = null;
-  private $entry_identifier = null;
-  private $entry_link       = null;
-  private $entry_published  = null;
-  private $entry_summary    = null;
-  private $entry_thumbnail  = null;
-  private $entry_title      = null;
-  private $entry_updated    = null;
-  private $feed_format      = null;
+  private $entry_authors          = null;
+  private $entry_categories       = null;
+  private $entry_content          = null;
+  private $entry_enclosure_length = null;
+  private $entry_enclosure_link   = null;
+  private $entry_enclosure_type   = null;
+  private $entry_id               = null;
+  private $entry_identifier       = null;
+  private $entry_link             = null;
+  private $entry_published        = null;
+  private $entry_summary          = null;
+  private $entry_title            = null;
+  private $entry_updated          = null;
+  private $feed_format            = null;
 
   function __construct($feed_format)
   {
@@ -71,12 +73,10 @@ class Entry
       echo '    <content type="application/xhtml+html" src="' . $this->get_entry_link() . '" />' . PHP_EOL;
     }
 
-    // Add an thumbnail entry
-    if ($this->get_entry_thumbnail())
+    // Add an enclosure entry
+    if ($this->get_entry_enclosure_link())
     {
-      echo '    <media:thumbnail url="' . $this->get_entry_thumbnail() . '" />' . PHP_EOL;
-      // TODO:
-      // echo '    <enclosure url="' . $this->get_entry_thumbnail() . 'type="image/jpeg" />' . PHP_EOL;
+      echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" type="' . $this->get_entry_enclosure_type() . '" length="' . $this->get_entry_enclosure_length() . '" />' . PHP_EOL;
     }
 
     // Identifies a related Web page. The type of relation is defined by the rel attribute.
@@ -160,11 +160,9 @@ class Entry
       echo '    </description>' . PHP_EOL;
     }
 
-    if ($this->get_entry_thumbnail())
+    if ($this->get_entry_enclosure_link())
     {
-      echo '    <media:thumbnail url="' . $this->get_entry_thumbnail() . '" />' . PHP_EOL;
-      // TODO:
-      // echo '    <enclosure url="' . $this->get_entry_thumbnail() . 'type="image/jpeg" />' . PHP_EOL;
+      echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" type="' . $this->get_entry_enclosure_type() . '" length="' . $this->get_entry_enclosure_length() . '" />' . PHP_EOL;
     }
 
     if ($this->get_entry_link())
@@ -223,7 +221,9 @@ class Entry
     echo '  ]]>' . PHP_EOL;
     echo PHP_EOL;
     echo 'Entry Link:                ' . $this->get_entry_link() . PHP_EOL;
-    echo 'Entry Thumbnail:           ' . $this->get_entry_thumbnail() . PHP_EOL;
+    echo 'Entry Enclosure Link:      ' . $this->get_entry_enclosure_link() . PHP_EOL;
+    echo 'Entry Enclosure Length:    ' . $this->get_entry_enclosure_length() . PHP_EOL;
+    echo 'Entry Enclosure Type:      ' . $this->get_entry_enclosure_type() . PHP_EOL;
     echo PHP_EOL;
     echo 'Entry Author(s):           ' . get_array_as_string($this->get_entry_authors()) . PHP_EOL;
     echo 'Entry Categories:          ' . get_array_as_string($this->get_entry_categories()) . PHP_EOL;
@@ -249,6 +249,21 @@ class Entry
   public function set_entry_content($value = null)
   {
     $this->entry_content = $value;
+  }
+
+  public function set_entry_enclosure_length($value = null)
+  {
+    $this->entry_enclosure_length = $value;
+  }
+
+  public function set_entry_enclosure_link($value = null)
+  {
+    $this->entry_enclosure_link = $value;
+  }
+
+  public function set_entry_enclosure_type($value = null)
+  {
+    $this->entry_enclosure_type = $value;
   }
 
   public function set_entry_id($value = null)
@@ -279,11 +294,6 @@ class Entry
   public function set_entry_title($value = null)
   {
     $this->entry_title = $value;
-  }
-
-  public function set_entry_thumbnail($value = null)
-  {
-    $this->entry_thumbnail = $value;
   }
 
   public function set_entry_updated($value = null)
@@ -321,6 +331,36 @@ class Entry
     if ($this->entry_content !== null)
     {
       return $this->entry_content;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_entry_enclosure_length()
+  {
+    if ($this->entry_enclosure_length !== null)
+    {
+      return $this->entry_enclosure_length;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_entry_enclosure_link()
+  {
+    if ($this->entry_enclosure_link !== null)
+    {
+      return $this->entry_enclosure_link;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_entry_enclosure_type()
+  {
+    if ($this->entry_enclosure_type !== null)
+    {
+      return $this->entry_enclosure_type;
     } else {
       return null;
     }
@@ -381,16 +421,6 @@ class Entry
     if ($this->entry_title !== null)
     {
       return $this->entry_title;
-    } else {
-      return null;
-    }
-  }
-
-  public function get_entry_thumbnail()
-  {
-    if ($this->entry_thumbnail !== null)
-    {
-      return $this->entry_thumbnail;
     } else {
       return null;
     }
