@@ -23,7 +23,7 @@ class FilteredFeed
   {
     $this->feed_format = $feed_format;
   }
-  
+
   public function filter($entry)
   {
     $this->set_entry($entry);
@@ -31,7 +31,7 @@ class FilteredFeed
 
     $this->set_date();
     // Set the id first because if the id happens to be a link then
-    // it is very likely to be a permalink which we'll usein set_link()
+    // it is very likely to be a permalink which we'll use in set_link()
     $this->set_id();
     $this->set_link();
     $this->set_title();
@@ -122,6 +122,11 @@ class FilteredFeed
     // If we don't have categories defined then generate some based on the link and title
     if ($this->get_entry()->get_categories() === null)
     {
+      /*
+      // Uncomment this code if you want to generate categories for feeds who don't have
+      // any category defined, based on link and/or title. It is not likely to be useful
+      // since you can already filter on links and titles anyway.
+
       // Use the link to generate categories
       $categories_from_link = Array();
       /*
@@ -132,11 +137,9 @@ class FilteredFeed
         $link                 = preg_replace('#'.'[[:punct:]]'.'#imu', ' ', $link);
         $categories_from_link = explode(' ', $link);
       }
-      */
 
       // Use part of the title to generate categories
       $categories_from_title = Array();
-      /*
       if ($title = $this->get_title())
       {
         $title = html_entity_decode($title);
@@ -153,19 +156,19 @@ class FilteredFeed
 
         $categories_from_title = array_map('trim', explode(' ', $title));
       }
-      */
 
       $categories = array_merge($categories_from_link, $categories_from_title);
 
       // Get rid of values that are null, empty, false, < 3 and numbers only
       $categories = array_filter($categories,
-      function ($key) use (&$value)
-      {
-        if (strlen($key) > 3 && !preg_match('#'.'\d+'.'#imu', $key))
-        {
-          return $key;
-        }
-      });
+                                 function ($key) use (&$value)
+                                 {
+                                   if (strlen($key) > 3 && !preg_match('#'.'\d+'.'#imu', $key))
+                                   {
+                                     return $key;
+                                   }
+                                 });
+     */
     }
     // Use the entry categories
     else
@@ -233,7 +236,7 @@ class FilteredFeed
     {
       $date_format = DATE_RSS;
     }
-    
+
     if ($date = $this->get_entry()->get_updated_gmdate($date_format))
     {
       $this->date = $date;
@@ -398,7 +401,7 @@ class FilteredFeed
   }
   */
     } else if ($entry->get_content() != null)
-    // If there is no entry enclosure then try to extract image from content
+      // If there is no entry enclosure then try to extract image from content
     {
       //This regex selects the images in the SRC attribute of IMG elements
       preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $entry->get_content(), $matches);
