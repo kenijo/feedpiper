@@ -1,5 +1,5 @@
 <?php
-
+// TODO: find the first feed in the conf and use it as the alt link
 // Include configuration file
 require_once 'include/inc.lib.php';
 require_once 'config/feedfilter.conf.php';
@@ -125,13 +125,15 @@ if (isset($_GET['feed']))
     $newFeed->set_feed_title($myFeedConfig['title']);
     if ($cfg['feed_format'] == 'ATOM')
     {
-    $newFeed->set_feed_updated($date->format(DATE_ATOM));
+      $date_format = DATE_ATOM;
     }
     elseif ($cfg['feed_format'] == 'RSS')
     {
-      $newFeed->set_feed_updated($date->format(DATE_RSS));
+      $date_format = DATE_RSS;
     }
-    var_dump($date->format(DATE_RSS));
+    $newFeed->set_feed_updated($date->format($date_format));
+
+    $newFeed->set_feed_website_link();
 
     // Display or Debug feed
     if ($myFeedDebug === true)

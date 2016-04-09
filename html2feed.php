@@ -72,7 +72,15 @@ if (isset($_GET['page']))
   $newFeed->set_feed_link_alternate($myPageConfig['page_url']);
   $newFeed->set_feed_logo(url_dir_path() . '/favicon.png');
   $newFeed->set_feed_title($myPageConfig['page_title']);
-  $newFeed->set_feed_updated($date->format(DATE_ATOM));
+  if ($cfg['feed_format'] == 'ATOM')
+  {
+    $date_format = DATE_ATOM;
+  }
+  elseif ($cfg['feed_format'] == 'RSS')
+  {
+    $date_format = DATE_RSS;
+  }
+  $newFeed->set_feed_updated($date->format($date_format));
 
   // Display or Debug feed
   if ($myPageDebug === true)
