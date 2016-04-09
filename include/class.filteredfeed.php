@@ -221,6 +221,10 @@ class FilteredFeed
       // Remove tracking links if present
       $content = preg_replace('#'.'<br clear="all">.*'.'#imu', '', $content);
       $content = preg_replace('#'.'<div.*?></div>'.'#imu', '', $content);
+
+      // Remove left over spaces
+      $content = preg_replace('#'. '(\s)+' . '#imu', ' ', $content);
+      $content = trim($content);
     }
 
     $this->content = $content;
@@ -355,12 +359,9 @@ class FilteredFeed
       $summary = preg_replace('#'.'<br clear="all">.*'.'#imu', '', $summary);
       $summary = preg_replace('#'.'<div.*?></div>'.'#imu', '', $summary);
 
-      // Filter out if there is no text summary
-      if (!preg_match('#'.'[a-z]+'.'#imu', strip_tags($summary)) || $summary == null)
-      {
-        $this->set_skip(true);
-        return;
-      }
+      // Remove left over spaces
+      $summary = preg_replace('#'. '(\s)+' . '#imu', ' ', $summary);
+      $summary = trim($summary);
 
       // Filter out according to content filter
       if($this->filter_keep($summary, 'content'))
