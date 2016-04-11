@@ -133,7 +133,9 @@ if (isset($_GET['feed']))
     }
     $newFeed->set_feed_updated($date->format($date_format));
 
-    $newFeed->set_feed_website_link();
+    $parsed_url = parse_url($myFeedConfig['url'][0]);
+    $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
+    $newFeed->set_feed_website_link($website_link);
 
     // Display or Debug feed
     if ($myFeedDebug === true)

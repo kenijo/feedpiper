@@ -82,6 +82,10 @@ if (isset($_GET['page']))
   }
   $newFeed->set_feed_updated($date->format($date_format));
 
+  $parsed_url = parse_url($myPageConfig['page_url']);
+  $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
+  $newFeed->set_feed_website_link($website_link);
+    
   // Display or Debug feed
   if ($myPageDebug === true)
   {
@@ -170,7 +174,7 @@ if (isset($_GET['page']))
 
       if (isset($myPageConfig['thumbnail']))
       {
-        // Set Thumbnails
+        // Set Thumbnail
         $thumbnail = $myPageConfig['thumbnail'];
         $thumbnail = $entry->find($thumbnail, 0)->src;
         // If $thumbnail is not a full URL then we rebuild it from the feed URL
@@ -180,7 +184,9 @@ if (isset($_GET['page']))
           $thumbnail = $parsed_page_url['scheme'] . '://' . $parsed_page_url['host'] . $thumbnail;
         }
         $thumbnail ? $thumbnail : $thumbnail = null;
-        $newEntry->set_entry_thumbnail($thumbnail);
+
+        // Set Enclosure
+        $newEntry->set_entry_enclosure_link($thumbnail);
       }
 
       if (isset($myPageConfig['author']))
