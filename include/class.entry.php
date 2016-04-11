@@ -76,7 +76,15 @@ class Entry
     // Add an enclosure entry
     if ($this->get_entry_enclosure_link())
     {
-      echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" type="' . $this->get_entry_enclosure_type() . '" length="' . $this->get_entry_enclosure_length() . '" />' . PHP_EOL;
+      // If enclosure_type is null then make it a media:thumbnail
+      if ($this->get_entry_enclosure_type() != null)
+      {
+        echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" length="' . $this->get_entry_enclosure_length() . '" type="' . $this->get_entry_enclosure_type() . '" />' . PHP_EOL;
+      }
+      else
+      {
+        echo '    <media:thumbnail url="' . $this->get_entry_enclosure_link() . '" />' . PHP_EOL;
+      }
     }
 
     // Identifies a related Web page. The type of relation is defined by the rel attribute.
@@ -162,7 +170,15 @@ class Entry
 
     if ($this->get_entry_enclosure_link())
     {
-      echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" type="' . $this->get_entry_enclosure_type() . '" length="' . $this->get_entry_enclosure_length() . '" />' . PHP_EOL;
+      // If enclosure_type is null then make it a media:thumbnail
+      if ($this->get_entry_enclosure_type() != null)
+      {
+        echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" length="' . $this->get_entry_enclosure_length() . '" type="' . $this->get_entry_enclosure_type() . '" />' . PHP_EOL;
+      }
+      else
+      {
+        echo '    <media:thumbnail url="' . $this->get_entry_enclosure_link() . '" />' . PHP_EOL;
+      }
     }
 
     if ($this->get_entry_link())

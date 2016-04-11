@@ -262,14 +262,19 @@ class FilteredFeed
     // Look for an entry enclosure
     if ($enclosure = $this->entry->get_enclosure())
     {
-      $this->set_enclosure_length($enclosure->get_length());
-      $this->set_enclosure_link($enclosure->get_link());
-      $this->set_enclosure_type($enclosure->get_type());
+      // Strip '?#' from the end of the link
+      $link = before_last('?#', $enclosure->get_link());
 
-      // If link == '//?#' then we nullify the link
-      if ( $this->get_enclosure_link() == '//?#')
+      // If link == '//' then we nullify the link
+      if ($link == '//')
       {
         $this->set_enclosure_link(null);
+      }
+      else
+      {
+        $this->set_enclosure_link($link);
+        $this->set_enclosure_length($enclosure->get_length());
+        $this->set_enclosure_type($enclosure->get_type());
       }
     }
     /* TODO: If there is no entry enclosure then try to extract image from content
