@@ -42,9 +42,7 @@ class Entry
 
     // Contains a human readable title for the entry.
     // This value should not be blank.
-    echo '    <title type="html">' . PHP_EOL;
-    echo '      <![CDATA[ ' . $this->get_entry_title() . ' ]]>' . PHP_EOL;
-    echo '    </title>' . PHP_EOL;
+    echo '    <title type="html"><![CDATA[' . $this->get_entry_title() . ']]></title>' . PHP_EOL;
 
     // Conveys a short summary, abstract, or excerpt of the entry.
     // Summary should be provided if there either is no content provided for the entry,
@@ -52,9 +50,7 @@ class Entry
     if ($this->get_entry_summary())
     {
       echo '    <summary type="html">' . PHP_EOL;
-      echo '      <![CDATA[' . PHP_EOL;
-      echo '        ' . html_entity_decode($this->get_entry_summary());
-      echo '      ]]>' . PHP_EOL;
+      echo '      <![CDATA[' . html_entity_decode($this->get_entry_summary()) . '     ]]>' . PHP_EOL;
       echo '    </summary>' . PHP_EOL;
     }
 
@@ -65,7 +61,7 @@ class Entry
       echo '    <content type="html">' . PHP_EOL;
       echo '      <![CDATA[' . PHP_EOL;
       echo '        ' . html_entity_decode($this->get_entry_content());
-      echo '      ]]>' . PHP_EOL;
+      echo '     ]]>' . PHP_EOL;
       echo '    </content>' . PHP_EOL;
     }
     else if ($this->get_entry_link())
@@ -155,16 +151,14 @@ class Entry
   {
     echo '  <item>' . PHP_EOL;
 
-    echo '    <title>' . PHP_EOL;
-    echo '      <![CDATA[ ' . $this->get_entry_title() . ' ]]>' . PHP_EOL;
-    echo '    </title>' . PHP_EOL;
+    echo '    <title><![CDATA[' . $this->get_entry_title() . ']]></title>' . PHP_EOL;
 
     if ($this->get_entry_summary())
     {
       echo '    <description>' . PHP_EOL;
       echo '      <![CDATA[' . PHP_EOL;
       echo '        ' . html_entity_decode($this->get_entry_summary());
-      echo '      ]]>' . PHP_EOL;
+      echo '     ]]>' . PHP_EOL;
       echo '    </description>' . PHP_EOL;
     }
 
@@ -190,7 +184,7 @@ class Entry
     {
       foreach ($this->get_entry_authors() as $author)
       {
-        echo '    <dc:creator><![CDATA[ ' . $author . ' ]]></dc:creator>'  . PHP_EOL;
+        echo '    <dc:creator><![CDATA[' . $author . ']]></dc:creator>'  . PHP_EOL;
       }
     }
 
@@ -198,7 +192,7 @@ class Entry
     {
       foreach ($this->get_entry_categories() as $category)
       {
-        echo '    <category><![CDATA[ ' . $category . ' ]]></category>'  . PHP_EOL;
+        echo '    <category><![CDATA[' . $category . ']]></category>'  . PHP_EOL;
       }
     }
 
@@ -224,17 +218,17 @@ class Entry
   public function debug_entry()
   {
     echo '--------------------------------------------------------------------------------------------------------------' . PHP_EOL;
-    echo 'Entry Title:               ' . '<![CDATA ' . $this->get_entry_title() . ' ]]>' . PHP_EOL;
+    echo 'Entry Title:               ' . '<![CDATA' . $this->get_entry_title() . ']]>' . PHP_EOL;
     echo PHP_EOL;
     echo 'Entry Summary:' . PHP_EOL;
     echo '  <![CDATA[' . PHP_EOL;
     echo '    ' . $this->get_entry_summary() . PHP_EOL;
-    echo '  ]]>' . PHP_EOL;
+    echo ' ]]>' . PHP_EOL;
     echo PHP_EOL;
     echo 'Entry Content:' . PHP_EOL;
     echo '  <![CDATA[' . PHP_EOL;
     echo '    ' . $this->get_entry_content() . PHP_EOL;
-    echo '  ]]>' . PHP_EOL;
+    echo ' ]]>' . PHP_EOL;
     echo PHP_EOL;
     echo 'Entry Link:                ' . $this->get_entry_link() . PHP_EOL;
     echo 'Entry Enclosure Link:      ' . $this->get_entry_enclosure_link() . PHP_EOL;
