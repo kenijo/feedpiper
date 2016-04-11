@@ -85,7 +85,7 @@ if (isset($_GET['page']))
   $parsed_url = parse_url($myPageConfig['page_url']);
   $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
   $newFeed->set_feed_website_link($website_link);
-    
+
   // Display or Debug feed
   if ($myPageDebug === true)
   {
