@@ -1,5 +1,5 @@
 <?php
-// TODO: find the first feed in the conf and use it as the alt link
+
 // Include configuration file
 require_once 'include/inc.lib.php';
 require_once 'config/feedfilter.conf.php';
