@@ -260,31 +260,31 @@ class FilteredFeed
   private function set_enclosure()
   {
     // Look for an entry enclosure
-    if ($enclosure = $this->entry->get_enclosure())
-    {
+    $enclosure = $this->entry->get_enclosure()
+
       // Strip '?#' from the end of the link
       $link = before_last('?#', $enclosure->get_link());
 
-      // If link == '//' then we nullify the link
-      if ($link == '//')
-      {
-        $this->set_enclosure_link(null);
-      }
-      else
-      {
-        $this->set_enclosure_link($link);
-        $this->set_enclosure_length($enclosure->get_length());
-        $this->set_enclosure_type($enclosure->get_type());
-      }
-    }
-    /* TODO: If there is no entry enclosure then try to extract image from content
+    // If link == '//' then we nullify the link
+    if ($link == '//')
+    {
       //This regex selects the images in the SRC attribute of IMG elements
       preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $entry->get_content(), $matches);
       if ($matches)
       {
-        $this->enclosure = urldecode($matches[2]);
+        $link = urldecode($matches[2]);
       }
-    */
+      else{
+        $link = null;
+      }
+      $this->set_enclosure_link($link);
+    }
+    else
+    {
+      $this->set_enclosure_link($link);
+      $this->set_enclosure_length($enclosure->get_length());
+      $this->set_enclosure_type($enclosure->get_type());
+    }
   }
 
   public function set_enclosure_length($entry = null)
