@@ -260,21 +260,25 @@ class FilteredFeed
   private function set_enclosure()
   {
     // Look for an entry enclosure
-    $enclosure = $this->entry->get_enclosure()
+    $enclosure = $this->entry->get_enclosure();
 
-      // Strip '?#' from the end of the link
-      $link = before_last('?#', $enclosure->get_link());
+    // Strip '?#' from the end of the link
+    $link = before_last('?#', $enclosure->get_link());
 
-    // If link == '//' then we nullify the link
+    // If link == '//'
     if ($link == '//')
     {
-      //This regex selects the images in the SRC attribute of IMG elements
-      preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $entry->get_content(), $matches);
+      // This regex selects the images in the SRC attribute of IMG elements
+      preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $this->get_content(), $matches);
+
       if ($matches)
       {
+        // Then we use the first image found in the content (not in the summary)
         $link = urldecode($matches[2]);
       }
-      else{
+      else
+      {
+        // Then we nullify the link
         $link = null;
       }
       $this->set_enclosure_link($link);
@@ -358,12 +362,6 @@ class FilteredFeed
       else
       {
         $link = urldecode($this->get_entry()->get_link());
-      }
-
-      $scheme = 'http';
-      if (after_last($scheme, $link))
-      {
-        $link = $scheme . after_last($scheme, $link);
       }
 
       if (before_last('#', $link))
