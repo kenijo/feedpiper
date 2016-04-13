@@ -5,6 +5,8 @@ FeedPiper is a toolbox that provides two services:
 * HTML2FEED	converts a page into a feed
 * FEEDPIPER	merges feeds and filters them
 
+It is aimed at replacing Yahoo Pipes in the way I was using it: merging and filtering feeds.
+
 ### Usage
 
 * HTML2FEED
@@ -15,6 +17,15 @@ FeedPiper is a toolbox that provides two services:
   * http://www.domain.com/feedpiper.php?feed=example
   * http://www.domain.com/feedpiper.php?feed=example&debug=true
 
+### Requirements
+
+* PHP 5.3+
+* Cache System (folder or db)
+  * cache folder writable (0766)  
+  * MySQL/Maria DB
+* Upload the project to your server
+* Configure it
+
 ### Configuration
 
 Configuration files are in the config folder.
@@ -23,14 +34,6 @@ This will allow you to have your own configuration files that will not be commit
 
 * conf.php is the global application configuration
 * html2feed.conf.php and feedfilter.conf.php are the individual application configurations
-
-### Requirements
-
-* PHP 5.3+
-* Cache System (folder or db)
-  * cache folder writable (0766)  
-  * MySQL/Maria DB
-* Upload the project to your server
 
 ### Credits
 
