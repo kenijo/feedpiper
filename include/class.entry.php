@@ -72,15 +72,8 @@ class Entry
     // Add an enclosure entry
     if ($this->get_entry_enclosure_link())
     {
-      // If enclosure_type is null then make it a media:thumbnail
-      if ($this->get_entry_enclosure_type() != null)
-      {
-        echo '    <enclosure url="' . $this->get_entry_enclosure_link() . '" length="' . $this->get_entry_enclosure_length() . '" type="' . $this->get_entry_enclosure_type() . '" />' . PHP_EOL;
-      }
-      else
-      {
-        echo '    <media:thumbnail url="' . $this->get_entry_enclosure_link() . '" />' . PHP_EOL;
-      }
+      echo '    <link rel="enclosure" type="' . $this->get_entry_enclosure_type() . '" href="' . $this->get_entry_enclosure_link() . '" />' . PHP_EOL;
+      echo '    <media:thumbnail url="' . $this->get_entry_enclosure_link() . '" />' . PHP_EOL;
     }
 
     // Identifies a related Web page. The type of relation is defined by the rel attribute.
@@ -88,7 +81,7 @@ class Entry
     // An entry must contain an alternate link if there is no content element.
     if ($this->get_entry_link())
     {
-      echo '    <link type="application/xhtml+html" href="' . $this->get_entry_link() . '" />' . PHP_EOL;
+      echo '    <link rel="alternate" type="application/xhtml+html" href="' . $this->get_entry_link() . '" />' . PHP_EOL;
     }
 
     // Names one author of the entry. An entry may have multiple authors.
