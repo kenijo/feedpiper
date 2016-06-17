@@ -178,7 +178,8 @@ if (isset($_GET['feed']))
 
       // Set Link
       $newEntry->set_entry_link($newFilteredFeed->get_link());
-
+      $newEntry->set_entry_link_original($newFilteredFeed->get_link_original());
+      
       // Set Identifier
       //$identifier = basename($newFilteredFeed->get_id()) . '@' . parse_url($newFilteredFeed->get_link())['host'];
       //$identifier ? $identifier : $identifier = null;

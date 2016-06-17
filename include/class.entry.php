@@ -12,6 +12,7 @@ class Entry
   private $entry_id               = null;
   private $entry_identifier       = null;
   private $entry_link             = null;
+  private $entry_link_original    = null;
   private $entry_published        = null;
   private $entry_summary          = null;
   private $entry_title            = null;
@@ -230,6 +231,7 @@ class Entry
     echo ' ]]>' . PHP_EOL;
     echo PHP_EOL;
     echo 'Entry Link:                ' . $this->get_entry_link() . PHP_EOL;
+    echo 'Entry Link Original:       ' . $this->get_entry_link_original() . PHP_EOL;
     echo 'Entry Enclosure Link:      ' . $this->get_entry_enclosure_link() . PHP_EOL;
     echo 'Entry Enclosure Length:    ' . $this->get_entry_enclosure_length() . PHP_EOL;
     echo 'Entry Enclosure Type:      ' . $this->get_entry_enclosure_type() . PHP_EOL;
@@ -288,6 +290,11 @@ class Entry
   public function set_entry_link($value = null)
   {
     $this->entry_link = $value;
+  }
+
+  public function set_entry_link_original($value = null)
+  {
+    $this->entry_link_original = $value;
   }
 
   public function set_entry_published($value = null)
@@ -400,6 +407,16 @@ class Entry
     if ($this->entry_link !== null)
     {
       return $this->entry_link;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_entry_link_original()
+  {
+    if ($this->entry_link_original !== null)
+    {
+      return $this->entry_link_original;
     } else {
       return null;
     }

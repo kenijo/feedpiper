@@ -17,6 +17,7 @@ class FilteredFeed
   private $id               = null;
   private $is_debug         = null;
   private $link             = null;
+  private $link_original    = null;
   private $skip             = null;
   private $summary          = null;
   private $title            = null;
@@ -36,6 +37,7 @@ class FilteredFeed
     // it is very likely to be a permalink which we'll use in set_link()
     $this->set_id();
     $this->set_link();
+    $this->set_link_original();
     $this->set_title();
     $this->set_authors();
     $this->set_categories();
@@ -54,6 +56,9 @@ class FilteredFeed
     echo PHP_EOL;
     echo 'Link Filter:               ';
     if(isset($array['link'])) { echo get_array_as_string($array['link']); }
+    echo PHP_EOL;
+    echo 'Link Original Filter:      ';
+    if(isset($array['link_original'])) { echo get_array_as_string($array['link_original']); }
     echo PHP_EOL;
     echo 'Author Filter:             ';
     if(isset($array['author'])) { echo get_array_as_string($array['author']); }
@@ -96,25 +101,22 @@ class FilteredFeed
       }
     }
 
-    // Filter out according to author filter
-    if ($authors = cleanArray($authors))
+    $this->authors = cleanArray($authors);
+
+    // Filter according to author filter
+    foreach ($this->authors as $author)
     {
-      foreach ($authors as $author)
+      if($this->filter_keep($author, 'author'))
       {
-        if($this->filter_keep($author, 'author'))
-        {
-          $this->set_skip(true);
-          return;
-        }
-        if ($this->filter_out($author, 'author'))
-        {
-          $this->set_skip(true);
-          return;
-        }
+        $this->set_skip(true);
+        return;
+      }
+      if ($this->filter_out($author, 'author'))
+      {
+        $this->set_skip(true);
+        return;
       }
     }
-
-    $this->authors = $authors;
   }
 
   public function set_categories()
@@ -189,25 +191,22 @@ class FilteredFeed
       }
     }
 
-    // Filter out according to category filter
-    if ($categories = cleanArray($categories, 'strtolower'))
+    $this->categories = cleanArray($categories, 'strtolower');
+
+    // Filter according to category filter
+    foreach ($this->categories as $category)
     {
-      foreach ($categories as $category)
+      if($this->filter_keep($category, 'category'))
       {
-        if($this->filter_keep($category, 'category'))
-        {
-          $this->set_skip(true);
-          return;
-        }
-        if ($this->filter_out($category, 'category'))
-        {
-          $this->set_skip(true);
-          return;
-        }
+        $this->set_skip(true);
+        return;
+      }
+      if ($this->filter_out($category, 'category'))
+      {
+        $this->set_skip(true);
+        return;
       }
     }
-
-    $this->categories = $categories;
   }
 
   public function set_content()
@@ -378,19 +377,36 @@ class FilteredFeed
       }
     }
 
-    // Filter out according to link filter
-    if($this->filter_keep($link, 'link'))
-    {
-      $this->set_skip(true);
-      return;
-    }
-    if ($this->filter_out($link, 'link'))
-    {
-      $this->set_skip(true);
-      return;
-    }
-
     $this->link = $link;
+    
+    // Filter according to link filter
+    if($this->filter_keep($this->link, 'link'))
+    {
+      $this->set_skip(true);
+      return;
+    }
+    if ($this->filter_out($this->link, 'link'))
+    {
+      $this->set_skip(true);
+      return;
+    }
+  }
+
+  public function set_link_original()
+  {
+    $this->link_original = urldecode($this->get_entry()->get_link());
+    
+    // Filter according to link_original filter
+    if($this->filter_keep($this->link_original, 'link_original'))
+    {
+      $this->set_skip(true);
+      return;
+    }
+    if ($this->filter_out($this->link_original, 'link_original'))
+    {
+      $this->set_skip(true);
+      return;
+    }    
   }
 
   public function set_skip($skip = false)
@@ -415,26 +431,26 @@ class FilteredFeed
       // Remove left over spaces
       $summary = preg_replace('#'. '(\s)+' . '#imu', ' ', $summary);
       $summary = trim($summary);
-
-      // Filter out according to content filter
-      if($this->filter_keep($summary, 'content'))
-      {
-        $this->set_skip(true);
-        return;
-      }
-      if ($this->filter_out($summary, 'content'))
-      {
-        $this->set_skip(true);
-        return;
-      }
     }
-
+  
     $this->summary = $summary;
+
+    // Filter according to content filter
+    if($this->filter_keep($this->summary, 'content'))
+    {
+      $this->set_skip(true);
+      return;
+    }
+    if ($this->filter_out($this->summary, 'content'))
+    {
+      $this->set_skip(true);
+      return;
+    }
   }
 
   public function set_title()
   {
-    // Filter out according to title filter
+    // Filter according to title filter
     if ($this->title = $this->get_entry()->get_title())
     {
       if($this->filter_keep($this->title, 'title'))
@@ -565,6 +581,16 @@ class FilteredFeed
     if ($this->link !== null)
     {
       return $this->link;
+    } else {
+      return null;
+    }
+  }
+
+  public function get_link_original()
+  {
+    if ($this->link_original !== null)
+    {
+      return $this->link_original;
     } else {
       return null;
     }
