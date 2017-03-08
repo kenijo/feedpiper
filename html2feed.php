@@ -99,8 +99,15 @@ if (isset($_GET['page']))
   // PHP Simple HTML DOM
   //   http://simplehtmldom.sourceforge.net/
 
+  // Set a default context browser
+  $context = stream_context_create(array(
+      'http' => array(
+          'header' => array('User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'),
+      ),
+  ));
+  
   // Load HTML from an URL, Create a DOM object
-  $newDomHtml = file_get_html($myPageConfig['page_url']);
+  $newDomHtml = file_get_html($myPageConfig['page_url'], false, $context);
 
   // Loop through html pulling feed items out
   if (isset($myPageConfig['entry']))
