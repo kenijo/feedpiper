@@ -1,3 +1,6 @@
 [submodule "include/simplepie"]
 	path = include/simplepie
 	url = https://github.com/simplepie/simplepie
+[submodule "include/php-simple-html-dom-parser"]
+	path = include/php-simple-html-dom-parser
+	url = https://github.com/sunra/php-simple-html-dom-parser
