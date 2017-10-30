@@ -17,7 +17,7 @@ require_once 'class.filteredfeed.php';
 require_once 'simplepie/autoloader.php';
 require_once 'simplepie/idn/idna_convert.class.php';
 
-// Include Simple HTML DOM
+// Include Simple HTML DOM from Sourceforge
 require_once 'simple_html_dom/simple_html_dom.php';
 
 // Include the local configuration files that will overide those settings if they exists.
