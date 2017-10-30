@@ -49,7 +49,8 @@ class Feed
   {
     // Atom Syndication Format
     // http://atomenabled.org/developers/syndication/
-    echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
+    $this->debug_mode_help();
+		echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
     echo '<feed xmlns:dc="http://purl.org/dc/elements/1.1/"' . PHP_EOL;
     echo '      xmlns:media="http://search.yahoo.com/mrss/"' . PHP_EOL;
     echo '      xmlns="http://www.w3.org/2005/Atom" >' . PHP_EOL;
@@ -101,8 +102,9 @@ class Feed
 
   private function open_rss_feed()
   {
-    // Atom Syndication Format
+    // RSS Syndication Format
     // http://atomenabled.org/developers/syndication/
+		$this->debug_mode_help();
     echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
     echo '<rss version="2.0"' . PHP_EOL;
     echo '   xmlns:dc="http://purl.org/dc/elements/1.1/"' . PHP_EOL;
@@ -131,6 +133,7 @@ class Feed
 
   public function debug_feed()
   {
+		$this->debug_mode_help();
     echo '--------------------------------------------------------------------------------------------------------------' . PHP_EOL;
     echo 'Feed Title:                ' . $this->get_feed_title() . PHP_EOL;
     echo 'Feed Link:                 ' . $this->get_feed_link() . PHP_EOL;
@@ -142,6 +145,13 @@ class Feed
     echo 'Feed Updated:              ' . $this->get_feed_updated() . PHP_EOL;
     echo 'Feed Id:                   ' . $this->get_feed_id() . PHP_EOL;
   }
+
+	private function debug_mode_help() {
+		echo '<!-- To enable debug mode, use the following link: -->' . PHP_EOL;
+		echo '<!--    ' . $this->get_feed_link() . '&debug=true -->' . PHP_EOL;
+		echo '<!-- To debug a specific entry, specify an entry number: -->' . PHP_EOL;
+		echo '<!--    ' . $this->get_feed_link() . '&debug=true&entry=2 -->' . PHP_EOL;
+	}
 
   private function close_atom_feed()
   {
