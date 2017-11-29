@@ -25,17 +25,9 @@ if (isset($myFeedConfig['url']))
   $json_data = get_remote_data($myFeedConfig['url']);
   $json = json_decode($json_data, true);
 
-  if((isset($_GET['sortBy'])) && ($_GET['sortBy'] == 'PublishedDate')) {
-    // 'sortBy PublishedDate'
-    usort($json['results'][0]['extensions'], function($a, $b) {
-      return (strtotime($a['publishedDate']) > strtotime($b['publishedDate']) ? -1 : 1);
-    });
-  } else {
-    // default is 'sortBy UpdatedDate'
-    usort($json['results'][0]['extensions'], function($a, $b) {
-      return (strtotime($a['lastUpdated']) > strtotime($b['lastUpdated']) ? -1 : 1);
-    });
-  }
+  usort($json['results'][0]['extensions'], function($a, $b) {
+    return (strtotime($a['lastUpdated']) > strtotime($b['lastUpdated']) ? -1 : 1);
+  });
 }
 else
 {
@@ -127,7 +119,14 @@ foreach ($json['results'][0]['extensions'] as $entry)
       $newEntry->set_entry_authors($authors);
 
       // Set Categories
-      $newEntry->set_entry_categories(array_merge($entry['categories'],$entry['tags']));
+      $categories = array();
+      if(is_array($entry['categories'])) {
+        $categories = array_merge($categories, $entry['categories']);
+      }
+      if(is_array($entry['tags'])) {
+        $categories = array_merge($categories, $entry['tags']);
+      }
+      $newEntry->set_entry_categories($categories);
 
       // Set Summary
       $newEntry->set_entry_summary($entry['shortDescription']);
@@ -160,6 +159,16 @@ foreach ($json['results'][0]['extensions'] as $entry)
         $rating = '&#9733;&#9733;&#9733;&#9733;&#9733;';
       }
       $content .= '        <tr><td><div>Average Rating</div></td><td><div>' . $rating . '</div></td></tr>' . PHP_EOL;
+      $content .= '        <tr><td><div>&nbsp;</div></td><td><div>&nbsp;</div></td></tr>' . PHP_EOL;
+      if(is_array($categories)) {
+        $content .= '        <tr><td><div>Categories</div></td><td><div>';
+        $delimiter = '';
+        foreach($categories as $categorie) {
+          $content .= $delimiter . $categorie;
+          $delimiter = ', ';
+        }
+        $content .= '</div></td></tr>' . PHP_EOL;
+      }
       $content .= '        </tbody></table>' . PHP_EOL;
 
       $newEntry->set_entry_content($content);
