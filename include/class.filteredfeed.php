@@ -50,7 +50,7 @@ class FilteredFeed
   {
     $array = $this->get_filter();
 
-    echo '--------------------------------------------------------------------------------------------------------------' . PHP_EOL;
+    echo '########################################################################################################################' . PHP_EOL;
     echo 'Title Filter:              ';
     if(isset($array['title'])) { echo get_array_as_string($array['title']); }
     echo PHP_EOL;
@@ -78,7 +78,7 @@ class FilteredFeed
     {
       echo 'DO NOT FILTER' . PHP_EOL;
     }
-    echo '--------------------------------------------------------------------------------------------------------------';
+    echo '########################################################################################################################';
   }
 
   public function set_authors()
@@ -378,7 +378,7 @@ class FilteredFeed
     }
 
     $this->link = $link;
-    
+
     // Filter according to link filter
     if($this->filter_keep($this->link, 'link'))
     {
@@ -395,7 +395,7 @@ class FilteredFeed
   public function set_link_original()
   {
     $this->link_original = urldecode($this->get_entry()->get_link());
-    
+
     // Filter according to link_original filter
     if($this->filter_keep($this->link_original, 'link_original'))
     {
@@ -406,7 +406,7 @@ class FilteredFeed
     {
       $this->set_skip(true);
       return;
-    }    
+    }
   }
 
   public function set_skip($skip = false)
@@ -432,7 +432,7 @@ class FilteredFeed
       $summary = preg_replace('#'. '(\s)+' . '#imu', ' ', $summary);
       $summary = trim($summary);
     }
-  
+
     $this->summary = $summary;
 
     // Filter according to content filter
