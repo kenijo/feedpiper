@@ -18,7 +18,7 @@ $cfg['feed_format'] = 'ATOM';
 /**
 * Define MySQL parameters database caching
 * If not defined then file caching will be used
-* Remember when using file caching that the cache folder must be writable (0770)
+* Remember when using file caching that the cache folder must be writable (0777)
 */
 /*
 $cfg['mysql']['user']     = 'user';
