@@ -2,7 +2,6 @@
 
 // Include configuration file
 require_once 'include/inc.lib.php';
-require_once 'config/html2feed.conf.php';
 
 if (isset($_GET['page']))
 {
@@ -105,7 +104,7 @@ if (isset($_GET['page']))
           'header' => array('User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'),
       ),
   ));
-  
+
   // Load HTML from an URL, Create a DOM object
   $newDomHtml = file_get_html($myPageConfig['page_url'], false, $context);
 

@@ -4,6 +4,8 @@
  * Inclusion of all the configuration and library files
  */
 require_once './config/conf.php';
+require_once './config/feedfilter.conf.php';
+require_once './config/html2feed.conf.php';
 
 require_once 'func.array.php';
 require_once 'func.string.php';
