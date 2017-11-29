@@ -18,13 +18,15 @@ $cfg['feed_format'] = 'ATOM';
 /**
 * Define MySQL parameters database caching
 * If not defined then file caching will be used
-* Remember when using file caching that the cache folder must be writable (0766)
+* Remember when using file caching that the cache folder must be writable (0770)
 */
+/*
 $cfg['mysql']['user']     = 'user';
 $cfg['mysql']['password'] = 'password';
 $cfg['mysql']['host']     = 'localhost';
 $cfg['mysql']['port']     = '3306';
 $cfg['mysql']['database'] = 'feedpiper';
+*/
 
 /**
 * Set the length of time (in seconds)
