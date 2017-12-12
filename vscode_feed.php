@@ -26,7 +26,7 @@ if (isset($myFeedConfig['url']))
   $json = json_decode($json_data, true);
 
   usort($json['results'][0]['extensions'], function($a, $b) {
-    return (strtotime($a['lastUpdated']) > strtotime($b['lastUpdated']) ? -1 : 1);
+    return (strtotime($a['publishedDate']) > strtotime($b['publishedDate']) ? -1 : 1);
   });
 }
 else
@@ -142,6 +142,7 @@ foreach ($json['results'][0]['extensions'] as $entry)
       $content .= '        <tr><td><div>Tags</div></td><td><div>' . $entry['tags'][0] . '</div></td></tr>' . PHP_EOL;
       $content .= '        <tr><td><div>&nbsp;</div></td><td><div>&nbsp;</div></td></tr>' . PHP_EOL;
       $content .= '        <tr><td><div>Version</div></td><td><div>' . $entry['versions'][0]['version'] . '</div></td></tr>' . PHP_EOL;
+      $content .= '        <tr><td><div>Published</div></td><td><div>' . date('m/d/Y h:i:s A', strtotime($entry['publishedDate'])) . '</div></td></tr>' . PHP_EOL;
       $content .= '        <tr><td><div>Last Update</div></td><td><div>' . date('m/d/Y h:i:s A', strtotime($entry['lastUpdated'])) . '</div></td></tr>' . PHP_EOL;
       $content .= '        <tr><td><div>&nbsp;</div></td><td><div>&nbsp;</div></td></tr>' . PHP_EOL;
       $content .= '        <tr><td><div>Number of Installs</div></td><td><div>' . $entry['statistics'][0]['value'] . '</div></td></tr>' . PHP_EOL;
