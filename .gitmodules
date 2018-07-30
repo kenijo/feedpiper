@@ -1,3 +1,6 @@
 [submodule "include/simplepie"]
 	path = include/simplepie
 	url = https://github.com/simplepie/simplepie
+[submodule "include/parsedown"]
+	path = include/parsedown
+	url = https://github.com/erusev/parsedown
