@@ -32,6 +32,12 @@ This will allow you to have your own configuration files that will not be commit
   * MySQL/Maria DB
 * Upload the project to your server
 
+* Add a new submodule:
+  * git submodule add https://github.com/<user>/xxx include/xxx
+  
+* Update submodules:
+  * git submodule update --init --recursive
+
 ### Credits
 
 This project relies on the following projects
