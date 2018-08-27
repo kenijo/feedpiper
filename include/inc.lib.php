@@ -8,6 +8,7 @@ require_once './config/feedfilter.conf.php';
 require_once './config/html2feed.conf.php';
 
 require_once 'func.array.php';
+require_once 'func.rest.php';
 require_once 'func.string.php';
 require_once 'func.url.php';
 
@@ -21,6 +22,9 @@ require_once 'simplepie/idn/idna_convert.class.php';
 
 // Include Simple HTML DOM from Sourceforge
 require_once 'simple_html_dom/simple_html_dom.php';
+
+// Include Parsedown
+require_once 'include/parsedown/Parsedown.php';
 
 // Include the local configuration files that will overide those settings if they exists.
 // This prevents commiting your own configuration to GitHub
