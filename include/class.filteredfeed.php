@@ -106,11 +106,13 @@ class FilteredFeed
     // Filter according to author filter
     foreach ($this->authors as $author)
     {
+      /*
       if($this->filter_keep($author, 'author'))
       {
         $this->set_skip(true);
         return;
       }
+      */
       if ($this->filter_out($author, 'author'))
       {
         $this->set_skip(true);
@@ -192,15 +194,17 @@ class FilteredFeed
     }
 
     $this->categories = cleanArray($categories, 'strtolower');
-
+    
     // Filter according to category filter
     foreach ($this->categories as $category)
     {
+      /*
       if($this->filter_keep($category, 'category'))
       {
         $this->set_skip(true);
         return;
       }
+      */
       if ($this->filter_out($category, 'category'))
       {
         $this->set_skip(true);
@@ -380,11 +384,13 @@ class FilteredFeed
     $this->link = $link;
 
     // Filter according to link filter
+    /*
     if($this->filter_keep($this->link, 'link'))
     {
       $this->set_skip(true);
       return;
     }
+    */
     if ($this->filter_out($this->link, 'link'))
     {
       $this->set_skip(true);
@@ -397,11 +403,13 @@ class FilteredFeed
     $this->link_original = urldecode($this->get_entry()->get_link());
 
     // Filter according to link_original filter
+    /*
     if($this->filter_keep($this->link_original, 'link_original'))
     {
       $this->set_skip(true);
       return;
     }
+    */
     if ($this->filter_out($this->link_original, 'link_original'))
     {
       $this->set_skip(true);
@@ -436,11 +444,13 @@ class FilteredFeed
     $this->summary = $summary;
 
     // Filter according to content filter
+    /*
     if($this->filter_keep($this->summary, 'content'))
     {
       $this->set_skip(true);
       return;
     }
+    */
     if ($this->filter_out($this->summary, 'content'))
     {
       $this->set_skip(true);
@@ -453,11 +463,13 @@ class FilteredFeed
     // Filter according to title filter
     if ($this->title = $this->get_entry()->get_title())
     {
+      /*
       if($this->filter_keep($this->title, 'title'))
       {
         $this->set_skip(true);
         return;
       }
+      */
       if ($this->filter_out($this->title, 'title'))
       {
         $this->set_skip(true);
@@ -627,8 +639,8 @@ class FilteredFeed
   }
 
   /**
-* Returns true when the element matches a filter
-*/
+   * Returns true when the element matches a filter
+   */
   private function filter_out($entry, $element)
   {
     $array = $this->get_filter();
@@ -723,8 +735,8 @@ class FilteredFeed
   }
 
   /**
-* Returns false when the element matches a filter
-*/
+   * Returns false when the element matches a filter
+   */
   private function filter_keep($entry, $element)
   {
     $array = $this->get_filter();
@@ -768,7 +780,7 @@ class FilteredFeed
 
         foreach ($filter as $value)
         {
-          if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0)
+         if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0)
           {
             return false;
           }

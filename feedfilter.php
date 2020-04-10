@@ -44,6 +44,10 @@ if (isset($_GET['feed']))
   else
   {
     $location = $_SERVER['DOCUMENT_ROOT'] . dirname($_SERVER['REQUEST_URI']) . '/cache';
+    if (!file_exists($location))
+    {
+      mkdir($location, 0777, true);
+    }
   }
   $newSimplePie->set_cache_location($location);
 
@@ -176,8 +180,17 @@ if (isset($_GET['feed']))
       $newEntry->set_entry_id($newFilteredFeed->get_id());
 
       // Set Link
-      $newEntry->set_entry_link($newFilteredFeed->get_link());
-      $newEntry->set_entry_link_original($newFilteredFeed->get_link_original());
+      if ($myFeed == 'time')
+      {
+        // There is an error in the link provided by the Time
+        $nff = str_replace("?p=", "", $newFilteredFeed->get_link());
+      }
+      else
+      {
+        $nff = $newFilteredFeed->get_link();
+      }
+      $newEntry->set_entry_link($nff);
+      $newEntry->set_entry_link_original($nff);
 
       // Set Identifier
       //$identifier = basename($newFilteredFeed->get_id()) . '@' . parse_url($newFilteredFeed->get_link())['host'];

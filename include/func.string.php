@@ -9,10 +9,10 @@
 * returns 'online.ge'
 * from the first occurrence of '@'
 */
-function after($this, $inthat)
+function after($this_one, $in_that)
 {
-  if (!is_bool(strpos($inthat, $this)))
-    return substr($inthat, strpos($inthat,$this)+strlen($this));
+  if (!is_bool(strpos($in_that, $this_one)))
+    return substr($in_that, strpos($in_that,$this_one)+strlen($this_one));
 };
 
 /**
@@ -20,10 +20,10 @@ function after($this, $inthat)
 * returns '180]'
 * from the last occurrence of '['
 */
-function after_last($this, $inthat)
+function after_last($this_one, $in_that)
 {
-  if (!is_bool(strrevpos($inthat, $this)))
-    return substr($inthat, strrevpos($inthat, $this)+strlen($this));
+  if (!is_bool(strrevpos($in_that, $this_one)))
+    return substr($in_that, strrevpos($in_that, $this_one)+strlen($this_one));
 };
 
 /**
@@ -31,9 +31,9 @@ function after_last($this, $inthat)
 * returns 'biohazard'
 * from the first occurrence of '@'
 */
-function before($this, $inthat)
+function before($this_one, $in_that)
 {
-  return substr($inthat, 0, strpos($inthat, $this));
+  return substr($in_that, 0, strpos($in_that, $this_one));
 };
 
 /**
@@ -41,9 +41,9 @@ function before($this, $inthat)
 * returns 'sin[90]*cos['
 * from the last occurrence of '['
 */
-function before_last($this, $inthat)
+function before_last($this_one, $in_that)
 {
-  return substr($inthat, 0, strrevpos($inthat, $this));
+  return substr($in_that, 0, strrevpos($in_that, $this_one));
 };
 
 /**
@@ -51,9 +51,9 @@ function before_last($this, $inthat)
 * returns 'online'
 * from the first occurrence of '@'
 */
-function between($this, $that, $inthat)
+function between($this_one, $that, $in_that)
 {
-  return before($that, after($this, $inthat));
+  return before($that, after($this_one, $in_that));
 };
 
 /**
@@ -61,9 +61,9 @@ function between($this, $that, $inthat)
 * returns '180'
 * from the last occurrence of '['
 */
-function between_last($this, $that, $inthat)
+function between_last($this_one, $that, $in_that)
 {
-  return after_last($this, before_last($that, $inthat));
+  return after_last($this_one, before_last($that, $in_that));
 };
 
 /**
