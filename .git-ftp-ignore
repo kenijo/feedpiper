@@ -1,0 +1,16 @@
+.vscode
+*/.git-ftp-ignore
+*/.gitattributes
+*/.gitignore
+*/.gitmodules
+*/*.yml
+*/composer.json
+*/phpuni.xml.dist
+include/parsedown/test
+simple_html_dom/app
+simple_html_dom/example
+simple_html_dom/manual
+simple_html_dom/testcase
+simplepie/build
+simplepie/demo
+simplepie/tests
