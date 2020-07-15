@@ -1,5 +1,5 @@
-on: push
 name: Publish FeedPiper to netbox.w75.net
+on: push
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
@@ -9,6 +9,7 @@ jobs:
       with:
         fetch-depth: 2
         submodules: true
+    - uses: snickerbockers/submodules-init@v4
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
