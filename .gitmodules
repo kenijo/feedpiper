@@ -1,6 +1,12 @@
-[submodule "include/simplepie"]
-	path = include/simplepie
-	url = https://github.com/simplepie/simplepie
 [submodule "include/parsedown"]
 	path = include/parsedown
 	url = https://github.com/erusev/parsedown
+[submodule "include/simple_html_dom"]
+	path = include/simple_html_dom
+	url = https://github.com/Kub-AT/php-simple-html-dom-parser
+[submodule "include/simplepie"]
+	path = include/simplepie
+	url = https://github.com/simplepie/simplepie
+
+
+
