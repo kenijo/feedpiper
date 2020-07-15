@@ -7,6 +7,3 @@
 [submodule "include/simplepie"]
 	path = include/simplepie
 	url = https://github.com/simplepie/simplepie
-
-
-
