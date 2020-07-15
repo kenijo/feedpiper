@@ -5,11 +5,10 @@ jobs:
     name: FTP-Deploy-Action
     runs-on: ubuntu-latest
     steps:
+    - uses: snickerbockers/submodules-init@v4
     - uses: actions/checkout@v2.1.0
       with:
-        fetch-depth: 2
-        submodules: true
-    - uses: snickerbockers/submodules-init@v4
+        fetch-depth: 2    
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
