@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'include/simplepie/autoloader.php'
-      - '!include/simplepie/**'
+
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
