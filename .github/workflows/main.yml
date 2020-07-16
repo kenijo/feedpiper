@@ -4,6 +4,7 @@ on:
     paths:
       - '!include/simplepie/**'
       - 'include/simplepie/autoloader.php'
+      - 'include/simplepie/compatibility_test/**'
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
