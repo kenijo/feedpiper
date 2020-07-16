@@ -1,0 +1,22 @@
+name: Publish FeedPiper to netbox
+on: 
+  push:
+    paths:
+      - '!include/simplepie/**'
+      - 'include/simplepie/autoloader.php'
+      - 'include/simplepie/compatibility_test/**'
+jobs:
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.1.0
+        with:
+          submodules: recursive
+      - name: Deploy to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        with:
+          ftp-server: ${{ secrets.NETBOX_SFTP_SERVER }}
+          ftp-username: ${{ secrets.NETBOX_SFTP_USERNAME }}
+          ftp-password: ${{ secrets.NETBOX_SFTP_PASSWORD }}
