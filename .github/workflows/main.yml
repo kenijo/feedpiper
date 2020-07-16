@@ -1,4 +1,4 @@
-name: Publish FeedPiper to netbox.w75.net
+name: Publish FeedPiper to netbox
 on:
   push:
     paths:
@@ -17,6 +17,6 @@ jobs:
       - name: Deploy to FTP Server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
-          ftp-server: ${{ secrets.BLACKHOST_FTP_SERVER }}
-          ftp-username: ${{ secrets.BLACKHOST_FTP_USERNAME }}
-          ftp-password: ${{ secrets.BLACKHOST_FTP_PASSWORD }}
+          ftp-server: ${{ secrets.NETBOX_SFTP_SERVER }}
+          ftp-username: ${{ secrets.NETBOX_SFTP_USERNAME }}
+          ftp-password: ${{ secrets.NETBOX_SFTP_PASSWORD }}
