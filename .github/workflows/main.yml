@@ -1,10 +1,9 @@
 name: Publish FeedPiper to netbox.w75.net
 on:
   push:
-    paths-ignore:
-      - 'include/simplepie'
     paths:
       - 'include/simplepie/autoloader.php'
+      - '!include/simplepie/**'
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
