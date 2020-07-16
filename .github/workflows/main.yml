@@ -2,14 +2,14 @@ name: Publish FeedPiper to netbox.w75.net
 on:
   push:
     paths:
-    - 'include/simplepie/autoloader.php'
     - '!include/simplepie/**'
+    - 'include/simplepie/autoloader.php'
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
     runs-on: ubuntu-latest
     steps:
-      - name: Chekcout repository
+      - name: Checkout repository
         uses: actions/checkout@v2.1.0
         with:
           fetch-depth: 2
