@@ -1,10 +1,5 @@
 name: Publish FeedPiper to NETBOX
-on: 
-  workflow_dispatch:
-    paths:
-      - '!include/simplepie/**'
-      - 'include/simplepie/autoloader.php'
-      - 'include/simplepie/compatibility_test/**'
+on: workflow_dispatch
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action
