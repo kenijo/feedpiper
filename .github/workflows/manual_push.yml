@@ -1,6 +1,6 @@
-name: Publish FeedPiper to netbox
+name: Publish FeedPiper to NETBOX
 on: 
-  push:
+  workflow_dispatch:
     paths:
       - '!include/simplepie/**'
       - 'include/simplepie/autoloader.php'
