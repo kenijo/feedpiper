@@ -12,8 +12,7 @@ jobs:
           submodules: recursive
       - name: Cleanup of repository
         run: |
-          mkdir www
-          cp -Rf * www/
+          rsync -r * www
           rm -Rf www/include/parsedown/test
           rm -Rf www/include/simplepie/build
           rm -Rf www/include/simplepie/demo
