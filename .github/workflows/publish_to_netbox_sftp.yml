@@ -13,6 +13,6 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: ${{ secrets.NETBOX_SFTP_SERVER }}
-          ftp-username: ${{ secrets.NETBOX_FTP_USERNAME }}
-          ftp-password: ${{ secrets.NETBOX_FTP_PASSWORD }}
+          ftp-username: ${{ secrets.NETBOX_USERNAME }}
+          ftp-password: ${{ secrets.NETBOX_PASSWORD }}
           git-ftp-args: --insecure
