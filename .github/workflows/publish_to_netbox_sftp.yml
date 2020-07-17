@@ -10,6 +10,13 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
+      - name: Cleanup of repository
+        run: |
+          rsync -r * www
+          rm -Rf www/include/parsedown/test
+          rm -Rf www/include/simplepie/build
+          rm -Rf www/include/simplepie/demo
+          rm -Rf www/include/simplepie/tests
       - name: Deploy to FTP Server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
@@ -18,3 +25,4 @@ jobs:
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
           known-hosts: ${{ secrets.NETBOX_KNOWN_HOSTS }}
           git-ftp-args: --dry-run
+          local-dir: www/
