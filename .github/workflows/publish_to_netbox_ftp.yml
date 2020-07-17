@@ -23,5 +23,4 @@ jobs:
           ftp-server: ${{ secrets.NETBOX_FTP_SERVER }}
           ftp-username: ${{ secrets.NETBOX_USERNAME }}
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
-          git-ftp-args: --dry-run
           local-dir: www/
