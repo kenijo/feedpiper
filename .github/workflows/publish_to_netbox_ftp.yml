@@ -1,4 +1,4 @@
-name: Publish FeedPiper to NETBOX FTP
+name: Publish NETBOX FTP
 on: workflow_dispatch
 jobs:
   FTP-Deploy-Action:
