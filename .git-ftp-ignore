@@ -1,0 +1,6 @@
+.github
+.vscode
+include/parsedown/test
+include/simplepie/build
+include/simplepie/demo
+include/simplepie/tests
