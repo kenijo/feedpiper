@@ -1,4 +1,4 @@
-name: Publish NETBOX SFTP
+name: Publish to NETBOX SFTP
 on: workflow_dispatch
 jobs:
   FTP-Deploy-Action:

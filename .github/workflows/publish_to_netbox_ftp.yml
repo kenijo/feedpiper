@@ -1,4 +1,4 @@
-name: Publish NETBOX FTP
+name: Publish to NETBOX FTP
 on: workflow_dispatch
 jobs:
   FTP-Deploy-Action:
@@ -12,13 +12,13 @@ jobs:
           submodules: recursive
       - name: Cleaning up ...
         run: |
-          git clone /home/runner/work/FeedPiper/FeedPiper/ /home/runner/work/FeedPiper/www/
-          cd /home/runner/work/FeedPiper/www/
+          git clone /home/runner/work/FeedPiper/FeedPiper/ /home/runner/work/FeedPiper/FeedPiper/www/
+          cd /home/runner/work/FeedPiper/FeedPiper/www/
           git submodule update --init --checkout
-          cd /home/runner/work/FeedPiper/www/include/parsedown
+          cd /home/runner/work/FeedPiper/FeedPiper/www/include/parsedown
           git rm -r test
-          cd /home/runner/work/FeedPiper/www/include/simple_html_dom
-          cd /home/runner/work/FeedPiper/www/include/simplepie
+          cd /home/runner/work/FeedPiper/FeedPiper/www/include/simple_html_dom
+          cd /home/runner/work/FeedPiper/FeedPiper/www/include/simplepie
           git rm -r build
           git rm -r demo
           git rm -r tests
