@@ -1,12 +1,12 @@
 # Ignore when uploading through FTP
 
 # Directories
-.github
-.vscode
-include/parsedown/test
-include/simplepie/build
-include/simplepie/demo
-include/simplepie/tests
+.github/*
+.vscode/*
+include/parsedown/test/*
+include/simplepie/build/*
+include/simplepie/demo/*
+include/simplepie/tests/*
 
 # Files
 .git-ftp-ignore
