@@ -1,7 +1,29 @@
+# Ignore when uploading through FTP
+
+# Directories
+.github
+.vscode
+include/parsedown/test
+include/simplepie/build
+include/simplepie/demo
+include/simplepie/tests
+
+# Files
 .git-ftp-ignore
 .gitattributes
-.github
 .gitignore
 .gitmodules
-.vscode
+.travis.yml
+composer.json
+phpunit.xml.dist
 _config.yml
+
+# Files in sub directories
+*/.git-ftp-ignore
+*/.gitattributes
+*/.gitignore
+*/.gitmodules
+*/.travis.yml
+*/composer.json
+*/phpunit.xml.dist
+*/_config.yml

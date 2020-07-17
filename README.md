@@ -28,23 +28,34 @@ This will allow you to have your own configuration files that will not be commit
 
 * PHP 5.3+
 * Cache System (folder or db)
-  * cache folder writable (0766)  
+  * cache folder writable (0766)
   * MySQL/Maria DB
 * Upload the project to your server
 
+* Clone the repository then load the submodules:
+  * git clone https://github.com/kenijo/FeedPiper
+  * git submodule init
+
+* Clone the repository with its submodules all at once:
+  * git clone --recurse-submodules https://github.com/chaconinc/MainProject
+
 * Add a new submodule:
   * git submodule add https://github.com/<user>/xxx include/xxx
-  
+
 * Update submodules:
   * git submodule update --init --recursive
 
 ### Credits
 
 This project relies on the following projects
-* SimplePie: A simple Atom/RSS parsing library for PHP
-  * [Official Site](http://simplepie.org/)
-  * [On GitHub](https://github.com/simplepie/simplepie/)
+* Parsedown: Markdown Parser in PHP
+  * [Official Site](https://parsedown.org/)
+  * [On GitHub](https://github.com/erusev/parsedown)
 
 * Simple HTML DOM: A HTML DOM parser written in PHP5+ let you manipulate HTML in a very easy way!
   * [Official Site](http://simplehtmldom.sourceforge.net/)
   * [On SourceForge](https://sourceforge.net/projects/simplehtmldom/)
+
+* SimplePie: A simple Atom/RSS parsing library for PHP
+  * [Official Site](http://simplepie.org/)
+  * [On GitHub](https://github.com/simplepie/simplepie/)
