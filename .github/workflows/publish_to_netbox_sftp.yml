@@ -8,6 +8,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2.1.0
         with:
+          fetch-depth: 2
           submodules: recursive
       - name: Deploy to FTP Server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
@@ -16,3 +17,4 @@ jobs:
           ftp-username: ${{ secrets.NETBOX_USERNAME }}
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
           known-hosts: ${{ secrets.NETBOX_KNOWN_HOSTS }}
+          git-ftp-args: --dry-run
