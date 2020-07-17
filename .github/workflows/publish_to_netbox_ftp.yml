@@ -13,10 +13,10 @@ jobs:
       - name: Cleanup of repository
         run: |
             cp -Rf * www/
-            rm -Rf include/parsedown/test
-            rm -Rf include/simplepie/build
-            rm -Rf include/simplepie/demo
-            rm -Rf include/simplepie/tests
+            rm -Rf www/include/parsedown/test
+            rm -Rf www/include/simplepie/build
+            rm -Rf www/include/simplepie/demo
+            rm -Rf www/include/simplepie/tests
       - name: Deploy to FTP Server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
