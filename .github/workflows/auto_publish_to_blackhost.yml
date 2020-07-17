@@ -1,4 +1,4 @@
-name: Publish FeedPiper to NETBOX
+name: Publish FeedPiper to BLACKHOST
 on: push
 jobs:
   FTP-Deploy-Action:
@@ -15,4 +15,3 @@ jobs:
           ftp-server: ${{ secrets.BLACKHOST_FTP_SERVER }}
           ftp-username: ${{ secrets.BLACKHOST_FTP_USERNAME }}
           ftp-password: ${{ secrets.BLACKHOST_FTP_PASSWORD }}
-          known-hosts: ${{ secrets.BLACKHOST_FTP_KNOWN_HOST }}  
