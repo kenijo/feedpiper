@@ -29,7 +29,4 @@ jobs:
           ftp-username: ${{ secrets.NETBOX_USERNAME }}
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
           local-dir: www/
-
-
-
-CHECK MY USER DIRECTORY AGAINST LISA'S
+          
