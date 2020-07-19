@@ -10,25 +10,9 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-      - name: Clone reporsitory for upload
-        run: |
-          git clone . www
-          cd www
-          git submodule update --init --checkout
-      - name: Cleaning up Parsedown
-        run: |
-          cd www/include/parsedown
-          git rm -r test
-      - name: Cleaning up SimplePie
-        run: |
-          cd www/include/simplepie
-          git rm -r build
-          git rm -r demo
-          git rm -r tests
       - name: Deploy to FTP Server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: ${{ secrets.NETBOX_FTP_SERVER }}
           ftp-username: ${{ secrets.NETBOX_USERNAME }}
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
-          local-dir: www
