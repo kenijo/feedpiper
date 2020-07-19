@@ -1,5 +1,5 @@
 name: Publish to BLACKHOST FTP
-on: workflow_dispatch
+on: push
 jobs:
   FTP-Deploy-Action:
     name: FTP-Deploy-Action

@@ -29,8 +29,8 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: ${{ secrets.NETBOX_SFTP_SERVER }}
-          ftp-username: ${{ secrets.NETBOX_USERNAME }}
-          ftp-password: ${{ secrets.NETBOX_PASSWORD }}
-          known-hosts: ${{ secrets.NETBOX_KNOWN_HOSTS }}
+          ftp-username: ${{ secrets.NETBOX_SFTP_USERNAME }}
+          ftp-password: ${{ secrets.NETBOX_SFTP_PASSWORD }}
+          known-hosts: ${{ secrets.NETBOX_SFTP_KNOWN_HOSTS }}
           git-ftp-args: --insecure
           local-dir: www
