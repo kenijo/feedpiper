@@ -1,4 +1,4 @@
 # Uploading through FTP the worflow build folder
 
 # Directories
-www
+!www/
