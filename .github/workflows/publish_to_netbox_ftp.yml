@@ -15,16 +15,9 @@ jobs:
           git clone . www
           cd www
           git submodule update --init --checkout
-      - name: Cleaning up FeedPiper
-        run: |
-          cd www
       - name: Cleaning up Parsedown
         run: |
           cd www/include/parsedown
-          git rm -r test
-      - name: Cleaning up Simple HTML DOM
-        run: |
-          cd www/include/simple_html_dom
           git rm -r test
       - name: Cleaning up SimplePie
         run: |
