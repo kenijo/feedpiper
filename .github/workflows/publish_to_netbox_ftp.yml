@@ -12,13 +12,9 @@ jobs:
           submodules: recursive
       - name: Cleaning up ...
         run: |
-          git clone /home/runner/work/FeedPiper/FeedPiper/ /home/runner/work/FeedPiper/FeedPiper/www/
-          cd /home/runner/work/FeedPiper/FeedPiper/www/
-          git submodule update --init --checkout
-          cd /home/runner/work/FeedPiper/FeedPiper/www/include/parsedown
+          cd include/parsedown
           git rm -r test
-          cd /home/runner/work/FeedPiper/FeedPiper/www/include/simple_html_dom
-          cd /home/runner/work/FeedPiper/FeedPiper/www/include/simplepie
+          cd include/simplepie
           git rm -r build
           git rm -r demo
           git rm -r tests
@@ -28,5 +24,4 @@ jobs:
           ftp-server: ${{ secrets.NETBOX_FTP_SERVER }}
           ftp-username: ${{ secrets.NETBOX_USERNAME }}
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
-          local-dir: www/
           
