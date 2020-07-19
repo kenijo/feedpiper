@@ -10,11 +10,13 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-      - name: Cleaning up ...
+      - name: Cleaning up Parsedown
         run: |
           cd include/parsedown
           git rm -r test
-          cd ../include/simplepie
+      - name: Cleaning up SimplePie
+        run: |
+          cd include/simplepie
           git rm -r build
           git rm -r demo
           git rm -r tests
