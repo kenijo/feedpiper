@@ -17,3 +17,4 @@ jobs:
           ftp-username: ${{ secrets.NETBOX_USERNAME }}
           ftp-password: ${{ secrets.NETBOX_PASSWORD }}
           known-hosts: ${{ secrets.NETBOX_KNOWN_HOSTS }}
+          git-ftp-args: --insecure
