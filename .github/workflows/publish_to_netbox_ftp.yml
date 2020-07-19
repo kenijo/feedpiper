@@ -14,7 +14,7 @@ jobs:
         run: |
           cd include/parsedown
           git rm -r test
-          cd include/simplepie
+          cd ../include/simplepie
           git rm -r build
           git rm -r demo
           git rm -r tests
