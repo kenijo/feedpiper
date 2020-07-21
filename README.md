@@ -34,16 +34,13 @@ This will allow you to have your own configuration files that will not be commit
 
 * Clone the repository then load the submodules:
   * git clone https://github.com/kenijo/FeedPiper
-  * git submodule init
+  * git submodule update --init --recursive
 
 * Clone the repository with its submodules all at once:
   * git clone --recurse-submodules https://github.com/chaconinc/MainProject
 
 * Add a new submodule:
-  * git submodule add https://github.com/<user>/xxx include/xxx
-
-* Update submodules:
-  * git submodule update --init --recursive
+  * git submodule add https://github.com/user/repo include/repo
 
 ### Credits
 

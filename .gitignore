@@ -47,7 +47,4 @@ Temporary Items
 .apdisk
 
 # =========================
-config/local.conf.php
-config/local.feedfilter.conf.php
-config/local.html2feed.conf.php
 .vscode

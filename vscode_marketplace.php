@@ -148,7 +148,7 @@ if (isset($url)) {
 // Send the content-type header with correct encoding
 if ($myFeedDebug === true) {
   $content_type = 'text/plain';
-} 
+}
 elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
   $content_type = 'application/atom+xml';
 } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
@@ -196,7 +196,7 @@ $number_of_entry = 0;
 foreach ($json['results'][0]['extensions'] as $entry) {
   if($number_of_entry <= $pageSize) {
     $newEntry = new Entry($cfg['feed_format']);
-        
+
     // Set Id
     $newEntry->set_entry_id($entry['publisher']['publisherId']);
 
@@ -220,7 +220,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       // Set Title
       $newEntry->set_entry_title($entry['displayName']);
 
-      // Set Auhtors
+      // Set Authors
       $authors = explode(',', $entry['publisher']['displayName']);
       $newEntry->set_entry_authors($authors);
 
@@ -326,7 +326,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
 
       // If there is no URL, we don't have details to retrieve
       // We also skip the details when sorting by PublishedDate
-      // because for some reaon, they are not always retrieved well
+      // because for some reason, they are not always retrieved well
       if($details != null && $sortByValue != 10) {
         $parsedown = new Parsedown();
         $parsedown->setSafeMode(true);
@@ -358,7 +358,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       array_push($identifier_list, $newEntry->get_entry_identifier());
     }
     $number_of_entry++;
-    
+
     unset($authors);
     unset($averagerating);
     unset($categorie);
@@ -370,7 +370,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
     unset($install);
     unset($key);
     unset($markdown);
-    unset($newEntry);   
+    unset($newEntry);
     unset($parsedown);
     unset($rating);
     unset($ratingcount);

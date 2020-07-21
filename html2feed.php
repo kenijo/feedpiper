@@ -96,7 +96,7 @@ if (isset($_GET['page']))
   }
 
   // PHP Simple HTML DOM
-  //   http://simplehtmldom.sourceforge.net/
+  //  http://simplehtmldom.sourceforge.net/
 
   // Set a default context browser
   $context = stream_context_create(array(

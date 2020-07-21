@@ -410,7 +410,7 @@ function reset_mbstring_encoding() {
 /**
 * Retrieves the current locale.
 *
-* Originaly from WordPress code
+* Originally from WordPress code
 * https://github.com/WordPress/WordPress/blob/master/wp-includes/l10n.php
 *
 * But modified to return the locale set in conf.php
