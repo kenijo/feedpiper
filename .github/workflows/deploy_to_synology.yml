@@ -11,7 +11,7 @@ jobs:
           submodules: recursive
       - name: Readying repository for deployment
         run: |
-          git clone . www
+          git clone --recurse-submodules . www
           cd www
           git rm -r config
       - name: Cleaning up Parsedown
