@@ -18,8 +18,6 @@ FeedPiper is a toolbox that provides two services:
 ### Configuration
 
 Configuration files are in the config folder.
-Make a copy of the config files as local.*.php
-This will allow you to have your own configuration files that will not be commited to GitHub
 
 * conf.php is the global application configuration
 * html2feed.conf.php and feedfilter.conf.php are the individual application configurations
@@ -33,11 +31,11 @@ This will allow you to have your own configuration files that will not be commit
 * Upload the project to your server
 
 * Clone the repository then load the submodules:
-  * git clone https://github.com/kenijo/FeedPiper
+  * git clone https://github.com/kenijo/feedpiper
   * git submodule update --init --recursive
 
 * Clone the repository with its submodules all at once:
-  * git clone --recurse-submodules https://github.com/chaconinc/MainProject
+  * git clone --recurse-submodules https://github.com/kenijo/feedpiper
 
 * Add a new submodule:
   * git submodule add https://github.com/user/repo include/repo

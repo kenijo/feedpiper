@@ -1,0 +1,47 @@
+name: Deploy to HELIOHOST
+on: workflow_dispatch
+jobs:
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize FTP-Deploy-Action with a dummy repository (needed to make it work)
+        uses: actions/checkout@v2.1.0
+        with:
+          repository: kenijo/FeedPiper
+      - name: Checkout feedpiper repository
+        uses: actions/checkout@v2.1.0
+        with:
+          fetch-depth: 2
+          path: www
+          repository: kenijo/FeedPiper
+          submodules: recursive
+      - name: Cleaning up Parsedown
+        run: |
+          cd www/include/parsedown
+          git rm -r test
+      - name: Cleaning up SimplePie
+        run: |
+          cd www/include/simplepie
+          git rm -r build
+          git rm -r demo
+          git rm -r tests
+      - name: Checkout feedpiper-config repository
+        uses: actions/checkout@v2.1.0
+        with:
+          fetch-depth: 2
+          repository: kenijo/feedpiper-config
+          path: www/config
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Rename config file
+        run: |
+          cd www/config
+          git mv server-synology.conf.php conf.php
+          git rm server-*.conf.php
+      - name: Deploy to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        with:
+          ftp-server: ${{ secrets.HELIOHOST_FTP_SERVER }}
+          ftp-username: ${{ secrets.HELIOHOST_FTP_USERNAME }}
+          ftp-password: ${{ secrets.HELIOHOST_FTP_PASSWORD }}
+          local-dir: www

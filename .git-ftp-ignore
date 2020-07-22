@@ -1,6 +1,10 @@
-# Ignore when uploading through FTP
+# ============================================================
+# Ignore when deploying with GitHub Action FTP Deploy
+# ============================================================
 
+============================================================
 # Directories
+============================================================
 .github/
 .vscode/
 include/parsedown/test/
@@ -8,13 +12,17 @@ include/simplepie/build/
 include/simplepie/demo/
 include/simplepie/tests/
 
-# Files
+============================================================
+# Files at root level
+============================================================
 .git*
 *.yml
 composer.json
 phpunit.xml.dist
 
+============================================================
 # Files in sub directories
+============================================================
 */.git*
 */*.yml
 */composer.json
