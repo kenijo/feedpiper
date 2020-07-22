@@ -25,9 +25,3 @@ require_once 'simple_html_dom/src/KubAT/PhpSimple/lib/simple_html_dom.php';
 
 // Include Parsedown
 require_once 'include/parsedown/Parsedown.php';
-
-// Include the local configuration files that will override those settings if they exists.
-// This prevents committing your own configuration to GitHub
-@include_once './config/custom/conf.php';
-@include_once './config/custom/feedfilter.conf.php';
-@include_once './config/custom/html2feed.conf.php';
