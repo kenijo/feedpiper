@@ -28,6 +28,6 @@ require_once 'include/parsedown/Parsedown.php';
 
 // Include the local configuration files that will override those settings if they exists.
 // This prevents committing your own configuration to GitHub
-@include_once './config/local.conf.php';
-@include_once './config/local.feedfilter.conf.php';
-@include_once './config/local.html2feed.conf.php';
+@include_once './config/custom/conf.php';
+@include_once './config/custom/feedfilter.conf.php';
+@include_once './config/custom/html2feed.conf.php';
