@@ -36,7 +36,7 @@ jobs:
       - name: Rename config file
         run: |
           cd www/config
-          git mv server-synology.conf.php conf.php
+          git mv server-heliohost.conf.php conf.php
           git rm server-*.conf.php
       - name: Deploy to FTP Server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
