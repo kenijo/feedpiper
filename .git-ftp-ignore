@@ -7,6 +7,7 @@
 ============================================================
 .github/
 .vscode/
+config/
 include/parsedown/test/
 include/simplepie/build/
 include/simplepie/demo/
