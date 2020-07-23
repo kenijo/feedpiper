@@ -6,43 +6,55 @@
 
 function CallRestAPI($method, $url, $header = false, $data = false, $check_ssl = true)
 {
-    $curl = curl_init();
+  $curl = curl_init();
 
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $check_ssl);
-    curl_setopt($curl, CURLOPT_HEADER, false);
-    
-    if($header) {
-      curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-    }
+  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $check_ssl);
+  curl_setopt($curl, CURLOPT_HEADER, false);
 
-    switch ($method)
-    {
-        case "POST":
-            curl_setopt($curl, CURLOPT_POST, true);
+  if ($header) {
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+  }
 
-            if ($data)
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            break;
-        case "PUT":
-            curl_setopt($curl, CURLOPT_PUT, true);
-            break;
-        default:
-            if ($data)
-                $url = sprintf("%s?%s", $url, http_build_query($data));
-    }
+  switch ($method) {
+    case "POST":
+      curl_setopt($curl, CURLOPT_POST, true);
 
-    // Optional Authentication:
-    //curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    //curl_setopt($curl, CURLOPT_USERPWD, "username:password");
+      if ($data)
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+      break;
+    case "PUT":
+      curl_setopt($curl, CURLOPT_PUT, true);
+      break;
+    default:
+      if ($data)
+        $url = sprintf("%s?%s", $url, http_build_query($data));
+  }
 
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  // Optional Authentication:
+  //curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+  //curl_setopt($curl, CURLOPT_USERPWD, "username:password");
 
-    // EXECUTE:
-    $result = curl_exec($curl);
-    if(!$result) {
+  curl_setopt($curl, CURLOPT_URL, $url);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+  // EXECUTE:
+  $result = curl_exec($curl);
+  if (!$result) {
+    // If curl fails, try with file_get_contents()
+    $opts = array('http' =>
+    array(
+      'method'  => $method,
+      'header'  => $header,
+      'content' => $data,
+      'timeout' => 60
+    ));
+    $context  = stream_context_create($opts);
+    $result =  file_get_contents($url, false, $context);
+    if (!$result) {
       die("Connection Failure");
     }
-    curl_close($curl);
-    return $result;
+  }
+
+  curl_close($curl);
+  return $result;
 }
