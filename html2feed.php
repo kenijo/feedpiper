@@ -1,4 +1,5 @@
 <?php
+namespace simple_html_dom;
 
 // Include configuration file
 require_once 'include/inc.lib.php';
@@ -42,9 +43,9 @@ if (isset($_GET['page'])) {
   header('Content-type: ' . $content_type . '; charset=utf-8');
 
   // Use GMT as the default time zone.
-  $date = new DateTime('now', new DateTimezone('GMT'));
+  $date = new \DateTime('now', new \DateTimezone('GMT'));
 
-  $newFeed = new Feed($cfg['feed_format']);
+  $newFeed = new \Feed($cfg['feed_format']);
 
   $newFeed->set_feed_generator_name('Simple HTML DOM');
   $newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
@@ -91,7 +92,7 @@ if (isset($_GET['page'])) {
     foreach ($newDomHtml->find($myPageConfig['entry']) as $entry) {
       $date->modify('-1 second');
 
-      $newEntry = new Entry($cfg['feed_format']);
+      $newEntry = new \Entry($cfg['feed_format']);
 
       $parsed_page_url = parse_url($myPageConfig['page_url']);
 
