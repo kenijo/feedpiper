@@ -8,6 +8,7 @@ require_once './config/feedfilter.conf.php';
 require_once './config/html2feed.conf.php';
 
 require_once 'func.array.php';
+require_once 'func.curl-emu.php';
 require_once 'func.rest.php';
 require_once 'func.string.php';
 require_once 'func.url.php';
