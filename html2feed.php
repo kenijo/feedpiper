@@ -3,56 +3,40 @@
 // Include configuration file
 require_once 'include/inc.lib.php';
 
-if (isset($_GET['page']))
-{
+if (isset($_GET['page'])) {
   $myPage = $_GET['page'];
 
-  if (isset($_GET['debug']) && $_GET['debug'] === 'true')
-  {
+  if (isset($_GET['debug']) && $_GET['debug'] === 'true') {
     $myPageDebug = true;
-  }
-  else
-  {
+  } else {
     $myPageDebug = false;
   }
 
-  if (isset($cfg[$myPage]))
-  {
+  if (isset($cfg[$myPage])) {
     $myPageConfig = $cfg[$myPage];
-  }
-  else
-  {
+  } else {
     echo 'A configuration could not be found in the configuration file for: ' . $myPage;
     return;
   }
 
-  if (!isset($myPageConfig['page_title']))
-  {
+  if (!isset($myPageConfig['page_title'])) {
     echo 'A "title" could not be found in the configuration file for: ' . $myPage;
     return;
   }
 
-  if (!isset($myPageConfig['page_url']))
-  {
+  if (!isset($myPageConfig['page_url'])) {
     echo 'A "url" could not be found in the configuration file for: ' . $myPage;
     return;
   }
 
   // Send the content-type header with correct encoding
-  if ($myPageDebug === true)
-  {
+  if ($myPageDebug === true) {
     $content_type = 'text/plain';
-  }
-  elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM')
-  {
+  } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
     $content_type = 'application/atom+xml';
-  }
-  elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS')
-  {
+  } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
     $content_type = 'application/rss+xml';
-  }
-  else
-  {
+  } else {
     $content_type = 'application/xml';
   }
   header('Content-type: ' . $content_type . '; charset=utf-8');
@@ -71,12 +55,9 @@ if (isset($_GET['page']))
   $newFeed->set_feed_link_alternate($myPageConfig['page_url']);
   $newFeed->set_feed_logo(url_dir_path() . '/favicon.png');
   $newFeed->set_feed_title($myPageConfig['page_title']);
-  if ($cfg['feed_format'] == 'ATOM')
-  {
+  if ($cfg['feed_format'] == 'ATOM') {
     $date_format = DATE_ATOM;
-  }
-  elseif ($cfg['feed_format'] == 'RSS')
-  {
+  } elseif ($cfg['feed_format'] == 'RSS') {
     $date_format = DATE_RSS;
   }
   $newFeed->set_feed_updated($date->format($date_format));
@@ -86,12 +67,9 @@ if (isset($_GET['page']))
   $newFeed->set_feed_website_link($website_link);
 
   // Display or Debug feed
-  if ($myPageDebug === true)
-  {
+  if ($myPageDebug === true) {
     $newFeed->debug_feed();
-  }
-  else
-  {
+  } else {
     $newFeed->open_feed();
   }
 
@@ -100,19 +78,17 @@ if (isset($_GET['page']))
 
   // Set a default context browser
   $context = stream_context_create(array(
-      'http' => array(
-          'header' => array('User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'),
-      ),
+    'http' => array(
+      'header' => array('User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201'),
+    ),
   ));
 
   // Load HTML from an URL, Create a DOM object
   $newDomHtml = file_get_html($myPageConfig['page_url'], false, $context);
 
   // Loop through html pulling feed items out
-  if (isset($myPageConfig['entry']))
-  {
-    foreach ($newDomHtml->find($myPageConfig['entry']) as $entry)
-    {
+  if (isset($myPageConfig['entry'])) {
+    foreach ($newDomHtml->find($myPageConfig['entry']) as $entry) {
       $date->modify('-1 second');
 
       $newEntry = new Entry($cfg['feed_format']);
@@ -125,25 +101,16 @@ if (isset($_GET['page']))
       // Set Updated Date
       $newEntry->set_entry_updated($date->format(DATE_ATOM));
 
-      if (isset($myPageConfig['link']))
-      {
+      if (isset($myPageConfig['link'])) {
         // Set Link
         $link = $myPageConfig['link'];
         $link = $entry->find($link, 0)->href;
         // If $link is not a full URL then we rebuild it from the feed URL
         $parsed_link = parse_url($link);
-        if (!isset($parsed_link['scheme']))
-        {
+        if (!isset($parsed_link['scheme'])) {
           $link = $parsed_page_url['scheme'] . '://' . $parsed_page_url['host'] . $link;
         }
-        // START - SPECIAL CODE
-        // If page is 'amazon_movies' or 'amazon_shows' then we strip the link from its parameters after the '?'
-        if ($myPage == 'amazon_movies' || $myPage == 'amazon_shows')
-        {
-          $needle = '/ref=';
-          before_last($needle, $link) ? $link = before_last($needle, $link) : $link;
-        }
-        // END   - SPECIAL CODE
+
         $link ? $link : $link = null;
         $newEntry->set_entry_link($link);
 
@@ -155,38 +122,31 @@ if (isset($_GET['page']))
         //$identifier ? $identifier : $identifier = null;
         //$newEntry->set_entry_identifier($identifier);
         $newEntry->set_entry_identifier($link);
-      }
-      else
-      {
+      } else {
         echo 'A "link" could not be found in the configuration file for: ' . $myPage;
         break;
       }
 
-      if (isset($myPageConfig['title']))
-      {
+      if (isset($myPageConfig['title'])) {
         // Set Title
         $title = $myPageConfig['title'];
         $title = trim($entry->find($title, 0)->plaintext);
-        $title = preg_replace('#'.'\s+'.'#', ' ', $title);
+        $title = preg_replace('#' . '\s+' . '#', ' ', $title);
         $title = html_entity_decode($title, ENT_NOQUOTES, 'UTF-8');
         $title ? $title : $title = null;
         $newEntry->set_entry_title($title);
-      }
-      else
-      {
+      } else {
         echo 'An "title" could not be found in the configuration file for: ' . $myPage;
         break;
       }
 
-      if (isset($myPageConfig['thumbnail']))
-      {
+      if (isset($myPageConfig['thumbnail'])) {
         // Set Thumbnail
         $thumbnail = $myPageConfig['thumbnail'];
         $thumbnail = $entry->find($thumbnail, 0)->src;
         // If $thumbnail is not a full URL then we rebuild it from the feed URL
         $parsed_thumbnail = parse_url($thumbnail);
-        if (!isset($parsed_thumbnail['scheme']))
-        {
+        if (!isset($parsed_thumbnail['scheme'])) {
           $thumbnail = $parsed_page_url['scheme'] . '://' . $parsed_page_url['host'] . $thumbnail;
         }
         $thumbnail ? $thumbnail : $thumbnail = null;
@@ -195,69 +155,55 @@ if (isset($_GET['page']))
         $newEntry->set_entry_enclosure_link($thumbnail);
       }
 
-      if (isset($myPageConfig['author']))
-      {
+      if (isset($myPageConfig['author'])) {
         // Set Authors
         $authors = $myPageConfig['author'];
         $authors = trim($entry->find($authors, 0)->plaintext);
         $authors = html_entity_decode($authors);
-        if (isset($authors))
-        {
-          $authors = preg_replace('#'.'\s+'.'#', ' ', $authors);
+        if (isset($authors)) {
+          $authors = preg_replace('#' . '\s+' . '#', ' ', $authors);
         }
-      }
-      else
-      {
+      } else {
         $authors = $myPageConfig['page_title'];
       }
       $newEntry->set_entry_authors(array($authors));
 
-      if (isset($myPageConfig['category']))
-      {
+      if (isset($myPageConfig['category'])) {
         // Set Categories
         $categories = $myPageConfig['category'];
         $categories = trim($entry->find($categories, 0)->plaintext);
         $categories = html_entity_decode($categories);
-        if (isset($categories))
-        {
+        if (isset($categories)) {
           $categories = remove_accents($categories);
           $categories = explode(' ', $categories);
           $categories = array_map('strtolower', $categories);
           $categories = array_unique($categories);
           $categories = array_filter($categories);
           sort($categories);
-        }
-        else
-        {
+        } else {
           $categories = null;
         }
-      }
-      else
-      {
+      } else {
         $categories = null;
       }
       $newEntry->set_entry_categories($categories);
 
-      if (isset($myPageConfig['description']))
-      {
+      if (isset($myPageConfig['description'])) {
         // Set Summary
         $description = $myPageConfig['description'];
         $description = $entry->find($description, 0)->outertext;
         $summary = null;
-        if (isset($thumbnail))
-        {
+        if (isset($thumbnail)) {
           $summary .= '<img src="' . $thumbnail . '" alt="' . $title . '" />';
         }
         $summary .= '<p>' . $description . '</p>' . PHP_EOL;
 
         // Insert Authors and Categories into it
         $summary .= '        <br />' . PHP_EOL;
-        if ($authors)
-        {
+        if ($authors) {
           $summary .= '        <br />Author(s) : ' . $authors . PHP_EOL;
         }
-        if ($categories)
-        {
+        if ($categories) {
           $summary .= '        <br />Categories: ' . get_array_as_string($categories) . PHP_EOL;
         }
         $newEntry->set_entry_summary($summary);
@@ -276,8 +222,7 @@ if (isset($_GET['page']))
       }
 
       // Debug or display entry
-      if ($myPageDebug === true)
-      {
+      if ($myPageDebug === true) {
         $newEntry->debug_entry();
 
         $newDomHtml->clear();
@@ -286,16 +231,12 @@ if (isset($_GET['page']))
         unset($newFeed);
 
         return;
-      }
-      else
-      {
+      } else {
         $newEntry->create_entry();
       }
       unset($newEntry);
     }
-  }
-  else
-  {
+  } else {
     echo 'An "entry" could not be found in the configuration file for: ' . $myPage;
   }
   $newFeed->close_feed();
@@ -303,8 +244,6 @@ if (isset($_GET['page']))
   $newDomHtml->clear();
   unset($newDomHtml);
   unset($newFeed);
-}
-else
-{
+} else {
   echo 'Please provide a "page" parameter.';
 }
