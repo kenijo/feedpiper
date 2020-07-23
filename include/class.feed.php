@@ -23,24 +23,18 @@ class Feed
 
   public function open_feed()
   {
-    if ($this->feed_format == 'ATOM')
-    {
+    if ($this->feed_format == 'ATOM') {
       $this->open_atom_feed();
-    }
-    elseif ($this->feed_format == 'RSS')
-    {
+    } elseif ($this->feed_format == 'RSS') {
       $this->open_rss_feed();
     }
   }
 
   public function close_feed()
   {
-    if ($this->feed_format == 'ATOM')
-    {
+    if ($this->feed_format == 'ATOM') {
       $this->close_atom_feed();
-    }
-    elseif ($this->feed_format == 'RSS')
-    {
+    } elseif ($this->feed_format == 'RSS') {
       $this->close_rss_feed();
     }
   }
@@ -49,7 +43,7 @@ class Feed
   {
     // Atom Syndication Format
     // http://atomenabled.org/developers/syndication/
-		echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
+    echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
     echo '<feed xmlns:dc="http://purl.org/dc/elements/1.1/"' . PHP_EOL;
     echo '      xmlns:media="http://search.yahoo.com/mrss/"' . PHP_EOL;
     echo '      xmlns="http://www.w3.org/2005/Atom" >' . PHP_EOL;
@@ -106,7 +100,7 @@ class Feed
     // http://atomenabled.org/developers/syndication/
     echo '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
     echo '<rss version="2.0"' . PHP_EOL;
-		$this->debug_mode_help();
+    $this->debug_mode_help();
     echo '   xmlns:dc="http://purl.org/dc/elements/1.1/"' . PHP_EOL;
     echo '   xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">' . PHP_EOL;
 
@@ -145,14 +139,15 @@ class Feed
     echo 'Feed Id:                   ' . $this->get_feed_id() . PHP_EOL;
   }
 
-	private function debug_mode_help() {
-		echo '  <!-- ######################################################################################################################## -->' . PHP_EOL;
-		echo '  <!-- To enable debug mode, use the following link: -->' . PHP_EOL;
-		echo '  <!--     ' . $this->get_feed_link() . '?debug=true -->' . PHP_EOL;
-		echo '  <!-- To debug a specific entry, specify an entry number: -->' . PHP_EOL;
-		echo '  <!--     ' . $this->get_feed_link() . '?debug=true&amp;entry=2 -->' . PHP_EOL;
-		echo '  <!-- ######################################################################################################################## -->' . PHP_EOL;
-	}
+  private function debug_mode_help()
+  {
+    echo '  <!-- ######################################################################################################################## -->' . PHP_EOL;
+    echo '  <!-- To enable debug mode, use the following link: -->' . PHP_EOL;
+    echo '  <!--     ' . $this->get_feed_link() . '?debug=true -->' . PHP_EOL;
+    echo '  <!-- To debug a specific entry, specify an entry number: -->' . PHP_EOL;
+    echo '  <!--     ' . $this->get_feed_link() . '?debug=true&amp;entry=2 -->' . PHP_EOL;
+    echo '  <!-- ######################################################################################################################## -->' . PHP_EOL;
+  }
 
   private function close_atom_feed()
   {
@@ -227,8 +222,7 @@ class Feed
 
   public function get_feed_format()
   {
-    if ($this->feed_format !== null)
-    {
+    if ($this->feed_format !== null) {
       return $this->feed_format;
     } else {
       return null;
@@ -237,8 +231,7 @@ class Feed
 
   public function get_feed_generator_name()
   {
-    if ($this->feed_generator_name !== null)
-    {
+    if ($this->feed_generator_name !== null) {
       return $this->feed_generator_name;
     } else {
       return null;
@@ -247,8 +240,7 @@ class Feed
 
   public function get_feed_generator_uri()
   {
-    if ($this->feed_generator_uri !== null)
-    {
+    if ($this->feed_generator_uri !== null) {
       return $this->feed_generator_uri;
     } else {
       return null;
@@ -257,8 +249,7 @@ class Feed
 
   public function get_feed_generator_version()
   {
-    if ($this->feed_generator_version !== null)
-    {
+    if ($this->feed_generator_version !== null) {
       return $this->feed_generator_version;
     } else {
       return null;
@@ -267,8 +258,7 @@ class Feed
 
   public function get_feed_icon()
   {
-    if ($this->feed_icon !== null)
-    {
+    if ($this->feed_icon !== null) {
       return $this->feed_icon;
     } else {
       return null;
@@ -277,8 +267,7 @@ class Feed
 
   public function get_feed_id()
   {
-    if ($this->feed_id !== null)
-    {
+    if ($this->feed_id !== null) {
       return $this->feed_id;
     } else {
       return null;
@@ -287,8 +276,7 @@ class Feed
 
   public function get_feed_link()
   {
-    if ($this->feed_link !== null)
-    {
+    if ($this->feed_link !== null) {
       return $this->feed_link;
     } else {
       return null;
@@ -297,8 +285,7 @@ class Feed
 
   public function get_feed_link_alternate()
   {
-    if ($this->feed_link_alternate !== null)
-    {
+    if ($this->feed_link_alternate !== null) {
       return $this->feed_link_alternate;
     } else {
       return null;
@@ -307,8 +294,7 @@ class Feed
 
   public function get_feed_logo()
   {
-    if ($this->feed_logo !== null)
-    {
+    if ($this->feed_logo !== null) {
       return $this->feed_logo;
     } else {
       return null;
@@ -317,8 +303,7 @@ class Feed
 
   public function get_feed_title()
   {
-    if ($this->feed_title !== null)
-    {
+    if ($this->feed_title !== null) {
       return $this->feed_title;
     } else {
       return null;
@@ -327,8 +312,7 @@ class Feed
 
   public function get_feed_updated()
   {
-    if ($this->feed_updated !== null)
-    {
+    if ($this->feed_updated !== null) {
       return $this->feed_updated;
     } else {
       return null;
@@ -337,8 +321,7 @@ class Feed
 
   public function get_feed_website_link()
   {
-    if ($this->feed_website_link !== null)
-    {
+    if ($this->feed_website_link !== null) {
       return $this->feed_website_link;
     } else {
       return null;

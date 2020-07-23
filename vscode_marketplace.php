@@ -9,7 +9,7 @@ $myFeedConfig['title'] = 'VS Code Extensions';
 // Include configuration file
 require_once 'include/inc.lib.php';
 
-$url="https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery";
+$url = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery";
 
 // Select a specific category
 // Defaults to all extensions
@@ -32,7 +32,7 @@ if (isset($_GET['category'])) {
     "Themes"
   );
 
-  if($key = array_search(strtolower($categorySelection), array_map('strtolower', $categoryArray))) {
+  if ($key = array_search(strtolower($categorySelection), array_map('strtolower', $categoryArray))) {
     $categoryValue = '
     ,
     {
@@ -59,7 +59,7 @@ if (isset($_GET['sortBy'])) {
     12 => "Rating"
   );
 
-  if($key = array_search(strtolower($sortBySelection), array_map('strtolower', $sortByArray))) {
+  if ($key = array_search(strtolower($sortBySelection), array_map('strtolower', $sortByArray))) {
     $sortByValue = $sortByArray[$key];
   }
 }
@@ -117,13 +117,13 @@ $json_data = '
 ';
 
 $rest_api_post_header = array(
-    'Accept: application/json; charset=utf-8; api-version=5.0-preview.1',
-    'Content-Length: ' . strlen($json_data) ,
-    'Cache-Control: no-cache',
-    'Content-Type: application/json; charset=utf-8',
-    'Pragma: no-cache',
-    'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
-  );
+  'Accept: application/json; charset=utf-8; api-version=5.0-preview.1',
+  'Content-Length: ' . strlen($json_data),
+  'Cache-Control: no-cache',
+  'Content-Type: application/json; charset=utf-8',
+  'Pragma: no-cache',
+  'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+);
 
 if ((isset($_GET['debug'])) && ($_GET['debug'] === 'true')) {
   $myFeedDebug = true;
@@ -148,8 +148,7 @@ if (isset($url)) {
 // Send the content-type header with correct encoding
 if ($myFeedDebug === true) {
   $content_type = 'text/plain';
-}
-elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
+} elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
   $content_type = 'application/atom+xml';
 } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
   $content_type = 'application/rss+xml';
@@ -191,10 +190,10 @@ if ($myFeedDebug === true) {
 }
 
 // Create an array of unique identifiers to skip duplicate entries
-$identifier_list = Array();
+$identifier_list = array();
 $number_of_entry = 0;
 foreach ($json['results'][0]['extensions'] as $entry) {
-  if($number_of_entry <= $pageSize) {
+  if ($number_of_entry <= $pageSize) {
     $newEntry = new Entry($cfg['feed_format']);
 
     // Set Id
@@ -226,10 +225,10 @@ foreach ($json['results'][0]['extensions'] as $entry) {
 
       // Set Categories
       $categories = array();
-      if(is_array($entry['categories'])) {
+      if (is_array($entry['categories'])) {
         $categories = array_merge($categories, $entry['categories']);
       }
-      if(is_array($entry['tags'])) {
+      if (is_array($entry['tags'])) {
         $categories = array_merge($categories, $entry['tags']);
       }
       $newEntry->set_entry_categories($categories);
@@ -237,66 +236,66 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       // Set Summary
       $newEntry->set_entry_summary($entry['shortDescription']);
 
-      if($entry['versions'][0]['files']) {
-        foreach($entry['versions'][0]['files'] as $key => $value) {
-          if($value["assetType"] == "Microsoft.VisualStudio.Services.Content.Changelog") {
+      if ($entry['versions'][0]['files']) {
+        foreach ($entry['versions'][0]['files'] as $key => $value) {
+          if ($value["assetType"] == "Microsoft.VisualStudio.Services.Content.Changelog") {
             // $changelog = $value["source"];
-          } elseif($value["assetType"] == "Microsoft.VisualStudio.Services.Content.Details") {
+          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.Content.Details") {
             $details = $value["source"];
-          } elseif($value["assetType"] == "Microsoft.VisualStudio.Services.Icons.Default") {
+          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.Icons.Default") {
             // $icon_default = $value["source"];
-          } elseif($value["assetType"] == "Microsoft.VisualStudio.Services.Icons.Small") {
+          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.Icons.Small") {
             $icon_small = $value["source"];
-          } elseif($value["assetType"] == "Microsoft.VisualStudio.Services.VSIXPackage") {
+          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.VSIXPackage") {
             $VSIXPackage = $value["source"];
           }
         }
       }
 
-      if($entry['statistics']) {
-        foreach($entry['statistics'] as $key => $value) {
-          if($value["statisticName"] == "install") {
+      if ($entry['statistics']) {
+        foreach ($entry['statistics'] as $key => $value) {
+          if ($value["statisticName"] == "install") {
             $install = $value["value"];
-          } elseif($value["statisticName"] == "averagerating") {
+          } elseif ($value["statisticName"] == "averagerating") {
             $averagerating = $value["value"];
-          } elseif($value["statisticName"] == "ratingcount") {
+          } elseif ($value["statisticName"] == "ratingcount") {
             $ratingcount = $value["value"];
-          } elseif($value["statisticName"] == "trendingdaily") {
+          } elseif ($value["statisticName"] == "trendingdaily") {
             // $trendingdaily = $value["value"];
-          } elseif($value["statisticName"] == "trendingmonthly") {
+          } elseif ($value["statisticName"] == "trendingmonthly") {
             // $trendingmonthly = $value["value"];
-          } elseif($value["statisticName"] == "trendingweekly") {
+          } elseif ($value["statisticName"] == "trendingweekly") {
             // $trendingweekly = $value["value"];
-          } elseif($value["statisticName"] == "updateCount") {
+          } elseif ($value["statisticName"] == "updateCount") {
             // $updateCount = $value["value"];
           }
         }
       }
 
       // Set Content
-      if($icon_small != null) {
+      if ($icon_small != null) {
         $content = '<img alt="" src="' . $icon_small . '" style="width: 72px;">' . PHP_EOL;
       }
       $content .= '        <p>' . PHP_EOL;
       $content .= '          ' . $entry['shortDescription'] . PHP_EOL;
       $content .= '          <br />' . PHP_EOL;
       $content .= '          <span title="More from publisher"><a href="https://marketplace.visualstudio.com/publishers/' . $entry['publisher']['publisherName'] . '">' . $entry['publisher']['displayName'] . '</a></span>' . PHP_EOL;
-      if(round($averagerating) == 0) {
+      if (round($averagerating) == 0) {
         $rating = '&#9734;&#9734;&#9734;&#9734;&#9734;';
-      } else if(round($averagerating) == 1) {
+      } else if (round($averagerating) == 1) {
         $rating = '&#9733;&#9734;&#9734;&#9734;&#9734;';
-      } else if(round($averagerating) == 2) {
+      } else if (round($averagerating) == 2) {
         $rating = '&#9733;&#9733;&#9734;&#9734;&#9734;';
-      } else if(round($averagerating) == 3) {
+      } else if (round($averagerating) == 3) {
         $rating = '&#9733;&#9733;&#9733;&#9734;&#9734;';
-      } else if(round($averagerating) == 4) {
+      } else if (round($averagerating) == 4) {
         $rating = '&#9733;&#9733;&#9733;&#9733;&#9734;';
       } else {
         $rating = '&#9733;&#9733;&#9733;&#9733;&#9733;';
-        if($averagerating != null) {
+        if ($averagerating != null) {
           $averagerating = 0;
         }
-        if($ratingcount != null) {
+        if ($ratingcount != null) {
           $ratingcount = 0;
         }
       }
@@ -304,19 +303,19 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       $content .= '          | <span title="Install extension"><a href="vscode:' . $entry['publisher']['publisherName'] . '.' . $entry['extensionName'] . '">Install</a></span>' . PHP_EOL;
       $content .= '          | <span title="Download extension"><a href="' . $VSIXPackage . '">Download</a></span>' . PHP_EOL;
       $content .= '          <br />' . PHP_EOL;
-      if(is_array($entry['categories'])) {
+      if (is_array($entry['categories'])) {
         $content .= '          <br />Categories: ';
         $delimiter = '';
-        foreach($entry['categories'] as $categorie) {
+        foreach ($entry['categories'] as $categorie) {
           $content .= $delimiter . $categorie;
           $delimiter = ', ';
         }
         $content .= PHP_EOL;
       }
-      if(is_array($entry['tags'])) {
-       $content .= '          <br />Tags: ';
-       $delimiter = '';
-        foreach($entry['tags'] as $tag) {
+      if (is_array($entry['tags'])) {
+        $content .= '          <br />Tags: ';
+        $delimiter = '';
+        foreach ($entry['tags'] as $tag) {
           $content .= $delimiter . $tag;
           $delimiter = ', ';
         }
@@ -327,7 +326,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       // If there is no URL, we don't have details to retrieve
       // We also skip the details when sorting by PublishedDate
       // because for some reason, they are not always retrieved well
-      if($details != null && $sortByValue != 10) {
+      if ($details != null && $sortByValue != 10) {
         $parsedown = new Parsedown();
         $parsedown->setSafeMode(true);
         $rest_api_get_header = array(

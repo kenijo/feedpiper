@@ -52,30 +52,39 @@ class FilteredFeed
 
     echo '########################################################################################################################' . PHP_EOL;
     echo 'Title Filter:              ';
-    if(isset($array['title'])) { echo get_array_as_string($array['title']); }
+    if (isset($array['title'])) {
+      echo get_array_as_string($array['title']);
+    }
     echo PHP_EOL;
     echo 'Link Filter:               ';
-    if(isset($array['link'])) { echo get_array_as_string($array['link']); }
+    if (isset($array['link'])) {
+      echo get_array_as_string($array['link']);
+    }
     echo PHP_EOL;
     echo 'Link Original Filter:      ';
-    if(isset($array['link_original'])) { echo get_array_as_string($array['link_original']); }
+    if (isset($array['link_original'])) {
+      echo get_array_as_string($array['link_original']);
+    }
     echo PHP_EOL;
     echo 'Author Filter:             ';
-    if(isset($array['author'])) { echo get_array_as_string($array['author']); }
+    if (isset($array['author'])) {
+      echo get_array_as_string($array['author']);
+    }
     echo PHP_EOL;
     echo 'Category Filter:           ';
-    if(isset($array['category'])) { echo get_array_as_string($array['category']); }
+    if (isset($array['category'])) {
+      echo get_array_as_string($array['category']);
+    }
     echo PHP_EOL;
     echo 'Content Filter:            ';
-    if(isset($array['content'])) { echo get_array_as_string($array['content']); }
-    echo PHP_EOL;
-    echo PHP_EOL;
-    if ($this->get_skip())
-    {
-      echo 'FILTER OUT' . PHP_EOL;
+    if (isset($array['content'])) {
+      echo get_array_as_string($array['content']);
     }
-    else
-    {
+    echo PHP_EOL;
+    echo PHP_EOL;
+    if ($this->get_skip()) {
+      echo 'FILTER OUT' . PHP_EOL;
+    } else {
       echo 'DO NOT FILTER' . PHP_EOL;
     }
     echo '########################################################################################################################';
@@ -83,19 +92,15 @@ class FilteredFeed
 
   public function set_authors()
   {
-    $authors = Array();
+    $authors = array();
 
-    if ($this->get_entry()->get_authors())
-    {
+    if ($this->get_entry()->get_authors()) {
       // Flatten the authors
-      foreach ($this->get_entry()->get_authors() as $author)
-      {
-        if ($author->get_name())
-        {
+      foreach ($this->get_entry()->get_authors() as $author) {
+        if ($author->get_name()) {
           $authors[] = $author->get_name();
         }
-        if ($author->get_email())
-        {
+        if ($author->get_email()) {
           $authors[] = $author->get_email();
         }
       }
@@ -104,8 +109,7 @@ class FilteredFeed
     $this->authors = cleanArray($authors);
 
     // Filter according to author filter
-    foreach ($this->authors as $author)
-    {
+    foreach ($this->authors as $author) {
       /*
       if($this->filter_keep($author, 'author'))
       {
@@ -113,8 +117,7 @@ class FilteredFeed
         return;
       }
       */
-      if ($this->filter_out($author, 'author'))
-      {
+      if ($this->filter_out($author, 'author')) {
         $this->set_skip(true);
         return;
       }
@@ -123,11 +126,9 @@ class FilteredFeed
 
   public function set_categories()
   {
-    $categories = Array();
-
+    $categories = array();
     // If we don't have categories defined then generate some based on the link and title
-    if ($this->get_entry()->get_categories() === null)
-    {
+    if ($this->get_entry()->get_categories() === null) {
       /*
       // Uncomment this code if you want to generate categories for feeds who don't have
       // any category defined, based on link and/or title. It is not likely to be useful
@@ -177,27 +178,22 @@ class FilteredFeed
      */
     }
     // Use the entry categories
-    else
-    {
+    else {
       // Flatten the categories
-      foreach ($this->get_entry()->get_categories() as $category)
-      {
-        if ($category->get_term())
-        {
+      foreach ($this->get_entry()->get_categories() as $category) {
+        if ($category->get_term()) {
           $categories[] = $category->get_term();
         }
-        if ($category->get_label())
-        {
+        if ($category->get_label()) {
           $categories[] = $category->get_label();
         }
       }
     }
 
     $this->categories = cleanArray($categories, 'strtolower');
-    
+
     // Filter according to category filter
-    foreach ($this->categories as $category)
-    {
+    foreach ($this->categories as $category) {
       /*
       if($this->filter_keep($category, 'category'))
       {
@@ -205,8 +201,7 @@ class FilteredFeed
         return;
       }
       */
-      if ($this->filter_out($category, 'category'))
-      {
+      if ($this->filter_out($category, 'category')) {
         $this->set_skip(true);
         return;
       }
@@ -217,18 +212,17 @@ class FilteredFeed
   {
     $content = null;
 
-    if ($this->get_entry()->get_content(true))
-    {
+    if ($this->get_entry()->get_content(true)) {
       $content = $this->get_entry()->get_content(true);
 
       //$content = html_entity_decode($content);
 
       // Remove tracking links if present
-      $content = preg_replace('#'.'<br clear="all">.*'.'#imu', '', $content);
-      $content = preg_replace('#'.'<div.*?></div>'.'#imu', '', $content);
+      $content = preg_replace('#' . '<br clear="all">.*' . '#imu', '', $content);
+      $content = preg_replace('#' . '<div.*?></div>' . '#imu', '', $content);
 
       // Remove left over spaces
-      $content = preg_replace('#'. '(\s)+' . '#imu', ' ', $content);
+      $content = preg_replace('#' . '(\s)+' . '#imu', ' ', $content);
       $content = trim($content);
     }
 
@@ -237,25 +231,17 @@ class FilteredFeed
 
   public function set_date()
   {
-    if ($this->feed_format == 'ATOM')
-    {
+    if ($this->feed_format == 'ATOM') {
       $date_format = DATE_ATOM;
-    }
-    elseif ($this->feed_format == 'RSS')
-    {
+    } elseif ($this->feed_format == 'RSS') {
       $date_format = DATE_RSS;
     }
 
-    if ($date = $this->get_entry()->get_updated_gmdate($date_format))
-    {
+    if ($date = $this->get_entry()->get_updated_gmdate($date_format)) {
       $this->date = $date;
-    }
-    elseif ($date = $this->get_entry()->get_gmdate($date_format))
-    {
+    } elseif ($date = $this->get_entry()->get_gmdate($date_format)) {
       $this->date = $date;
-    }
-    else
-    {
+    } else {
       $this->date = gmdate($date_format);
     }
   }
@@ -269,33 +255,24 @@ class FilteredFeed
     $link = before_last('?#', $enclosure->get_link());
 
     // If link == '//'
-    if ($link == '//')
-    {
+    if ($link == '//') {
       // This regex selects the images in the SRC attribute of IMG elements
-      if($this->get_content() != null)
-      {
+      if ($this->get_content() != null) {
         $description = $this->get_content();
-      }
-      else
-      {
+      } else {
         $description = $this->get_summary();
       }
-      preg_match('#'.'<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>'.'#imu', $description, $matches);
+      preg_match('#' . '<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>' . '#imu', $description, $matches);
 
-      if ($matches)
-      {
+      if ($matches) {
         // Then we use the first image found in the content or in the summary
         $link = urldecode($matches[2]);
-      }
-      else
-      {
+      } else {
         // Then we nullify the link
         $link = null;
       }
       $this->set_enclosure_link($link);
-    }
-    else
-    {
+    } else {
       $this->set_enclosure_link($link);
       $this->set_enclosure_length($enclosure->get_length());
       $this->set_enclosure_type($enclosure->get_type());
@@ -336,18 +313,15 @@ class FilteredFeed
   {
     $id = $this->get_entry()->get_id();
 
-    if (! filter_var ($id, FILTER_VALIDATE_URL) === false)
-    {
+    if (!filter_var($id, FILTER_VALIDATE_URL) === false) {
       $id = urldecode($id);
 
       $scheme = 'http';
-      if (after_last($scheme, $id))
-      {
+      if (after_last($scheme, $id)) {
         $id = $scheme . after_last($scheme, $id);
       }
 
-      if (before_last('#', $id))
-      {
+      if (before_last('#', $id)) {
         $id = before_last('#', $id);
       }
     }
@@ -358,25 +332,18 @@ class FilteredFeed
   public function set_link()
   {
     // Check if the ID is a link and use it, otherwise use the regular link
-    if (! filter_var ($this->get_id(), FILTER_VALIDATE_URL) === false)
-    {
+    if (!filter_var($this->get_id(), FILTER_VALIDATE_URL) === false) {
       $link = $this->get_id();
-    }
-    else
-    {
-      $feedburner = $this->get_entry()->get_item_tags('http://rssnamespace.org/feedburner/ext/1.0','origLink');
+    } else {
+      $feedburner = $this->get_entry()->get_item_tags('http://rssnamespace.org/feedburner/ext/1.0', 'origLink');
 
-      if (isset($feedburner))
-      {
-        $link = $feedburner[0] ['data'];
-      }
-      else
-      {
+      if (isset($feedburner)) {
+        $link = $feedburner[0]['data'];
+      } else {
         $link = urldecode($this->get_entry()->get_link());
       }
 
-      if (before_last('#', $link))
-      {
+      if (before_last('#', $link)) {
         $link = before_last('#', $link);
       }
     }
@@ -391,8 +358,7 @@ class FilteredFeed
       return;
     }
     */
-    if ($this->filter_out($this->link, 'link'))
-    {
+    if ($this->filter_out($this->link, 'link')) {
       $this->set_skip(true);
       return;
     }
@@ -410,8 +376,7 @@ class FilteredFeed
       return;
     }
     */
-    if ($this->filter_out($this->link_original, 'link_original'))
-    {
+    if ($this->filter_out($this->link_original, 'link_original')) {
       $this->set_skip(true);
       return;
     }
@@ -426,18 +391,17 @@ class FilteredFeed
   {
     $summary = null;
 
-    if ($this->get_entry()->get_description(true))
-    {
+    if ($this->get_entry()->get_description(true)) {
       $summary = $this->get_entry()->get_description(true);
 
       //$summary = html_entity_decode($summary);
 
       // Remove tracking links if present
-      $summary = preg_replace('#'.'<br clear="all">.*'.'#imu', '', $summary);
-      $summary = preg_replace('#'.'<div.*?></div>'.'#imu', '', $summary);
+      $summary = preg_replace('#' . '<br clear="all">.*' . '#imu', '', $summary);
+      $summary = preg_replace('#' . '<div.*?></div>' . '#imu', '', $summary);
 
       // Remove left over spaces
-      $summary = preg_replace('#'. '(\s)+' . '#imu', ' ', $summary);
+      $summary = preg_replace('#' . '(\s)+' . '#imu', ' ', $summary);
       $summary = trim($summary);
     }
 
@@ -451,8 +415,7 @@ class FilteredFeed
       return;
     }
     */
-    if ($this->filter_out($this->summary, 'content'))
-    {
+    if ($this->filter_out($this->summary, 'content')) {
       $this->set_skip(true);
       return;
     }
@@ -461,8 +424,7 @@ class FilteredFeed
   public function set_title()
   {
     // Filter according to title filter
-    if ($this->title = $this->get_entry()->get_title())
-    {
+    if ($this->title = $this->get_entry()->get_title()) {
       /*
       if($this->filter_keep($this->title, 'title'))
       {
@@ -470,8 +432,7 @@ class FilteredFeed
         return;
       }
       */
-      if ($this->filter_out($this->title, 'title'))
-      {
+      if ($this->filter_out($this->title, 'title')) {
         $this->set_skip(true);
         return;
       }
@@ -480,8 +441,7 @@ class FilteredFeed
 
   public function get_authors()
   {
-    if ($this->authors !== null)
-    {
+    if ($this->authors !== null) {
       return $this->authors;
     } else {
       return null;
@@ -490,8 +450,7 @@ class FilteredFeed
 
   public function get_categories()
   {
-    if ($this->categories !== null)
-    {
+    if ($this->categories !== null) {
       return $this->categories;
     } else {
       return null;
@@ -500,8 +459,7 @@ class FilteredFeed
 
   public function get_content()
   {
-    if ($this->content !== null)
-    {
+    if ($this->content !== null) {
       return $this->content;
     } else {
       return null;
@@ -510,8 +468,7 @@ class FilteredFeed
 
   public function get_date()
   {
-    if ($this->date !== null)
-    {
+    if ($this->date !== null) {
       return $this->date;
     } else {
       return null;
@@ -520,8 +477,7 @@ class FilteredFeed
 
   public function get_enclosure_length()
   {
-    if ($this->enclosure_length !== null)
-    {
+    if ($this->enclosure_length !== null) {
       return $this->enclosure_length;
     } else {
       return null;
@@ -530,8 +486,7 @@ class FilteredFeed
 
   public function get_enclosure_link()
   {
-    if ($this->enclosure_link !== null)
-    {
+    if ($this->enclosure_link !== null) {
       return $this->enclosure_link;
     } else {
       return null;
@@ -540,8 +495,7 @@ class FilteredFeed
 
   public function get_enclosure_type()
   {
-    if ($this->enclosure_type !== null)
-    {
+    if ($this->enclosure_type !== null) {
       return $this->enclosure_type;
     } else {
       return null;
@@ -550,8 +504,7 @@ class FilteredFeed
 
   public function get_entry()
   {
-    if ($this->entry !== null)
-    {
+    if ($this->entry !== null) {
       return $this->entry;
     } else {
       return null;
@@ -560,8 +513,7 @@ class FilteredFeed
 
   private function get_filter()
   {
-    if ($this->filter !== null)
-    {
+    if ($this->filter !== null) {
       return $this->filter;
     } else {
       return null;
@@ -570,8 +522,7 @@ class FilteredFeed
 
   private function get_global_filter()
   {
-    if ($this->global_filter !== null)
-    {
+    if ($this->global_filter !== null) {
       return $this->global_filter;
     } else {
       return null;
@@ -580,8 +531,7 @@ class FilteredFeed
 
   public function get_id()
   {
-    if ($this->id !== null)
-    {
+    if ($this->id !== null) {
       return $this->id;
     } else {
       return null;
@@ -590,8 +540,7 @@ class FilteredFeed
 
   public function get_link()
   {
-    if ($this->link !== null)
-    {
+    if ($this->link !== null) {
       return $this->link;
     } else {
       return null;
@@ -600,8 +549,7 @@ class FilteredFeed
 
   public function get_link_original()
   {
-    if ($this->link_original !== null)
-    {
+    if ($this->link_original !== null) {
       return $this->link_original;
     } else {
       return null;
@@ -610,8 +558,7 @@ class FilteredFeed
 
   public function get_skip()
   {
-    if ($this->skip !== null)
-    {
+    if ($this->skip !== null) {
       return $this->skip;
     } else {
       return null;
@@ -620,8 +567,7 @@ class FilteredFeed
 
   public function get_summary()
   {
-    if ($this->summary !== null)
-    {
+    if ($this->summary !== null) {
       return $this->summary;
     } else {
       return null;
@@ -630,8 +576,7 @@ class FilteredFeed
 
   public function get_title()
   {
-    if ($this->title !== null)
-    {
+    if ($this->title !== null) {
       return $this->title;
     } else {
       return null;
@@ -655,37 +600,26 @@ class FilteredFeed
     $entry = remove_accents($entry);
 
     // Apply feed filters
-    if(isset($array[$element]))
-    {
+    if (isset($array[$element])) {
       $filters = $array[$element];
 
-      foreach ($filters as $key => $filter)
-      {
-        if ($key == 'starts')
-        {
+      foreach ($filters as $key => $filter) {
+        if ($key == 'starts') {
           $regex_starts = '^';
           $regex_ends   = '';
-        }
-        elseif ($key == 'contains')
-        {
+        } elseif ($key == 'contains') {
           $regex_starts = '\b';
           $regex_ends   = '\b';
-        }
-        elseif ($key == 'ends')
-        {
+        } elseif ($key == 'ends') {
           $regex_starts = '';
           $regex_ends = '$';
-        }
-        elseif ($key == 'regex')
-        {
+        } elseif ($key == 'regex') {
           $regex_starts = '';
           $regex_ends   = '';
         }
 
-        foreach ($filter as $value)
-        {
-          if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0)
-          {
+        foreach ($filter as $value) {
+          if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0) {
             return true;
           }
         }
@@ -695,37 +629,26 @@ class FilteredFeed
     $array = $this->get_global_filter();
 
     // Apply global
-    if(isset($array[$element]))
-    {
+    if (isset($array[$element])) {
       $filters = $array[$element];
 
-      foreach ($filters as $key => $filter)
-      {
-        if ($key == 'starts')
-        {
+      foreach ($filters as $key => $filter) {
+        if ($key == 'starts') {
           $regex_starts = '^';
           $regex_ends   = '';
-        }
-        elseif ($key == 'contains')
-        {
+        } elseif ($key == 'contains') {
           $regex_starts = '\b';
           $regex_ends   = '\b';
-        }
-        elseif ($key == 'ends')
-        {
+        } elseif ($key == 'ends') {
           $regex_starts = '';
           $regex_ends = '$';
-        }
-        elseif ($key == 'regex')
-        {
+        } elseif ($key == 'regex') {
           $regex_starts = '';
           $regex_ends   = '';
         }
 
-        foreach ($filter as $value)
-        {
-          if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0)
-          {
+        foreach ($filter as $value) {
+          if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0) {
             return true;
           }
         }
@@ -751,37 +674,26 @@ class FilteredFeed
     $entry = remove_accents($entry);
 
     // Apply feed filters
-    if(isset($array['keep'][$element]))
-    {
+    if (isset($array['keep'][$element])) {
       $filters = $array['keep'][$element];
 
-      foreach ($filters as $key => $filter)
-      {
-        if ($key == 'starts')
-        {
+      foreach ($filters as $key => $filter) {
+        if ($key == 'starts') {
           $regex_starts = '^';
           $regex_ends   = '';
-        }
-        elseif ($key == 'contains')
-        {
+        } elseif ($key == 'contains') {
           $regex_starts = '\b';
           $regex_ends   = '\b';
-        }
-        elseif ($key == 'ends')
-        {
+        } elseif ($key == 'ends') {
           $regex_starts = '';
           $regex_ends = '$';
-        }
-        elseif ($key == 'regex')
-        {
+        } elseif ($key == 'regex') {
           $regex_starts = '';
           $regex_ends   = '';
         }
 
-        foreach ($filter as $value)
-        {
-         if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0)
-          {
+        foreach ($filter as $value) {
+          if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0) {
             return false;
           }
         }
