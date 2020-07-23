@@ -1,8 +1,5 @@
 name: Deploy to SYNOLOGY
-on:
-  push:
-    paths-ignore:
-      - .github/**
+on: push
 jobs:
   FTP-Deploy-Action:
     runs-on: ubuntu-latest
