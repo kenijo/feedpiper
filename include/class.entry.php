@@ -49,7 +49,7 @@ class Entry
     // Conveys a short summary, abstract, or excerpt of the entry.
     // Summary should be provided if there either is no content provided for the entry,
     // or that content is not inline (i.e., contains a src attribute), or if the content is encoded in base64.
-    if ($this->get_entry_summary() && $this->get_entry_summary() == '[no content]') {
+    if ($this->get_entry_summary()) {
       echo '    <summary type="html">' . PHP_EOL;
       echo '      <![CDATA[' . PHP_EOL;
       echo '        ' . html_entity_decode($this->get_entry_summary());
