@@ -1,11 +1,11 @@
-name: Deploy to SYNOLOGY
+﻿name: Deploy to SYNOLOGY (FTP-Deploy-Action v3)
 on: push
 jobs:
   FTP-Deploy-Action:
     runs-on: ubuntu-latest
     steps:
       - name: Initializing repository
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
         with:
           fetch-depth: 2
           submodules: recursive
@@ -27,9 +27,8 @@ jobs:
       - name: Deploying to server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
-          ftp-server: ${{ secrets.SYNOLOGY_SFTP_SERVER }}
-          ftp-username: ${{ secrets.SYNOLOGY_SFTP_USERNAME }}
-          ftp-password: ${{ secrets.SYNOLOGY_SFTP_PASSWORD }}
-          known-hosts: ${{ secrets.SYNOLOGY_SFTP_KNOWN_HOSTS }}
+          ftp-server: sftp://${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}:${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}/web/feedpiper/
+          ftp-username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
+          ftp-password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
+          local-dir: www/
           git-ftp-args: --insecure
-          local-dir: www

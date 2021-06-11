@@ -1,11 +1,11 @@
-name: Deploy to BLACKHOST
+﻿name: Deploy to SYNOLOGY (FTP-Deploy-Action v4)
 on: push
 jobs:
   FTP-Deploy-Action:
     runs-on: ubuntu-latest
     steps:
       - name: Initializing repository
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
         with:
           fetch-depth: 2
           submodules: recursive
@@ -25,9 +25,12 @@ jobs:
           git rm -r demo
           git rm -r tests
       - name: Deploying to server
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
-          ftp-server: ${{ secrets.BLACKHOST_FTP_SERVER }}
-          ftp-username: ${{ secrets.BLACKHOST_FTP_USERNAME }}
-          ftp-password: ${{ secrets.BLACKHOST_FTP_PASSWORD }}
-          local-dir: www
+          protocol: ftps
+          server: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
+          port: ${{ secrets.SYNOLOGY_SERVER_PORT_FTPS }}
+          username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
+          password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
+          server-dir: web/feedpiper/
+          local-dir: www/
