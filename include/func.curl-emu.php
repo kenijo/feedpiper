@@ -194,7 +194,6 @@ if (!function_exists('curl_init')) {
       if ($this->getValue(CURLOPT_URL, false))
         $this->url = $this->getValue(CURLOPT_URL);
 
-
       // SSL settings when set
       // $parsedUrl = parse_url($this->url);
       // if ($parsedUrl['scheme'] == 'https') {
