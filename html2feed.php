@@ -86,7 +86,7 @@ if (isset($_GET['page'])) {
 
   // Load HTML from an URL, Create a DOM object
   $newDomHtml = file_get_html($myPageConfig['page_url'], false, $context);
-
+    
   // Loop through html pulling feed items out
   if (isset($myPageConfig['entry'])) {
     foreach ($newDomHtml->find($myPageConfig['entry']) as $entry) {
@@ -132,6 +132,12 @@ if (isset($_GET['page'])) {
         // Set Title
         $title = $myPageConfig['title'];
         $title = trim($entry->find($title, 0)->plaintext);
+        
+        if(empty($title)) {
+          $title = $myPageConfig['thumbnail'];
+          $title = trim($entry->find($title, 0)->alt);
+        }
+        
         $title = preg_replace('#' . '\s+' . '#', ' ', $title);
         $title = html_entity_decode($title, ENT_NOQUOTES, 'UTF-8');
         $title ? $title : $title = null;
@@ -145,6 +151,7 @@ if (isset($_GET['page'])) {
         // Set Thumbnail
         $thumbnail = $myPageConfig['thumbnail'];
         $thumbnail = $entry->find($thumbnail, 0)->src;
+
         // If $thumbnail is not a full URL then we rebuild it from the feed URL
         $parsed_thumbnail = parse_url($thumbnail);
         if (!isset($parsed_thumbnail['scheme'])) {
