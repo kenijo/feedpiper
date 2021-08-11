@@ -86,7 +86,7 @@ if (isset($_GET['page'])) {
 
   // Load HTML from an URL, Create a DOM object
   $newDomHtml = file_get_html($myPageConfig['page_url'], false, $context);
-    
+
   // Loop through html pulling feed items out
   if (isset($myPageConfig['entry'])) {
     foreach ($newDomHtml->find($myPageConfig['entry']) as $entry) {
@@ -132,12 +132,12 @@ if (isset($_GET['page'])) {
         // Set Title
         $title = $myPageConfig['title'];
         $title = trim($entry->find($title, 0)->plaintext);
-        
+
         if(empty($title)) {
           $title = $myPageConfig['thumbnail'];
           $title = trim($entry->find($title, 0)->alt);
         }
-        
+
         $title = preg_replace('#' . '\s+' . '#', ' ', $title);
         $title = html_entity_decode($title, ENT_NOQUOTES, 'UTF-8');
         $title ? $title : $title = null;
@@ -169,6 +169,7 @@ if (isset($_GET['page'])) {
         $authors = trim($entry->find($authors, 0)->plaintext);
         $authors = html_entity_decode($authors);
         if (isset($authors)) {
+          $authors = str_replace('&', '', $authors);
           $authors = preg_replace('#' . '\s+' . '#', ' ', $authors);
         }
       } else {
@@ -182,6 +183,7 @@ if (isset($_GET['page'])) {
         $categories = trim($entry->find($categories, 0)->plaintext);
         $categories = html_entity_decode($categories);
         if (isset($categories)) {
+          $categories = str_replace('&', '', $categories);
           $categories = remove_accents($categories);
           $categories = explode(' ', $categories);
           $categories = array_map('strtolower', $categories);
