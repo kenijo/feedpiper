@@ -57,6 +57,15 @@ if (isset($_GET['feed'])) {
     return;
   }
 
+  // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and
+  // all that other good stuff.  The feed's information will not be available to SimplePie before
+  // this is called.
+  $success = $newSimplePie->init();
+
+  // We'll make sure that the right content type and character encoding gets set automatically.
+  // This function will grab the proper character encoding, as well as set the content type to text/html.
+  $newSimplePie->handle_content_type($content_type);
+
   // Send the content-type header with correct encoding
   if ($myFeedDebug === true) {
     $content_type = 'text/plain';
@@ -67,13 +76,18 @@ if (isset($_GET['feed'])) {
   } else {
     $content_type = 'application/xml';
   }
-  $newSimplePie->handle_content_type($content_type);
   header('Content-type: ' . $content_type . '; charset=utf-8');
+
+  // Check to see if there are more than zero errors (i.e. if there are any errors at all)
+  if ($newSimplePie->error())
+  {
+    echo htmlspecialchars($newSimplePie->error()[0]);
+  }
 
   // SimplePie API Documentation
   // http://simplepie.org/api/class-SimplePie_Item.html
   // Initialize the SimplePie feed object
-  if ($newSimplePie->init()) {
+  if ($success) {
     // Use GMT as the default time zone.
     $date = new DateTime('now', new DateTimezone('GMT'));
 
