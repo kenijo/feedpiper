@@ -12,8 +12,8 @@ if (isset($_GET['feed'])) {
     $myFeedDebug = false;
   }
 
-  if (isset($cfg[$myFeed])) {
-    $myFeedConfig = $cfg[$myFeed];
+  if (isset($cfg['feedfilter'][$myFeed])) {
+    $myFeedConfig = $cfg['feedfilter'][$myFeed];
   } else {
     echo 'A configuration could not be found in the configuration file for: ' . $myFeed;
     return;
@@ -100,8 +100,8 @@ if (isset($_GET['feed'])) {
     }
 
     // Cleanup the global filters
-    if (isset($cfg['global_filter'])) {
-      $newFilteredFeed->set_global_filter(cleanArray($cfg['global_filter'], 'strtolower'));
+    if (isset($cfg['feedfilter']['global_filter'])) {
+      $newFilteredFeed->set_global_filter(cleanArray($cfg['feedfilter']['global_filter'], 'strtolower'));
     }
 
     $newFeed->set_feed_generator_name(SIMPLEPIE_NAME);
