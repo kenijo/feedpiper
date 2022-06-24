@@ -18,18 +18,25 @@ if (isset($_GET['category'])) {
   $categorySelection = $_GET['category'];
 
   $categoryArray = array(
+    "All categories",
     "Azure",
+    "Data Science",
     "Debuggers",
+    "Education",
     "Extension Packs",
     "Formatters",
     "Keymaps",
     "Language Packs",
     "Linters",
+    "Machine Learning",
+    "Notebooks",
     "Other",
     "Programming Languages",
     "SCM Providers",
     "Snippets",
-    "Themes"
+    "Testing",
+    "Themes",
+    "Visualization"
   );
 
   if ($key = array_search(strtolower($categorySelection), array_map('strtolower', $categoryArray))) {
@@ -45,7 +52,7 @@ if (isset($_GET['category'])) {
 
 // Sort extensions by
 // Defaults to sorting by PublishedDate
-$sortByValue = 10;
+$sortByValue = 5;
 if (isset($_GET['sortBy'])) {
   $sortBySelection = $_GET['sortBy'];
 
@@ -53,10 +60,10 @@ if (isset($_GET['sortBy'])) {
     1 => "UpdatedDate",
     2 => "Name",
     3 => "Publisher",
-    4 => "Downloads",
-    8 => "Trending",
-    10 => "PublishedDate",
-    12 => "Rating"
+    4 => "Installs",
+    5 => "PublishedDate",
+    6 => "Rating",
+    7 => "Trending"
   );
 
   if ($key = array_search(strtolower($sortBySelection), array_map('strtolower', $sortByArray))) {
@@ -109,7 +116,7 @@ $json_data = '
       "pageSize": ' . $pageSize . ',
       "pageNumber": ' . $pageNumber . ',
       "sortBy": ' . $sortByValue . ',
-      "sortOrder": ' . $sortOrder . ',
+      "sortOrder": ' . $sortOrder . '
     }
   ],
   "flags": 870
@@ -117,12 +124,12 @@ $json_data = '
 ';
 
 $rest_api_post_header = array(
-  'Accept: application/json; charset=utf-8; api-version=5.0-preview.1',
+  'Accept: application/json; charset=utf-8; api-version=7.1-preview.1',
   'Content-Length: ' . strlen($json_data),
   'Cache-Control: no-cache',
   'Content-Type: application/json; charset=utf-8',
   'Pragma: no-cache',
-  'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+  'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
 );
 
 if ((isset($_GET['debug'])) && ($_GET['debug'] === 'true')) {
@@ -192,6 +199,7 @@ if ($myFeedDebug === true) {
 // Create an array of unique identifiers to skip duplicate entries
 $identifier_list = array();
 $number_of_entry = 0;
+
 foreach ($json['results'][0]['extensions'] as $entry) {
   if ($number_of_entry <= $pageSize) {
     $newEntry = new Entry($cfg['feed_format']);
