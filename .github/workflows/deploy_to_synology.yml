@@ -25,7 +25,7 @@ jobs:
           git rm -r demo
           git rm -r tests
       - name: Deploying to server
-        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           ftp-server: sftp://${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}:${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}/web/feedpiper/
           ftp-username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
