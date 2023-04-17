@@ -1,4 +1,4 @@
-﻿name: Deploy to SYNOLOGY (FTP-Deploy-Action v3)
+name: Deploy to SYNOLOGY SFTP
 on: push
 jobs:
   FTP-Deploy-Action:
@@ -25,12 +25,17 @@ jobs:
           git rm -r build
           git rm -r demo
           git rm -r tests
-      - name: Deploying to server
-        # https://github.com/SamKirkland/FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@3.1.2
+      - name: Deploying to SFTP Server
+        # https://github.com/marketplace/actions/ftp-deployer
+        uses: sand4rt/ftp-deployer@v1.7
         with:
-          ftp-server: sftp://${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}:${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}/web/feedpiper/
-          ftp-username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
-          ftp-password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
-          local-dir: www/
-          git-ftp-args: --insecure
+          sftp: true
+          host: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
+          port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
+          username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
+          password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
+          remote_folder: /web/feedpiper/config/
+          local_folder: www/
+          cleanup: true
+          exclude: '[".git/**", ".github/**"]'
+          
