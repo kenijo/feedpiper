@@ -1,4 +1,4 @@
-name: Deploy to SYNOLOGY SFTP
+name: Deploy to SFTP
 on: push
 jobs:
   Deploy-SFTP:
@@ -9,9 +9,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: DIR #1
-        run: |
-          ls -al
       - name: Cleaning up files and folders
         run: |
           # Delete files recursively from all subfolders
@@ -42,16 +39,9 @@ jobs:
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
-      - name: DIR #2
-        run: |
-          ls -al
-      - name: DIR #3
-        run: |
-          cd include
-          ls -al
       - name: DIR #4
         run: |
-          cd simplepie
+          cd include/simplepie
           ls -al
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
