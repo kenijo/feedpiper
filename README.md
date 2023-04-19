@@ -1,4 +1,4 @@
-# FeedPiper
+﻿# FeedPiper
 
 FeedPiper is a toolbox that provides two services:
 
@@ -24,21 +24,22 @@ Configuration files are in the config folder.
 
 ### Requirements
 
-* PHP 5.3+
+* PHP 7.2+
 * Cache System (folder or db)
-  * cache folder writable (0766)
+  * Writable cache folder (chmod 777)
   * MySQL/Maria DB
 * Upload the project to your server
 
-* Clone the repository then load the submodules:
+* Clone the feedpiper repository then the submodules
   * git clone https://github.com/kenijo/feedpiper
   * git submodule update --init --recursive
 
-* Clone the repository with its submodules all at once:
+* Clone the feedpiper repository with the submodules all at once
   * git clone --recurse-submodules https://github.com/kenijo/feedpiper
 
-* Add a new submodule:
-  * git submodule add https://github.com/user/repo include/repo
+* Add a new submodule to the feedpiper repository
+  * git submodule add https://github.com/user/<strong>repo</strong> include/<strong>repo</strong>
+
 
 ### Credits
 
