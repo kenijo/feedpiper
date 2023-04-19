@@ -1,23 +1,30 @@
-﻿name: Deploy to SYNOLOGY SFTP
+﻿name: Deploy to SFTP
 on: push
 jobs:
-  FTP-Deploy-Action:
+  Deploy-FeedPiper:
     runs-on: ubuntu-latest
     steps:
-      - name: Initializing repository
+      - name: Initializing feedpiper repository
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
-          submodules: recursive
-      - name: Readying repository for deployment
+          submodules: recursive 
+      - name: Initializing feedpiper-config repository - Delete default config folder
+        run: rm -rf './config/'
+      - name: Initializing feedpiper-config repository
+        # This repository is meant to deploy my personal configuration stored in a separate repository
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        continue-on-error: true
+        with:
+          repository: kenijo/feedpiper-config
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: config
+      - name: Initializing feedpiper-config repository - Rename configuration file
+        continue-on-error: true
+        run: mv server-synology.conf.php conf.php
+      - name: Cleaning up - Delete files recursively from all subfolders
         run: |
-          git clone --recurse-submodules . www
-          cd www
-          git rm -rf config
-      - name: Cleaning up unnecessary files and folders
-        run: |
-          # Delete files recursively from all subfolders
           find . -name '.editorconfig' -type f -delete
           find . -name '.git' -type f -delete
           find . -name '.git-ftp-ignore' -type f -delete
@@ -29,22 +36,24 @@ jobs:
           find . -name 'composer.json' -type f -delete
           find . -name 'phpunit.xml.dist' -type f -delete
           find . -name '_config.yml' -type f -delete
-          # Delete specific files
-          git rm -f 'include/update_submodules.cmd'
-          # Delete folders recursively from all subfolders
+      - name: Cleaning up - Delete specific files
+        run: |
+          rm -f './include/update_submodules.cmd'
+      - name: Cleaning up - Delete folders recursively from all subfolders
+        run: |
           find . -path '*/.git/*' -delete
           find . -type d -name '.git' -empty -delete
           find . -path '*/.github/*' -delete
           find . -type d -name '.github' -empty -delete
           find . -path '*/.vscode/*' -delete
           find . -type d -name '.vscode' -empty -delete
-          # Delete specific folders
-          git rm -rf 'config/'
-          git rm -rf 'include/parsedown/test/'
-          git rm -rf 'include/simplepie/build/'
-          git rm -rf 'include/simplepie/compatibility_test/'
-          git rm -rf 'include/simplepie/demo/'
-          git rm -rf 'include/simplepie/tests/'
+      - name: Cleaning up - Delete specific folders
+        run: |
+          rm -rf './include/parsedown/test/'
+          rm -rf './include/simplepie/build/'
+          rm -rf './include/simplepie/compatibility_test/'
+          rm -rf './include/simplepie/demo/'
+          rm -rf './include/simplepie/tests/'
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
@@ -55,5 +64,5 @@ jobs:
           username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           remote_folder: /web/feedpiper/
-          local_folder: www/
+          local_folder: .
           cleanup: true
