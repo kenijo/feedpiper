@@ -129,7 +129,7 @@ $rest_api_post_header = array(
   'Cache-Control: no-cache',
   'Content-Type: application/json; charset=utf-8',
   'Pragma: no-cache',
-  'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
 );
 
 if ((isset($_GET['debug'])) && ($_GET['debug'] === 'true')) {
@@ -169,9 +169,9 @@ $date = new DateTime('now', new DateTimezone('GMT'));
 
 $newFeed = new Feed($cfg['feed_format']);
 
-$newFeed->set_feed_generator_name(SIMPLEPIE_NAME);
+$newFeed->set_feed_generator_name(\SimplePie\SimplePie::NAME);
 $newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
-$newFeed->set_feed_generator_version(SIMPLEPIE_VERSION);
+$newFeed->set_feed_generator_version(\SimplePie\SimplePie::VERSION);
 $newFeed->set_feed_icon(url_dir_path() . '/favicon.ico');
 $newFeed->set_feed_id(url_file_path());
 $newFeed->set_feed_link(url_file_path());
@@ -314,8 +314,8 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       if (is_array($entry['categories'])) {
         $content .= '          <br />Categories: ';
         $delimiter = '';
-        foreach ($entry['categories'] as $categorie) {
-          $content .= $delimiter . $categorie;
+        foreach ($entry['categories'] as $category) {
+          $content .= $delimiter . $category;
           $delimiter = ', ';
         }
         $content .= PHP_EOL;
@@ -342,7 +342,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
           'Cache-Control: no-cache',
           'Content-Type: text/markdown; charset=utf-8',
           'Pragma: no-cache',
-          'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
         );
         $markdown = CallRestAPI("GET", $details, $rest_api_get_header);
         $content .= $parsedown->text($markdown);
@@ -368,7 +368,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
 
     unset($authors);
     unset($averagerating);
-    unset($categorie);
+    unset($category);
     unset($categories);
     unset($content);
     unset($details);
