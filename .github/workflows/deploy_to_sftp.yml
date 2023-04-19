@@ -22,7 +22,7 @@ jobs:
           path: config
       - name: Initializing feedpiper-config repository - Rename configuration file
         continue-on-error: true
-        run: mv server-synology.conf.php conf.php
+        run: mv './config/server-synology.conf.php' './config/conf.php'
       - name: Cleaning up - Delete files recursively from all subfolders
         run: |
           find . -name '.editorconfig' -type f -delete
