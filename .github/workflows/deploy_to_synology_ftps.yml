@@ -14,7 +14,7 @@ jobs:
         run: |
           git clone --recurse-submodules . www
           cd www
-          git rm -r config
+          git rm -rf config
       - name: Cleaning up unnecessary files and folders
         run: |
           # Delete files recursively from all subfolders
@@ -30,7 +30,7 @@ jobs:
           find . -name 'phpunit.xml.dist' -type f -delete
           find . -name '_config.yml' -type f -delete
           # Delete specific files
-          rm -f 'include/update_submodules.cmd'
+          git rm -f 'include/update_submodules.cmd'
           # Delete folders recursively from all subfolders
           find . -path '*/.git/*' -delete
           find . -type d -name '.git' -empty -delete
@@ -39,12 +39,12 @@ jobs:
           find . -path '*/.vscode/*' -delete
           find . -type d -name '.vscode' -empty -delete
           # Delete specific folders
-          rm -rf 'config/'
-          rm -rf 'include/parsedown/test/'
-          rm -rf 'include/simplepie/build/'
-          rm -rf 'include/simplepie/compatibility_test/'
-          rm -rf 'include/simplepie/demo/'
-          rm -rf 'include/simplepie/tests/'
+          git rm -rf 'config/'
+          git rm -rf 'include/parsedown/test/'
+          git rm -rf 'include/simplepie/build/'
+          git rm -rf 'include/simplepie/compatibility_test/'
+          git rm -rf 'include/simplepie/demo/'
+          git rm -rf 'include/simplepie/tests/'
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
