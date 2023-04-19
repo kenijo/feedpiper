@@ -15,7 +15,6 @@ class FilteredFeed
   private $filter           = null;
   private $global_filter    = null;
   private $id               = null;
-  private $is_debug         = null;
   private $link             = null;
   private $link_original    = null;
   private $skip             = null;
