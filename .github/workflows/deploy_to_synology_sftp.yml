@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: kenijo/feedpiper-config
-          token: ${{ secrets.GIITHUB_PAT }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: conf
       - name: DIR
         run: |
