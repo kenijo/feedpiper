@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 
 /**
  * URL parsing functions
  */
 
-function CallRestAPI($method, $url, $header = false, $data = false, $check_ssl = true)
+function CallRestAPI($method, $url, $header = false, $data = null, $check_ssl = true)
 {
   $curl = curl_init();
 

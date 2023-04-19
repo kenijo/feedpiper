@@ -1,6 +1,6 @@
 <?php
 
-/* A quick emulator for common curl function so code based on CURL works on curl free hostings */
+/* A quick emulator for common curl function so code based on CURL works on curl free hosting */
 if (!function_exists('curl_init')) {
   // The curl option constants
   define('CURLOPT_RETURNTRANSFER', 19913);
