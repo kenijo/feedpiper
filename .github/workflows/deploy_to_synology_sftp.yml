@@ -13,10 +13,10 @@ jobs:
       - name: Readying repository for deployment
         run: |
           git clone --recurse-submodules . www
-          cd www
-          git rm -rf config
       - name: Cleaning up unnecessary files and folders
         run: |
+          cd www
+          ls -al
           # Delete files recursively from all subfolders
           find . -name '.editorconfig' -type f -delete
           find . -name '.git' -type f -delete
@@ -30,6 +30,7 @@ jobs:
           find . -name 'phpunit.xml.dist' -type f -delete
           find . -name '_config.yml' -type f -delete
           # Delete specific files
+          rm -f 'include/update_submodules.cmd'
           git rm -f 'include/update_submodules.cmd'
           # Delete folders recursively from all subfolders
           find . -path '*/.git/*' -delete
