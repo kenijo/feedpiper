@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // Include configuration file
 require_once 'include/inc.lib.php';
@@ -19,12 +19,15 @@ if (isset($_GET['feed'])) {
     return;
   }
 
+  $i = 1;
+  $feed_array = array();
+  foreach ($myFeedConfig['url'] as $feed_url) {
   // Create a new instance of SimplePie
-  $newSimplePie = new SimplePie();
+    ${$myFeed . '_' . $i} = new \SimplePie\SimplePie();
 
   // Set the length of time(in seconds) that the contents of a feed will be cached
   if (isset($cfg['cache_length'])) {
-    $newSimplePie->set_cache_duration($cfg['cache_length']);
+      ${$myFeed . '_' . $i}->set_cache_duration($cfg['cache_length']);
   }
 
   // Set MySQL caching
@@ -37,11 +40,11 @@ if (isset($_GET['feed'])) {
       mkdir($location, 0777, true);
     }
   }
-  $newSimplePie->set_cache_location($location);
+    ${$myFeed . '_' . $i}->set_cache_location($location);
 
   // Force SimplePie to use fsockopen() instead of cURL
   if (isset($cfg['curl']) && $cfg['curl'] === false) {
-    $newSimplePie->force_fsockopen(true);
+      ${$myFeed . '_' . $i}->force_fsockopen(true);
   }
 
   if (!isset($myFeedConfig['title'])) {
@@ -50,8 +53,8 @@ if (isset($_GET['feed'])) {
   }
 
   // Set the URL of the feed(s) you want to parse
-  if (isset($myFeedConfig['url'])) {
-    $newSimplePie->set_feed_url($myFeedConfig['url']);
+    if (isset($feed_url)) {
+      ${$myFeed . '_' . $i}->set_feed_url($feed_url);
   } else {
     echo 'A "url" could not be found in the configuration file for: ' . $myFeed;
     return;
@@ -60,11 +63,11 @@ if (isset($_GET['feed'])) {
   // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and
   // all that other good stuff.  The feed's information will not be available to SimplePie before
   // this is called.
-  $success = $newSimplePie->init();
+    $success = ${$myFeed . '_' . $i}->init();
 
   // We'll make sure that the right content type and character encoding gets set automatically.
   // This function will grab the proper character encoding, as well as set the content type to text/html.
-  $newSimplePie->handle_content_type($content_type);
+    ${$myFeed . '_' . $i}->handle_content_type();
 
   // Send the content-type header with correct encoding
   if ($myFeedDebug === true) {
@@ -79,10 +82,16 @@ if (isset($_GET['feed'])) {
   header('Content-type: ' . $content_type . '; charset=utf-8');
 
   // Check to see if there are more than zero errors (i.e. if there are any errors at all)
-  if ($newSimplePie->error())
-  {
-    echo htmlspecialchars($newSimplePie->error()[0]);
+    if (${$myFeed . '_' . $i}->error()) {
+      echo htmlspecialchars(${$myFeed . '_' . $i}->error()[0]);
   }
+
+    $feed_array[] = ${$myFeed . '_' . $i};
+    $i++;
+  }
+
+  // Merge all the feeds together
+  $mergedFeeds = \SimplePie\SimplePie::merge_items($feed_array);
 
   // SimplePie API Documentation
   // http://simplepie.org/api/class-SimplePie_Item.html
@@ -104,9 +113,9 @@ if (isset($_GET['feed'])) {
       $newFilteredFeed->set_global_filter(cleanArray($cfg['feedfilter']['global_filter'], 'strtolower'));
     }
 
-    $newFeed->set_feed_generator_name(SIMPLEPIE_NAME);
+    $newFeed->set_feed_generator_name(\SimplePie\SimplePie::NAME);
     $newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
-    $newFeed->set_feed_generator_version(SIMPLEPIE_VERSION);
+    $newFeed->set_feed_generator_version(\SimplePie\SimplePie::VERSION);
     $newFeed->set_feed_icon(url_dir_path() . '/favicon.ico');
     $newFeed->set_feed_id(url_file_path());
     $newFeed->set_feed_link(url_file_path());
@@ -134,7 +143,7 @@ if (isset($_GET['feed'])) {
     // Create an array of unique identifiers to skip duplicate entries
     $identifier_list = array();
 
-    foreach ($newSimplePie->get_items() as $entry) {
+    foreach ($mergedFeeds as $entry) {
       $newEntry = new Entry($cfg['feed_format']);
 
       // Select a specific entry for debug purpose
@@ -144,7 +153,7 @@ if (isset($_GET['feed'])) {
         } else {
           $e = 0;
         }
-        $array = $newSimplePie->get_items();
+        $array = $mergedFeeds;
         $newFilteredFeed->filter($array[$e]);
       } else {
         $newFilteredFeed->filter($entry);
@@ -187,7 +196,7 @@ if (isset($_GET['feed'])) {
         $newEntry->set_entry_enclosure_link($newFilteredFeed->get_enclosure_link());
         $newEntry->set_entry_enclosure_type($newFilteredFeed->get_enclosure_type());
 
-        // Set Auhtors
+        // Set Authors
         $newEntry->set_entry_authors($newFilteredFeed->get_authors());
 
         // Set Categories
@@ -220,7 +229,6 @@ if (isset($_GET['feed'])) {
           unset($newFilteredFeed);
           unset($newEntry);
           unset($newFeed);
-          unset($newSimplePie);
 
           return;
         } else {
@@ -235,7 +243,6 @@ if (isset($_GET['feed'])) {
   }
   unset($newFilteredFeed);
   unset($newFeed);
-  unset($newSimplePie);
 } else {
   echo 'Please provide a "feed" parameter.';
 }
