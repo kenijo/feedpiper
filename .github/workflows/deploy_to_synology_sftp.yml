@@ -8,12 +8,9 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         with:
-          path: www
           submodules: recursive
-      - name: Cleaning up unnecessary files and folders
+      - name: Cleaning up files and folders
         run: |
-          ls -al
-          cd www
           ls -al
           # Delete files recursively from all subfolders
           find . -name '.editorconfig' -type f -delete
@@ -37,12 +34,12 @@ jobs:
           find . -path '*/.vscode/*' -delete
           find . -type d -name '.vscode' -empty -delete
           # Delete specific folders
-          git rm -rf './config/'
-          git rm -rf './include/parsedown/test/'
-          git rm -rf './include/simplepie/build/'
-          git rm -rf './include/simplepie/compatibility_test/'
-          git rm -rf './include/simplepie/demo/'
-          git rm -rf './include/simplepie/tests/'
+          rm -rf './config/'
+          rm -rf './include/parsedown/test/'
+          rm -rf './include/simplepie/build/'
+          rm -rf './include/simplepie/compatibility_test/'
+          rm -rf './include/simplepie/demo/'
+          rm -rf './include/simplepie/tests/'
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
@@ -53,5 +50,4 @@ jobs:
           username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           remote_folder: /web/feedpiper/
-          local_folder: www/
           cleanup: true
