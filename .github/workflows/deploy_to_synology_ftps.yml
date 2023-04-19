@@ -1,0 +1,58 @@
+﻿name: Deploy to SYNOLOGY FTP/FTPS
+on: push
+jobs:
+  FTP-Deploy-Action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initializing repository
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - name: Readying repository for deployment
+        run: |
+          git clone --recurse-submodules . www
+          cd www
+          git rm -r config
+      - name: Cleaning up unnecessary files and folders
+        run: |
+          # Delete files recursively from all subfolders
+          find . -name '.editorconfig' -type f -delete
+          find . -name '.git' -type f -delete
+          find . -name '.git-ftp-ignore' -type f -delete
+          find . -name '.git-ftp-include' -type f -delete
+          find . -name '.gitattributes' -type f -delete
+          find . -name '.gitignore' -type f -delete
+          find . -name '.gitmodules' -type f -delete
+          find . -name '.travis.yml' -type f -delete
+          find . -name 'composer.json' -type f -delete
+          find . -name 'phpunit.xml.dist' -type f -delete
+          find . -name '_config.yml' -type f -delete
+          # Delete specific files
+          rm -f 'include/update_submodules.cmd'
+          # Delete folders recursively from all subfolders
+          find . -path '*/.git/*' -delete
+          find . -type d -name '.git' -empty -delete
+          find . -path '*/.github/*' -delete
+          find . -type d -name '.github' -empty -delete
+          find . -path '*/.vscode/*' -delete
+          find . -type d -name '.vscode' -empty -delete
+          # Delete specific folders
+          rm -rf 'config/'
+          rm -rf 'include/parsedown/test/'
+          rm -rf 'include/simplepie/build/'
+          rm -rf 'include/simplepie/compatibility_test/'
+          rm -rf 'include/simplepie/demo/'
+          rm -rf 'include/simplepie/tests/'
+      - name: Deploying to FTP/FTPS Server
+        # https://github.com/SamKirkland/FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          protocol: ftps
+          server: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
+          port: ${{ secrets.SYNOLOGY_SERVER_PORT_FTPS }}
+          username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
+          password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
+          server-dir: web/feedpiper/
+          local-dir: www/
