@@ -4,12 +4,27 @@ jobs:
   Deploy-SFTP:
     runs-on: ubuntu-latest
     steps:
-      - name: Initializing repository
+      - name: Initializing feedpiper repository
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: Cleaning up - delete files recursively from all subfolders
+      - name: DELETE CONF
+        run: |
+          rm -rf './config/'
+      - name: Initializing feedpiper-config repository
+        # This repository is meant to deploy my personal configuration stored in a separate repository
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        with:
+          repository: kenijo/feedpiper-config
+          token: ${{ secrets.GIITHUB_PAT }}
+          path: conf
+      - name: DIR
+        run: |
+          cd config
+          ls -al          
+      - name: Cleaning up - Delete files recursively from all subfolders
         run: |
           find . -name '.editorconfig' -type f -delete
           find . -name '.git' -type f -delete
@@ -22,10 +37,10 @@ jobs:
           find . -name 'composer.json' -type f -delete
           find . -name 'phpunit.xml.dist' -type f -delete
           find . -name '_config.yml' -type f -delete
-      - name: Cleaning up - delete specific files
+      - name: Cleaning up - Delete specific files
         run: |
           rm -f './include/update_submodules.cmd'
-      - name: Cleaning up - delete folders recursively from all subfolders
+      - name: Cleaning up - Delete folders recursively from all subfolders
         run: |
           find . -path '*/.git/*' -delete
           find . -type d -name '.git' -empty -delete
@@ -33,7 +48,7 @@ jobs:
           find . -type d -name '.github' -empty -delete
           find . -path '*/.vscode/*' -delete
           find . -type d -name '.vscode' -empty -delete
-      - name: Cleaning up - delete specific folders
+      - name: Cleaning up - Delete specific folders
         run: |
           rm -rf './config/'
           rm -rf './include/parsedown/test/'
