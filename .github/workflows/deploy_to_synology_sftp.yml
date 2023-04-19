@@ -8,7 +8,19 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         with:
-          submodules: recursive      
+          submodules: recursive 
+      - name: Cleaning up - Delete default config folder
+        run: |
+          rm -rf './config/'
+      - name: Initializing feedpiper-config repository
+        # This repository is meant to deploy my personal configuration stored in a separate repository
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        continue-on-error: true
+        with:
+          repository: kenijo/feedpiper-config
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: config 
       - name: Cleaning up - Delete files recursively from all subfolders
         run: |
           find . -name '.editorconfig' -type f -delete
@@ -35,27 +47,11 @@ jobs:
           find . -type d -name '.vscode' -empty -delete
       - name: Cleaning up - Delete specific folders
         run: |
-          rm -rf './config/'
           rm -rf './include/parsedown/test/'
           rm -rf './include/simplepie/build/'
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
-      - name: DIR
-        run: |
-          ls -al 
-      - name: Initializing feedpiper-config repository
-        # This repository is meant to deploy my personal configuration stored in a separate repository
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v3
-        with:
-          repository: kenijo/feedpiper-config
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: config
-      - name: DIR
-        run: |
-          cd config
-          ls -al   
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
