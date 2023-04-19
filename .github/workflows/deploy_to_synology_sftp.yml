@@ -41,6 +41,9 @@ jobs:
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
+      - name: DIR
+        run: |
+          ls -al 
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
         # https://github.com/actions/checkout
@@ -48,7 +51,7 @@ jobs:
         with:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: conf
+          path: config
       - name: DIR
         run: |
           cd config
