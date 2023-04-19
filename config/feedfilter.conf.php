@@ -45,7 +45,7 @@
  * You can debug the application by using
  *   http://domain/feedfilter.php?feed=example&debug=true
  */
-$cfg['example']['title'] = 'FEEDPIPER Example - GitHub Trends';
+$cfg['example']['title'] = 'Feedpiper Example - GitHub Trends';
 $cfg['example']['url']   = array(
   'http://github-trends.ryotarai.info/rss/github_trends_all_daily.rss',
 );
