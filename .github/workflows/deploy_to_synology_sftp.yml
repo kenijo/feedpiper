@@ -8,19 +8,7 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         with:
-          submodules: recursive
-      - name: Initializing feedpiper-config repository
-        # This repository is meant to deploy my personal configuration stored in a separate repository
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v3
-        with:
-          repository: kenijo/feedpiper-config
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: conf
-      - name: DIR
-        run: |
-          cd config
-          ls -al          
+          submodules: recursive      
       - name: Cleaning up - Delete files recursively from all subfolders
         run: |
           find . -name '.editorconfig' -type f -delete
@@ -53,6 +41,18 @@ jobs:
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
+      - name: Initializing feedpiper-config repository
+        # This repository is meant to deploy my personal configuration stored in a separate repository
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        with:
+          repository: kenijo/feedpiper-config
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: conf
+      - name: DIR
+        run: |
+          cd config
+          ls -al   
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
