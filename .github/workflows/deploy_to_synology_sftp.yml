@@ -1,7 +1,7 @@
 name: Deploy to SFTP
 on: push
 jobs:
-  Deploy-SFTP:
+  Deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Initializing feedpiper repository
@@ -10,17 +10,18 @@ jobs:
         with:
           submodules: recursive 
       - name: Cleaning up - Delete default config folder
-        run: |
-          rm -rf './config/'
+        
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
+        run: rm -rf './config/'
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         continue-on-error: true
         with:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: config 
+          path: config
+        run: mv server-synology.conf.php conf.php
       - name: Cleaning up - Delete files recursively from all subfolders
         run: |
           find . -name '.editorconfig' -type f -delete
