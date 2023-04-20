@@ -64,7 +64,7 @@ jobs:
           remote_folder: '/web/feedpiper/'
           local_folder: './'
           cleanup: true
-      - name: Creating cache folder
+      - name: Changing permissions
         # https://github.com/marketplace/actions/ssh-remote-commands
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -74,6 +74,7 @@ jobs:
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           script: |
             ls -al
-            cd '/web/feedpiper/'
-            mkdir './cache/'
-            chmod 777 './cache/'
+            cd '/web/'
+            ls -al
+            chmod 755 './feedpiper/'
+            ls -al
