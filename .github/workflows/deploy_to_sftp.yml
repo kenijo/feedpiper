@@ -52,11 +52,6 @@ jobs:
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
-      - name: Creating cache folder
-        run: |
-          mkdir './cache'
-          chmod 777 './cache'
-          ls -al
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
