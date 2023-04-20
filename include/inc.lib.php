@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Inclusion of all the configuration and library files
@@ -22,7 +22,7 @@ require_once 'simplepie/autoloader.php';
 require_once 'simplepie/idn/idna_convert.class.php';
 
 // Include Simple HTML DOM from Sourceforge
-require_once 'simple_html_dom/src/KubAT/PhpSimple/HtmlDomParser.php';
+require_once 'simplehtmldom/simple_html_dom.php';
 
 // Include Parsedown
 require_once 'include/parsedown/Parsedown.php';

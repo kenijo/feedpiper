@@ -1,5 +1,4 @@
-<?php
-namespace simple_html_dom;
+﻿<?php
 
 // Include configuration file
 require_once 'include/inc.lib.php';
@@ -49,7 +48,6 @@ if (isset($_GET['page'])) {
 
   $newFeed->set_feed_generator_name('Simple HTML DOM');
   $newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
-  $newFeed->set_feed_generator_version('1.5 rev 210');
   $newFeed->set_feed_icon(url_dir_path() . '/favicon.ico');
   $newFeed->set_feed_id(url_file_path());
   $newFeed->set_feed_link(url_file_path());
