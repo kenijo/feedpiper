@@ -52,6 +52,10 @@ jobs:
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
+      - name: Creating cache folder
+        run: |
+          mkdir './cache'
+          chmod 777 './cache'
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
