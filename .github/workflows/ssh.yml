@@ -13,7 +13,7 @@ jobs:
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           script: |
-            ls -al
             mkdir './web/feedpiper/cache/'
             chmod 755 './web/feedpiper/cache/'
+            cd './web/feedpiper/'
             ls -al
