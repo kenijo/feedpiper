@@ -8,7 +8,7 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v3
         with:
-          submodules: recursive 
+          submodules: recursive
       - name: Initializing feedpiper-config repository - Delete default config folder
         run: rm -rf './config/'
       - name: Initializing feedpiper-config repository
@@ -52,6 +52,10 @@ jobs:
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
           rm -rf './include/simplepie/tests/'
+      - name: Creating cache folder
+        run: |
+          mkdir './cache'
+          chmod 777 './cache'
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
