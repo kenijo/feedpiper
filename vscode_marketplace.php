@@ -129,7 +129,7 @@ $rest_api_post_header = array(
   'Cache-Control: no-cache',
   'Content-Type: application/json; charset=utf-8',
   'Pragma: no-cache',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
+  'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
 );
 
 if ((isset($_GET['debug'])) && ($_GET['debug'] === 'true')) {
@@ -342,7 +342,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
           'Cache-Control: no-cache',
           'Content-Type: text/markdown; charset=utf-8',
           'Pragma: no-cache',
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
+          'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
         );
         $markdown = CallRestAPI("GET", $details, $rest_api_get_header);
         $content .= $parsedown->text($markdown);
