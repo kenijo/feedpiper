@@ -1,5 +1,0 @@
-name: Call other workflow
-on: push
-jobs:
-  call-workflow:
-    uses: kenijo/feedpiper-config/.github/workflows/deploy_feedpiper-config_to_sftp.yml@main

@@ -1,4 +1,4 @@
-﻿name: Deploy to SFTP
+﻿name: Deploy FeedPiper to SFTP
 on: push
 jobs:
   Deploy-FeedPiper:
@@ -27,8 +27,6 @@ jobs:
         run: |
           find . -name '.editorconfig' -type f -delete
           find . -name '.git' -type f -delete
-          find . -name '.git-ftp-ignore' -type f -delete
-          find . -name '.git-ftp-include' -type f -delete
           find . -name '.gitattributes' -type f -delete
           find . -name '.gitignore' -type f -delete
           find . -name '.gitmodules' -type f -delete
