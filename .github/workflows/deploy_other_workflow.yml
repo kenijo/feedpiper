@@ -1,6 +1,5 @@
-﻿name: Deploy to FTP/FTPS
+﻿name: Call other workflow
 on: push
 jobs:
-  Deploy-FeedPiper:
-    call-workflow:
-      uses: kenijo/feedpiper-config/.github/workflows/deploy_feedpiper-config_to_sftp.yml@main
+  call-workflow:
+    uses: kenijo/feedpiper-config/.github/workflows/deploy_feedpiper-config_to_sftp.yml@main
