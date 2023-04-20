@@ -15,5 +15,5 @@ jobs:
           script: |
             cd '/volume1/web/feedpiper/'
             mkdir -p './cache/'
-            chmod 755 './cache/'
+            chmod 777 './cache/'
             ls -al
