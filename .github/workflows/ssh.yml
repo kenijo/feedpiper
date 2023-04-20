@@ -1,4 +1,4 @@
-﻿name: SSH
+name: SSH
 on: push
 jobs:
   Deploy-SFTP:
@@ -14,7 +14,6 @@ jobs:
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           script: |
             ls -al
-            cd '/web/'
-            ls -al
-            chmod 755 './feedpiper/'
+            mkdir './web/feedpiper/cache/'
+            chmod 755 './web/feedpiper/cache/'
             ls -al
