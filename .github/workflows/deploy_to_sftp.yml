@@ -32,10 +32,16 @@ jobs:
           find . -name '.gitmodules' -type f -delete
           find . -name '.travis.yml' -type f -delete
           find . -name 'composer.json' -type f -delete
+          find . -name 'composer.lock' -type f -delete
+          find . -name 'mkdocs.yml' -type f -delete
+          find . -name 'phpcompatibility.xml' -type f -delete
+          find . -name 'phpcs.xml' -type f -delete
+          find . -name 'phpunit.xml' -type f -delete
           find . -name 'phpunit.xml.dist' -type f -delete
           find . -name '_config.yml' -type f -delete
       - name: Cleaning up - Delete specific files
         run: |
+          rm -f './include/simplehtmldom/release.sh'
           rm -f './include/update_submodules.cmd'
       - name: Cleaning up - Delete folders recursively from all subfolders
         run: |
@@ -48,6 +54,10 @@ jobs:
       - name: Cleaning up - Delete specific folders
         run: |
           rm -rf './include/parsedown/test/'
+          rm -rf './include/simplehtmldom/.mkdocs'
+          rm -rf './include/simplehtmldom/docs'
+          rm -rf './include/simplehtmldom/example'
+          rm -rf './include/simplehtmldom/tests'
           rm -rf './include/simplepie/build/'
           rm -rf './include/simplepie/compatibility_test/'
           rm -rf './include/simplepie/demo/'
