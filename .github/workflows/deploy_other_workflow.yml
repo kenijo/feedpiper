@@ -1,4 +1,4 @@
-﻿name: Call other workflow
+name: Call other workflow
 on: push
 jobs:
   call-workflow:
