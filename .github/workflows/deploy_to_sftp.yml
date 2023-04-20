@@ -1,4 +1,4 @@
-﻿name: Deploy to SFTP
+name: Deploy to SFTP
 on: push
 jobs:
   Deploy-SFTP:
@@ -64,7 +64,7 @@ jobs:
           remote_folder: '/web/feedpiper/'
           local_folder: './'
           cleanup: true
-      - name: Creating cache folder
+      - name: Changing permissions
         # https://github.com/marketplace/actions/ssh-remote-commands
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -73,6 +73,8 @@ jobs:
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           script: |
-            cd '/web/feedpiper/'
-            mkdir './cache/'
-            chmod 777 './cache/'
+            ls -al
+            cd '/web/'
+            ls -al
+            chmod 755 './feedpiper/'
+            ls -al
