@@ -18,9 +18,17 @@
 :: Add a new submodule to the feedpiper repository
 ::git submodule add https://github.com/user/repo include/repo
 
+:: Remove a submodule from th feedpiper repository
+::# Remove the submodule entry from .git/config
+::git submodule deinit -f include/repo
+::# Remove the submodule directory from the superproject's .git/modules directory
+::rm -rf .git/modules/include/repo
+::# Remove the entry in .gitmodules and remove the submodule directory located at path/to/submodule
+::git rm -f include/repo
+
 :: Current list of submodules in the feedpiper repository (defined in .gitmodules)
 ::git clone https://github.com/erusev/parsedown
-::git clone https://github.com/Kub-AT/php-simple-html-dom-parser
+::git clone https://github.com/simplehtmldom/simplehtmldom
 ::git clone https://github.com/simplepie/simplepie
 
 :: Initialize cloning of all submodules
