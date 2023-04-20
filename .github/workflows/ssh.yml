@@ -14,6 +14,7 @@ jobs:
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           script: |
             ls -al
-            cd '/web/feedpiper/'
-            mkdir './cache/'
-            chmod 777 './cache/'
+            cd '/web/'
+            ls -al
+            chmod 755 './feedpiper/'
+            ls -al
