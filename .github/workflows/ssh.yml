@@ -1,4 +1,4 @@
-﻿name: Deploy to SFTP
+﻿name: SSH
 on: push
 jobs:
   Deploy-SFTP:
