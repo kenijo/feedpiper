@@ -14,7 +14,6 @@ jobs:
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           script: |
             cd '/volume1/web/feedpiper/'
-            mkdir './cache/'
+            mkdir -p './cache/'
             chmod 755 './cache/'
             ls -al
-            chown -R http:http './cache/'
