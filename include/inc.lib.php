@@ -19,7 +19,6 @@ require_once 'class.filteredfeed.php';
 
 // Include SimplePie
 require_once 'simplepie/autoloader.php';
-require_once 'simplepie/idn/idna_convert.class.php';
 
 // Include Simple HTML DOM from Sourceforge
 require_once 'simplehtmldom/simple_html_dom.php';
