@@ -250,31 +250,33 @@ class FilteredFeed
     // Look for an entry enclosure
     $enclosure = $this->entry->get_enclosure();
 
-    // Strip '?#' from the end of the link
-    $link = before_last('?#', $enclosure->get_link());
+    if ($enclosure) {
+      // Strip '?#' from the end of the link
+      $link = before_last('?#', $enclosure->get_link());
 
-    // If link == '//'
-    if ($link == '//') {
-      // This regex selects the images in the SRC attribute of IMG elements
-      if ($this->get_content() != null) {
-        $description = $this->get_content();
-      } else {
-        $description = $this->get_summary();
-      }
-      preg_match('#' . '<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>' . '#imu', $description, $matches);
+      // If link == '//'
+      if ($link == '//') {
+        // This regex selects the images in the SRC attribute of IMG elements
+        if ($this->get_content() != null) {
+          $description = $this->get_content();
+        } else {
+          $description = $this->get_summary();
+        }
+        preg_match('#' . '<img [a-z0-9]*[^<>]*src=(["\'])([^<>]*?)\1[a-z0-9]*[^<>]*>' . '#imu', $description, $matches);
 
-      if ($matches) {
-        // Then we use the first image found in the content or in the summary
-        $link = urldecode($matches[2]);
+        if ($matches) {
+          // Then we use the first image found in the content or in the summary
+          $link = urldecode($matches[2]);
+        } else {
+          // Then we nullify the link
+          $link = null;
+        }
+        $this->set_enclosure_link($link);
       } else {
-        // Then we nullify the link
-        $link = null;
+        $this->set_enclosure_link($link);
+        $this->set_enclosure_length($enclosure->get_length());
+        $this->set_enclosure_type($enclosure->get_type());
       }
-      $this->set_enclosure_link($link);
-    } else {
-      $this->set_enclosure_link($link);
-      $this->set_enclosure_length($enclosure->get_length());
-      $this->set_enclosure_type($enclosure->get_type());
     }
   }
 
