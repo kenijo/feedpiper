@@ -13,7 +13,7 @@
 *   author
 *   category
 *
-*   Exclude Filters (delete what matches the expression):
+*   Filtering matches the following expressions:
 *     starts   : equivalent to regex ^(.*)
 *     contains : equivalent to regex \b(.*)\b
 *     ends     : equivalent to regex (.*)$
@@ -34,22 +34,11 @@ $feedfilter['feed_name']['url']   = array(
   'http://github-trends.ryotarai.info/rss/github_trends_all_daily.rss',
 );
 // Whitelist: keep only entries matching the rules (executed before blacklisting)
-$feedfilter['feed_name']['whitelist']['author']['starts']     = array('keyword', 'keeps', 'entry');
+// NOTE: At this time, only one whitelist can be used per feed (code needs to be reworked to handle multiple whitelists)
 $feedfilter['feed_name']['whitelist']['author']['contains']   = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['author']['ends']       = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['author']['regex']      = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['category']['starts']   = array('keyword', 'keeps', 'entry');
 $feedfilter['feed_name']['whitelist']['category']['contains'] = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['category']['ends']     = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['category']['regex']    = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['content']['starts']    = array('keyword', 'keeps', 'entry');
 $feedfilter['feed_name']['whitelist']['content']['contains']  = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['content']['ends']      = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['content']['regex']     = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['title']['starts']      = array('keyword', 'keeps', 'entry');
 $feedfilter['feed_name']['whitelist']['title']['contains']    = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['title']['ends']        = array('keyword', 'keeps', 'entry');
-$feedfilter['feed_name']['whitelist']['title']['regex']       = array('keyword', 'keeps', 'entry');
 // Blacklist: exclude entries matching the rules (executed after whitelisting)
 $feedfilter['feed_name']['blacklist']['author']['starts']     = array('keyword', 'excludes', 'entry');
 $feedfilter['feed_name']['blacklist']['author']['contains']   = array('keyword', 'excludes', 'entry');
