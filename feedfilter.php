@@ -12,8 +12,8 @@ if (isset($_GET['feed'])) {
     $myFeedDebug = false;
   }
 
-  if (isset($cfg['feedfilter'][$myFeed])) {
-    $myFeedConfig = $cfg['feedfilter'][$myFeed];
+  if (isset($feedfilter[$myFeed])) {
+    $myFeedConfig = $feedfilter[$myFeed];
   } else {
     echo 'A configuration could not be found in the configuration file for: ' . $myFeed;
     return;
@@ -104,13 +104,17 @@ if (isset($_GET['feed'])) {
     $newFeed         = new Feed($cfg['feed_format']);
 
     // Cleanup the filters
-    if (isset($myFeedConfig['filter'])) {
-      $newFilteredFeed->set_filter(cleanArray($myFeedConfig['filter'], 'strtolower'));
+    if (isset($myFeedConfig['whitelist'])) {
+      $newFilteredFeed->set_entry_whitelist(cleanArray($myFeedConfig['whitelist'], 'strtolower'));
+    }
+    
+    if (isset($myFeedConfig['blacklist'])) {
+      $newFilteredFeed->set_entry_blacklist(cleanArray($myFeedConfig['blacklist'], 'strtolower'));
     }
 
     // Cleanup the global filters
-    if (isset($cfg['feedfilter']['global_filter'])) {
-      $newFilteredFeed->set_global_filter(cleanArray($cfg['feedfilter']['global_filter'], 'strtolower'));
+    if (isset($feedfilter['global']['blacklist'])) {
+      $newFilteredFeed->set_global_blacklist(cleanArray($feedfilter['global']['blacklist'], 'strtolower'));
     }
 
     $newFeed->set_feed_generator_name(\SimplePie\SimplePie::NAME);
@@ -163,14 +167,8 @@ if (isset($_GET['feed'])) {
       $newEntry->set_entry_id($newFilteredFeed->get_id());
 
       // Set Link
-      if ($myFeed == 'time') {
-        // There is an error in the link provided by the Time
-        $nff = str_replace("?p=", "", $newFilteredFeed->get_link());
-      } else {
-        $nff = $newFilteredFeed->get_link();
-      }
+      $nff = $newFilteredFeed->get_link();
       $newEntry->set_entry_link($nff);
-      $newEntry->set_entry_link_original($nff);
 
       // Set Identifier
       //$identifier = basename($newFilteredFeed->get_id()) . '@' . parse_url($newFilteredFeed->get_link())['host'];

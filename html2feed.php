@@ -12,8 +12,8 @@ if (isset($_GET['page'])) {
     $myPageDebug = false;
   }
 
-  if (isset($cfg['html2feed'][$myPage])) {
-    $myPageConfig = $cfg['html2feed'][$myPage];
+  if (isset($html2feed[$myPage])) {
+    $myPageConfig = $html2feed[$myPage];
   } else {
     echo 'A configuration could not be found in the configuration file for: ' . $myPage;
     return;
