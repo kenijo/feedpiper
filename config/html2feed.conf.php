@@ -10,16 +10,16 @@
  * NOTE: Example with GitHub Guides
  *
  * Configure the application below and call it with
- *   http://domain/html2feed.php?page=example
+ *   https://DOMAIN/html2feed.php?page=feed_name
  * You can debug the application by using
- *   http://domain/html2feed.php?page=example&debug=true
+ *   https://DOMAIN/html2feed.php?page=feed_name&debug=true
  */
-$cfg['example']['page_title']  = 'HTML2FEED Example - GitHub Guides';
-$cfg['example']['page_url']    = 'https://guides.github.com/';
-$cfg['example']['entry']       = 'article[class="guide-listing"]';
-$cfg['example']['title']       = 'h3[class="guide-cover-title"]';
-$cfg['example']['description'] = 'p[class="guide-summary"]';
-$cfg['example']['link']        = 'a';
-$cfg['example']['author']      = null;
-$cfg['example']['category']    = null;
-$cfg['example']['thumbnail']   = null;
+$html2feed['feed_name']['page_title']  = 'HTML2FEED Example - GitHub Guides';
+$html2feed['feed_name']['page_url']    = 'https://guides.github.com/';
+$html2feed['feed_name']['entry']       = 'article[class="guide-listing"]';
+$html2feed['feed_name']['title']       = 'h3[class="guide-cover-title"]';
+$html2feed['feed_name']['description'] = 'p[class="guide-summary"]';
+$html2feed['feed_name']['link']        = 'a';
+$html2feed['feed_name']['author']      = null;
+$html2feed['feed_name']['category']    = null;
+$html2feed['feed_name']['thumbnail']   = null;

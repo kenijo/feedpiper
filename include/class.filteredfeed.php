@@ -11,12 +11,11 @@ class FilteredFeed
   private $enclosure_link   = null;
   private $enclosure_type   = null;
   private $entry            = null;
+  private $feed_filter      = null;
   private $feed_format      = null;
-  private $filter           = null;
-  private $global_filter    = null;
+  private $global_blacklist = null;
   private $id               = null;
   private $link             = null;
-  private $link_original    = null;
   private $skip             = null;
   private $summary          = null;
   private $title            = null;
@@ -36,7 +35,6 @@ class FilteredFeed
     // it is very likely to be a permalink which we'll use in set_link()
     $this->set_id();
     $this->set_link();
-    $this->set_link_original();
     $this->set_title();
     $this->set_authors();
     $this->set_categories();
@@ -47,44 +45,99 @@ class FilteredFeed
 
   public function debug_filter()
   {
-    $array = $this->get_filter();
+    $array_entry_whitelist  = $this->get_entry_whitelist();
+    $array_entry_blacklist  = $this->get_entry_blacklist();
+    $array_global_blacklist = $this->get_global_blacklist();
 
     echo '########################################################################################################################' . PHP_EOL;
-    echo 'Title Filter:              ';
-    if (isset($array['title'])) {
-      echo get_array_as_string($array['title']);
-    }
-    echo PHP_EOL;
-    echo 'Link Filter:               ';
-    if (isset($array['link'])) {
-      echo get_array_as_string($array['link']);
-    }
-    echo PHP_EOL;
-    echo 'Link Original Filter:      ';
-    if (isset($array['link_original'])) {
-      echo get_array_as_string($array['link_original']);
-    }
-    echo PHP_EOL;
-    echo 'Author Filter:             ';
-    if (isset($array['author'])) {
-      echo get_array_as_string($array['author']);
-    }
-    echo PHP_EOL;
-    echo 'Category Filter:           ';
-    if (isset($array['category'])) {
-      echo get_array_as_string($array['category']);
-    }
-    echo PHP_EOL;
-    echo 'Content Filter:            ';
-    if (isset($array['content'])) {
-      echo get_array_as_string($array['content']);
-    }
-    echo PHP_EOL;
-    echo PHP_EOL;
-    if ($this->get_skip()) {
-      echo 'FILTER OUT' . PHP_EOL;
+    if (isset($array_entry_whitelist)) {  
+      if (isset($array_entry_whitelist['title'])) {
+        echo 'Whitelist Title:           ';
+        echo get_array_as_string($array_entry_whitelist['title']);
+        echo PHP_EOL;
+      }
+      if (isset($array_entry_whitelist['author'])) {
+        echo 'Whitelist Author:          ';
+        echo get_array_as_string($array_entry_whitelist['author']);
+        echo PHP_EOL;
+      }
+      if (isset($array_entry_whitelist['category'])) {
+        echo 'Whitelist Category:        ';
+        echo get_array_as_string($array_entry_whitelist['category']);
+        echo PHP_EOL;
+      }
+      if (isset($array_entry_whitelist['content'])) {
+        echo 'Whitelist Content:         ';
+        echo get_array_as_string($array_entry_whitelist['content']);
+        echo PHP_EOL;
+      }
+      echo PHP_EOL;
     } else {
-      echo 'DO NOT FILTER' . PHP_EOL;
+      echo "No whitelist";
+      echo PHP_EOL;
+      echo PHP_EOL;
+    }
+    
+    if (isset($array_entry_blacklist)) {  
+      if (isset($array_entry_blacklist['title'])) {
+        echo 'Blacklist Title:           ';
+        echo get_array_as_string($array_entry_blacklist['title']);
+        echo PHP_EOL;
+      }
+      if (isset($array_entry_blacklist['author'])) {
+        echo 'Blacklist Author:          ';
+        echo get_array_as_string($array_entry_blacklist['author']);
+        echo PHP_EOL;
+      }
+      if (isset($array_entry_blacklist['category'])) {
+        echo 'Blacklist Category:        ';
+        echo get_array_as_string($array_entry_blacklist['category']);
+        echo PHP_EOL;
+      }
+      if (isset($array_entry_blacklist['content'])) {
+        echo 'Blacklist Content:         ';
+        echo get_array_as_string($array_entry_blacklist['content']);
+        echo PHP_EOL;
+      }
+      echo PHP_EOL;
+    } else {
+      echo "No blacklist";
+      echo PHP_EOL;
+      echo PHP_EOL;
+    }
+    
+    if (isset($array_global_blacklist)) {  
+      if (isset($array_global_blacklist['title'])) {
+        echo 'Global Blacklist Title:           ';
+        echo get_array_as_string($array_global_blacklist['title']);
+        echo PHP_EOL;
+      }
+      if (isset($array_global_blacklist['author'])) {
+        echo 'Global Blacklist Author:          ';
+        echo get_array_as_string($array_global_blacklist['author']);
+        echo PHP_EOL;
+      }
+      if (isset($array_global_blacklist['category'])) {
+        echo 'Global Blacklist Category:        ';
+        echo get_array_as_string($array_global_blacklist['category']);
+        echo PHP_EOL;
+      }
+      if (isset($array_global_blacklist['content'])) {
+        echo 'Global Blacklist Content:         ';
+        echo get_array_as_string($array_global_blacklist['content']);
+        echo PHP_EOL;
+      }
+      echo PHP_EOL;
+    } else {
+      echo "No global blacklist";
+      echo PHP_EOL;
+      echo PHP_EOL;
+    }
+    
+    if ($this->get_skip()) {
+      echo 'REMOVE THIS FEED ENTRY' . PHP_EOL;
+    } else {
+      echo 'KEEP THIS FEED ENTRY' . PHP_EOL;
     }
     echo '########################################################################################################################';
   }
@@ -109,14 +162,12 @@ class FilteredFeed
 
     // Filter according to author filter
     foreach ($this->authors as $author) {
-      /*
-      if($this->filter_keep($author, 'author'))
+      if($this->whitelist($author, 'author'))
       {
         $this->set_skip(true);
         return;
       }
-      */
-      if ($this->filter_out($author, 'author')) {
+      if ($this->blacklist($author, 'author')) {
         $this->set_skip(true);
         return;
       }
@@ -130,8 +181,7 @@ class FilteredFeed
     if ($this->get_entry()->get_categories() === null) {
       /*
       // Uncomment this code if you want to generate categories for feeds who don't have
-      // any category defined, based on link and/or title. It is not likely to be useful
-      // since you can already filter on links and titles anyway.
+      // any category defined, based on link and/or title. 
 
       // Use the link to generate categories
       $categories_from_link = Array();
@@ -174,7 +224,7 @@ class FilteredFeed
                                      return $key;
                                    }
                                  });
-     */
+      */
     }
     // Use the entry categories
     else {
@@ -193,14 +243,12 @@ class FilteredFeed
 
     // Filter according to category filter
     foreach ($this->categories as $category) {
-      /*
-      if($this->filter_keep($category, 'category'))
+      if($this->whitelist($category, 'category'))
       {
         $this->set_skip(true);
         return;
-      }
-      */
-      if ($this->filter_out($category, 'category')) {
+      }    
+      if ($this->blacklist($category, 'category')) {
         $this->set_skip(true);
         return;
       }
@@ -300,14 +348,19 @@ class FilteredFeed
     $this->entry = $entry;
   }
 
-  public function set_filter($filter = null)
+  public function set_entry_whitelist($whitelist = null)
   {
-    $this->filter = $filter;
+    $this->whitelist = $whitelist;
+  }
+  
+  public function set_entry_blacklist($blacklist = null)
+  {
+    $this->blacklist = $blacklist;
   }
 
-  public function set_global_filter($global_filter = null)
+  public function set_global_blacklist($global_blacklist = null)
   {
-    $this->global_filter = $global_filter;
+    $this->global_blacklist = $global_blacklist;
   }
 
   public function set_id()
@@ -350,37 +403,6 @@ class FilteredFeed
     }
 
     $this->link = $link;
-
-    // Filter according to link filter
-    /*
-    if($this->filter_keep($this->link, 'link'))
-    {
-      $this->set_skip(true);
-      return;
-    }
-    */
-    if ($this->filter_out($this->link, 'link')) {
-      $this->set_skip(true);
-      return;
-    }
-  }
-
-  public function set_link_original()
-  {
-    $this->link_original = urldecode($this->get_entry()->get_link());
-
-    // Filter according to link_original filter
-    /*
-    if($this->filter_keep($this->link_original, 'link_original'))
-    {
-      $this->set_skip(true);
-      return;
-    }
-    */
-    if ($this->filter_out($this->link_original, 'link_original')) {
-      $this->set_skip(true);
-      return;
-    }
   }
 
   public function set_skip($skip = false)
@@ -409,14 +431,12 @@ class FilteredFeed
     $this->summary = $summary;
 
     // Filter according to content filter
-    /*
-    if($this->filter_keep($this->summary, 'content'))
+    if($this->whitelist($this->summary, 'content'))
     {
       $this->set_skip(true);
       return;
     }
-    */
-    if ($this->filter_out($this->summary, 'content')) {
+    if ($this->blacklist($this->summary, 'content')) {
       $this->set_skip(true);
       return;
     }
@@ -426,14 +446,12 @@ class FilteredFeed
   {
     // Filter according to title filter
     if ($this->title = $this->get_entry()->get_title()) {
-      /*
-      if($this->filter_keep($this->title, 'title'))
+      if($this->whitelist($this->title, 'title'))
       {
         $this->set_skip(true);
         return;
       }
-      */
-      if ($this->filter_out($this->title, 'title')) {
+      if ($this->blacklist($this->title, 'title')) {
         $this->set_skip(true);
         return;
       }
@@ -512,19 +530,28 @@ class FilteredFeed
     }
   }
 
-  private function get_filter()
+  private function get_entry_whitelist()
   {
-    if ($this->filter !== null) {
-      return $this->filter;
+    if ($this->whitelist !== null) {
+      return $this->whitelist;
+    } else {
+      return null;
+    }
+  }
+  
+  private function get_entry_blacklist()
+  {
+    if ($this->blacklist !== null) {
+      return $this->blacklist;
     } else {
       return null;
     }
   }
 
-  private function get_global_filter()
+  private function get_global_blacklist()
   {
-    if ($this->global_filter !== null) {
-      return $this->global_filter;
+    if ($this->global_blacklist !== null) {
+      return $this->global_blacklist;
     } else {
       return null;
     }
@@ -543,15 +570,6 @@ class FilteredFeed
   {
     if ($this->link !== null) {
       return $this->link;
-    } else {
-      return null;
-    }
-  }
-
-  public function get_link_original()
-  {
-    if ($this->link_original !== null) {
-      return $this->link_original;
     } else {
       return null;
     }
@@ -587,9 +605,9 @@ class FilteredFeed
   /**
    * Returns true when the element matches a filter
    */
-  private function filter_out($entry, $element)
+  private function blacklist($entry, $element)
   {
-    $array = $this->get_filter();
+    $array = $this->get_entry_blacklist();
 
     // Decode HTML entities
     $entry = html_entity_decode($entry);
@@ -602,9 +620,9 @@ class FilteredFeed
 
     // Apply feed filters
     if (isset($array[$element])) {
-      $filters = $array[$element];
+      $feed_filters = $array[$element];
 
-      foreach ($filters as $key => $filter) {
+      foreach ($feed_filters as $key => $feed_filter) {
         if ($key == 'starts') {
           $regex_starts = '^';
           $regex_ends   = '';
@@ -619,7 +637,7 @@ class FilteredFeed
           $regex_ends   = '';
         }
 
-        foreach ($filter as $value) {
+        foreach ($feed_filter as $value) {
           if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0) {
             return true;
           }
@@ -627,13 +645,13 @@ class FilteredFeed
       }
     }
 
-    $array = $this->get_global_filter();
+    $array = $this->get_global_blacklist();
 
     // Apply global
     if (isset($array[$element])) {
-      $filters = $array[$element];
+      $feed_filters = $array[$element];
 
-      foreach ($filters as $key => $filter) {
+      foreach ($feed_filters as $key => $feed_filter) {
         if ($key == 'starts') {
           $regex_starts = '^';
           $regex_ends   = '';
@@ -648,7 +666,7 @@ class FilteredFeed
           $regex_ends   = '';
         }
 
-        foreach ($filter as $value) {
+        foreach ($feed_filter as $value) {
           if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0) {
             return true;
           }
@@ -661,9 +679,9 @@ class FilteredFeed
   /**
    * Returns false when the element matches a filter
    */
-  private function filter_keep($entry, $element)
+  private function whitelist($entry, $element)
   {
-    $array = $this->get_filter();
+    $array = $this->get_entry_whitelist();
 
     // Decode HTML entities
     $entry = html_entity_decode($entry);
@@ -675,10 +693,10 @@ class FilteredFeed
     $entry = remove_accents($entry);
 
     // Apply feed filters
-    if (isset($array['keep'][$element])) {
-      $filters = $array['keep'][$element];
+    if (isset($array[$element])) {
+      $feed_filters = $array[$element];
 
-      foreach ($filters as $key => $filter) {
+      foreach ($feed_filters as $key => $feed_filter) {
         if ($key == 'starts') {
           $regex_starts = '^';
           $regex_ends   = '';
@@ -693,7 +711,7 @@ class FilteredFeed
           $regex_ends   = '';
         }
 
-        foreach ($filter as $value) {
+        foreach ($feed_filter as $value) {
           if (preg_match('#' . $regex_starts . $value . $regex_ends . '#imu', $entry) !== 0) {
             return false;
           }

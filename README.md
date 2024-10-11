@@ -8,12 +8,13 @@ FeedPiper is a toolbox that provides two services:
 ### Usage
 
 * HTML2FEED
-  * http://www.domain.com/html2feed.php?page=example
-  * http://www.domain.com/html2feed.php?page=example&debug=true
+  * https://DOMAIN/html2feed.php?page=feed_name
+  * https://DOMAIN/html2feed.php?page=feed_name&debug=true
 
 * FEEDPIPER
-  * http://www.domain.com/feedpiper.php?feed=example
-  * http://www.domain.com/feedpiper.php?feed=example&debug=true
+  * https://DOMAIN/feedpiper.php?feed=feed_name
+  * https://DOMAIN/feedpiper.php?feed=feed_name&debug=true
+  * https://DOMAIN/feedpiper.php?feed=feed_name&debug=true&entry=1
 
 ### Configuration
 
