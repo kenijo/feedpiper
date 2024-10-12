@@ -40,7 +40,7 @@ if (isset($_GET['feed'])) {
       mkdir($location, 0777, true);
     }
   }
-    ${$myFeed . '_' . $i}->set_cache_location($location);
+  ${$myFeed . '_' . $i}->set_cache_location($location);
 
   // Force SimplePie to use fsockopen() instead of cURL
   if (isset($cfg['curl']) && $cfg['curl'] === false) {
@@ -67,7 +67,7 @@ if (isset($_GET['feed'])) {
 
   // We'll make sure that the right content type and character encoding gets set automatically.
   // This function will grab the proper character encoding, as well as set the content type to text/html.
-    ${$myFeed . '_' . $i}->handle_content_type();
+  ${$myFeed . '_' . $i}->handle_content_type();
 
   // Send the content-type header with correct encoding
   if ($myFeedDebug === true) {
@@ -107,7 +107,7 @@ if (isset($_GET['feed'])) {
     if (isset($myFeedConfig['whitelist'])) {
       $newFilteredFeed->set_entry_whitelist(cleanArray($myFeedConfig['whitelist'], 'strtolower'));
     }
-    
+
     if (isset($myFeedConfig['blacklist'])) {
       $newFilteredFeed->set_entry_blacklist(cleanArray($myFeedConfig['blacklist'], 'strtolower'));
     }
