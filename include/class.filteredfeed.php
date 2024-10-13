@@ -50,7 +50,7 @@ class FilteredFeed
     $array_global_blacklist = $this->get_global_blacklist();
 
     echo '########################################################################################################################' . PHP_EOL;
-    if (isset($array_entry_whitelist)) {  
+    if (isset($array_entry_whitelist)) {
       if (isset($array_entry_whitelist['title'])) {
         echo 'Whitelist Title:           ';
         echo get_array_as_string($array_entry_whitelist['title']);
@@ -77,8 +77,8 @@ class FilteredFeed
       echo PHP_EOL;
       echo PHP_EOL;
     }
-    
-    if (isset($array_entry_blacklist)) {  
+
+    if (isset($array_entry_blacklist)) {
       if (isset($array_entry_blacklist['title'])) {
         echo 'Blacklist Title:           ';
         echo get_array_as_string($array_entry_blacklist['title']);
@@ -105,8 +105,8 @@ class FilteredFeed
       echo PHP_EOL;
       echo PHP_EOL;
     }
-    
-    if (isset($array_global_blacklist)) {  
+
+    if (isset($array_global_blacklist)) {
       if (isset($array_global_blacklist['title'])) {
         echo 'Global Blacklist Title:           ';
         echo get_array_as_string($array_global_blacklist['title']);
@@ -133,7 +133,7 @@ class FilteredFeed
       echo PHP_EOL;
       echo PHP_EOL;
     }
-    
+
     if ($this->get_skip()) {
       echo 'REMOVE THIS FEED ENTRY' . PHP_EOL;
     } else {
@@ -179,23 +179,26 @@ class FilteredFeed
     $categories = array();
     // If we don't have categories defined then generate some based on the link and title
     if ($this->get_entry()->get_categories() === null) {
-      /*
-      // Uncomment this code if you want to generate categories for feeds who don't have
-      // any category defined, based on link and/or title. 
+
+      // START - Uncomment this code if you want to generate categories for feeds who don't have
+      // any category defined, based on link and/or title.
+      $categories_from_link  = Array();
+      $categories_from_title = Array();
 
       // Use the link to generate categories
-      $categories_from_link = Array();
-      /*
       if ($link = $this->get_link())
       {
         $link                 = urldecode($link);
+        $link                 = substr($link, strpos($link, '//')+2);
+        $link                 = substr($link, strpos($link, '/')+1);
+        $link                 = substr($link, 0, strrpos($link, '/'));
         $link                 = parse_url($link)['path'];
         $link                 = preg_replace('#'.'[[:punct:]]'.'#imu', ' ', $link);
         $categories_from_link = explode(' ', $link);
       }
 
       // Use part of the title to generate categories
-      $categories_from_title = Array();
+      /*
       if ($title = $this->get_title())
       {
         $title = html_entity_decode($title);
@@ -212,7 +215,7 @@ class FilteredFeed
 
         $categories_from_title = array_map('trim', explode(' ', $title));
       }
-
+      */
       $categories = array_merge($categories_from_link, $categories_from_title);
 
       // Get rid of values that are null, empty, false, < 3 and numbers only
@@ -224,7 +227,10 @@ class FilteredFeed
                                      return $key;
                                    }
                                  });
-      */
+
+      // END - Uncomment this code if you want to generate categories for feeds who don't have
+      // any category defined, based on link and/or title.
+
     }
     // Use the entry categories
     else {
@@ -247,7 +253,7 @@ class FilteredFeed
       {
         $this->set_skip(true);
         return;
-      }    
+      }
       if ($this->blacklist($category, 'category')) {
         $this->set_skip(true);
         return;
@@ -352,7 +358,7 @@ class FilteredFeed
   {
     $this->whitelist = $whitelist;
   }
-  
+
   public function set_entry_blacklist($blacklist = null)
   {
     $this->blacklist = $blacklist;
@@ -538,7 +544,7 @@ class FilteredFeed
       return null;
     }
   }
-  
+
   private function get_entry_blacklist()
   {
     if ($this->blacklist !== null) {
