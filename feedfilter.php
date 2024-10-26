@@ -1,33 +1,39 @@
 ﻿<?php
 
-// Include configuration file
-require_once 'include/inc.lib.php';
+// Include libraries
+require_once __DIR__ . '/library/inc.lib.php';
 
 if (isset($_GET['feed'])) {
-  $myFeed = $_GET['feed'];
+  $feed = $_GET['feed'];
 
   if (isset($_GET['debug']) && $_GET['debug'] === 'true') {
-    $myFeedDebug = true;
+    $debug = true;
   } else {
-    $myFeedDebug = false;
+    $debug = false;
   }
 
-  if (isset($feedfilter[$myFeed])) {
-    $myFeedConfig = $feedfilter[$myFeed];
+  if (isset($_GET['error']) && $_GET['error'] === 'true') {
+    // Enable error reporting
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+  }
+
+  if (isset($feedfilter[$feed])) {
+    $feedConfig = $feedfilter[$feed];
   } else {
-    echo 'A configuration could not be found in the configuration file for: ' . $myFeed;
+    echo 'A configuration could not be found in the configuration file for: ' . $feed;
     return;
   }
 
   $i = 1;
-  $feed_array = array();
-  foreach ($myFeedConfig['url'] as $feed_url) {
+  $feedList = [];
+  foreach ($feedConfig['url'] as $feedUrl) {
   // Create a new instance of SimplePie
-    ${$myFeed . '_' . $i} = new \SimplePie\SimplePie();
+    ${$feed . '_' . $i} = new \SimplePie\SimplePie();
 
   // Set the length of time(in seconds) that the contents of a feed will be cached
   if (isset($cfg['cache_length'])) {
-      ${$myFeed . '_' . $i}->set_cache_duration($cfg['cache_length']);
+      ${$feed . '_' . $i}->set_cache_duration($cfg['cache_length']);
   }
 
   // Set MySQL caching
@@ -40,58 +46,58 @@ if (isset($_GET['feed'])) {
       mkdir($location, 0777, true);
     }
   }
-  ${$myFeed . '_' . $i}->set_cache_location($location);
+  ${$feed . '_' . $i}->set_cache_location($location);
 
   // Force SimplePie to use fsockopen() instead of cURL
   if (isset($cfg['curl']) && $cfg['curl'] === false) {
-      ${$myFeed . '_' . $i}->force_fsockopen(true);
+      ${$feed . '_' . $i}->force_fsockopen(true);
   }
 
-  if (!isset($myFeedConfig['title'])) {
-    echo 'A "title" could not be found in the configuration file for: ' . $myFeed;
+  if (!isset($feedConfig['title'])) {
+    echo 'A "title" could not be found in the configuration file for: ' . $feed;
     return;
   }
 
   // Set the URL of the feed(s) you want to parse
-    if (isset($feed_url)) {
-      ${$myFeed . '_' . $i}->set_feed_url($feed_url);
+    if (isset($feedUrl)) {
+      ${$feed . '_' . $i}->set_feed_url($feedUrl);
   } else {
-    echo 'A "url" could not be found in the configuration file for: ' . $myFeed;
+    echo 'A "url" could not be found in the configuration file for: ' . $feed;
     return;
   }
 
   // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and
   // all that other good stuff.  The feed's information will not be available to SimplePie before
   // this is called.
-    $success = ${$myFeed . '_' . $i}->init();
+    $success = ${$feed . '_' . $i}->init();
 
   // We'll make sure that the right content type and character encoding gets set automatically.
   // This function will grab the proper character encoding, as well as set the content type to text/html.
-  ${$myFeed . '_' . $i}->handle_content_type();
+  ${$feed . '_' . $i}->handle_content_type();
 
   // Send the content-type header with correct encoding
-  if ($myFeedDebug === true) {
-    $content_type = 'text/plain';
+  if ($debug === true) {
+    $contentType = 'text/plain';
   } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
-    $content_type = 'application/atom+xml';
+    $contentType = 'application/atom+xml';
   } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
-    $content_type = 'application/rss+xml';
+    $contentType = 'application/rss+xml';
   } else {
-    $content_type = 'application/xml';
+    $contentType = 'application/xml';
   }
-  header('Content-type: ' . $content_type . '; charset=utf-8');
+  header('Content-type: ' . $contentType . '; charset=utf-8');
 
   // Check to see if there are more than zero errors (i.e. if there are any errors at all)
-    if (${$myFeed . '_' . $i}->error()) {
-      echo htmlspecialchars(${$myFeed . '_' . $i}->error()[0]);
+    if (${$feed . '_' . $i}->error()) {
+      echo htmlspecialchars(${$feed . '_' . $i}->error()[0]);
   }
 
-    $feed_array[] = ${$myFeed . '_' . $i};
+    $feedList[] = ${$feed . '_' . $i};
     $i++;
   }
 
   // Merge all the feeds together
-  $mergedFeeds = \SimplePie\SimplePie::merge_items($feed_array);
+  $mergedFeeds = \SimplePie\SimplePie::merge_items($feedList);
 
   // SimplePie API Documentation
   // http://simplepie.org/api/class-SimplePie_Item.html
@@ -100,58 +106,58 @@ if (isset($_GET['feed'])) {
     // Use GMT as the default time zone.
     $date = new DateTime('now', new DateTimezone('GMT'));
 
-    $newFilteredFeed = new FilteredFeed($cfg['feed_format']);
+    $newFilteredFeed = new Filter($cfg['feed_format']);
     $newFeed         = new Feed($cfg['feed_format']);
 
     // Cleanup the filters
-    if (isset($myFeedConfig['whitelist'])) {
-      $newFilteredFeed->set_entry_whitelist(cleanArray($myFeedConfig['whitelist'], 'strtolower'));
+    if (isset($feedConfig['whitelist'])) {
+      $newFilteredFeed->setWhitelist(cleanArray($feedConfig['whitelist'], 'strtolower'));
     }
 
-    if (isset($myFeedConfig['blacklist'])) {
-      $newFilteredFeed->set_entry_blacklist(cleanArray($myFeedConfig['blacklist'], 'strtolower'));
+    if (isset($feedConfig['blacklist'])) {
+      $newFilteredFeed->setBlacklist(cleanArray($feedConfig['blacklist'], 'strtolower'));
     }
 
     // Cleanup the global filters
     if (isset($feedfilter['global']['blacklist'])) {
-      $newFilteredFeed->set_global_blacklist(cleanArray($feedfilter['global']['blacklist'], 'strtolower'));
+      $newFilteredFeed->setGlobalBlacklist(cleanArray($feedfilter['global']['blacklist'], 'strtolower'));
     }
 
-    $newFeed->set_feed_generator_name(\SimplePie\SimplePie::NAME);
-    $newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
-    $newFeed->set_feed_generator_version(\SimplePie\SimplePie::VERSION);
-    $newFeed->set_feed_icon(url_dir_path() . '/favicon.ico');
-    $newFeed->set_feed_id(url_file_path());
-    $newFeed->set_feed_link(url_file_path());
-    $newFeed->set_feed_link_alternate($myFeedConfig['url'][0]);
-    $newFeed->set_feed_logo(url_dir_path() . '/favicon.png');
-    $newFeed->set_feed_title($myFeedConfig['title']);
+    $newFeed->setGeneratorName(\SimplePie\SimplePie::NAME);
+    $newFeed->setGeneratorUri($_SERVER['REQUEST_URI']);
+    $newFeed->setGeneratorVersion(\SimplePie\SimplePie::VERSION);
+    $newFeed->setIcon(urlDirPath() . '/favicon.ico');
+    $newFeed->setId(urlFilePath());
+    $newFeed->setLink(urlFilePath());
+    $newFeed->setLinkAlternate($feedConfig['url'][0]);
+    $newFeed->setLogo(urlDirPath() . '/favicon.png');
+    $newFeed->setTitle($feedConfig['title']);
     if ($cfg['feed_format'] == 'ATOM') {
       $date_format = DATE_ATOM;
     } elseif ($cfg['feed_format'] == 'RSS') {
       $date_format = DATE_RSS;
     }
-    $newFeed->set_feed_updated($date->format($date_format));
+    $newFeed->setUpdated($date->format($date_format));
 
-    $parsed_url = parse_url($myFeedConfig['url'][0]);
+    $parsed_url = parse_url($feedConfig['url'][0]);
     $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
-    $newFeed->set_feed_website_link($website_link);
+    $newFeed->setWebsiteLink($website_link);
 
     // Display or Debug feed
-    if ($myFeedDebug === true) {
-      $newFeed->debug_feed();
+    if ($debug === true) {
+      $newFeed->debug();
     } else {
-      $newFeed->open_feed();
+      $newFeed->open();
     }
 
     // Create an array of unique identifiers to skip duplicate entries
-    $identifier_list = array();
+    $identifier_list = [];
 
     foreach ($mergedFeeds as $entry) {
       $newEntry = new Entry($cfg['feed_format']);
 
       // Select a specific entry for debug purpose
-      if ($myFeedDebug === true) {
+      if ($debug === true) {
         if (isset($_GET['entry'])) {
           $e = $_GET['entry'];
         } else {
@@ -164,65 +170,65 @@ if (isset($_GET['feed'])) {
       }
 
       // Set Id
-      $newEntry->set_entry_id($newFilteredFeed->get_id());
+      $newEntry->setId($newFilteredFeed->getId());
 
       // Set Link
-      $nff = $newFilteredFeed->get_link();
-      $newEntry->set_entry_link($nff);
+      $nff = $newFilteredFeed->getLink();
+      $newEntry->setLink($nff);
 
       // Set Identifier
       //$identifier = basename($newFilteredFeed->get_id()) . '@' . parse_url($newFilteredFeed->get_link())['host'];
       //$identifier ? $identifier : $identifier = null;
       //$newEntry->set_entry_identifier($identifier);
-      $newEntry->set_entry_identifier($newFilteredFeed->get_link());
+      $newEntry->setIdentifier($newFilteredFeed->getLink());
 
       // Check if the identifier of the entry already exists
       // If it already exists then we skip it(remove duplicates)
-      if ((in_array($newEntry->get_entry_identifier(), $identifier_list) === false && $newFilteredFeed->get_skip() !== true) || $myFeedDebug === true) {
+      if ((in_array($newEntry->getIdentifier(), $identifier_list) === false && $newFilteredFeed->getSkip() !== true) || $debug === true) {
         // Set Published Date
-        $newEntry->set_entry_published($newFilteredFeed->get_date());
+        $newEntry->setPublished($newFilteredFeed->getDate());
 
         // Set Updated Date
-        $newEntry->set_entry_updated($newFilteredFeed->get_date());
+        $newEntry->setUpdated($newFilteredFeed->getDate());
 
         // Set Title
-        $title = $newFilteredFeed->get_title();
-        $newEntry->set_entry_title($title);
+        $title = $newFilteredFeed->getTitle();
+        $newEntry->setTitle($title);
 
         // Set Enclosure
-        $newEntry->set_entry_enclosure_length($newFilteredFeed->get_enclosure_length());
-        $newEntry->set_entry_enclosure_link($newFilteredFeed->get_enclosure_link());
-        $newEntry->set_entry_enclosure_type($newFilteredFeed->get_enclosure_type());
+        $newEntry->setEnclosureLength($newFilteredFeed->getEnclosureLength());
+        $newEntry->setEnclosureLink($newFilteredFeed->getEnclosureLink());
+        $newEntry->setEnclosureType($newFilteredFeed->getEnclosureType());
 
         // Set Authors
-        $newEntry->set_entry_authors($newFilteredFeed->get_authors());
+        $newEntry->setAuthors($newFilteredFeed->getAuthors());
 
         // Set Categories
-        $newEntry->set_entry_categories($newFilteredFeed->get_categories());
+        $newEntry->setCategories($newFilteredFeed->getCategories());
 
         // Set Summary
-        if ($summary = $newFilteredFeed->get_summary()) {
+        if ($summary = $newFilteredFeed->getSummary()) {
           // Insert Authors and Categories into it
           $summary .= '        <br />' . PHP_EOL;
-          if ($newFilteredFeed->get_authors()) {
-            $summary .= '        <br />Author(s) : ' . get_array_as_string($newEntry->get_entry_authors()) . PHP_EOL;
+          if ($newFilteredFeed->getAuthors()) {
+            $summary .= '        <br />Author(s) : ' . convertArrayToCommaSeparatedString($newEntry->getAuthors()) . PHP_EOL;
           }
-          if ($newFilteredFeed->get_categories()) {
-            $summary .= '        <br />Categories: ' . get_array_as_string($newEntry->get_entry_categories()) . PHP_EOL;
+          if ($newFilteredFeed->getCategories()) {
+            $summary .= '        <br />Categories: ' . convertArrayToCommaSeparatedString($newEntry->getCategories()) . PHP_EOL;
           }
         }
-        $newEntry->set_entry_summary($summary);
+        $newEntry->setSummary($summary);
 
         // Set Content
-        if ($content = $newFilteredFeed->get_content()) {
+        if ($content = $newFilteredFeed->getContent()) {
           // Modify content here as needed
         }
-        $newEntry->set_entry_content($content);
+        $newEntry->setContent($content);
 
         // Display debug view
-        if ($myFeedDebug === true) {
-          $newEntry->debug_entry();
-          $newFilteredFeed->debug_filter();
+        if ($debug === true) {
+          $newEntry->debug();
+          $newFilteredFeed->debug();
 
           unset($newFilteredFeed);
           unset($newEntry);
@@ -230,14 +236,14 @@ if (isset($_GET['feed'])) {
 
           return;
         } else {
-          $newEntry->create_entry();
+          $newEntry->add();
         }
         // Add the entry identifier to the identifier_list
-        array_push($identifier_list, $newEntry->get_entry_identifier());
+        array_push($identifier_list, $newEntry->getIdentifier());
       }
       unset($newEntry);
     }
-    $newFeed->close_feed();
+    $newFeed->close();
   }
   unset($newFilteredFeed);
   unset($newFeed);

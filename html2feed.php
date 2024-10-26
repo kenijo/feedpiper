@@ -1,7 +1,7 @@
 ﻿<?php
 
-// Include configuration file
-require_once 'include/inc.lib.php';
+// Include libraries
+require_once __DIR__ . '/library/inc.lib.php';
 
 if (isset($_GET['page'])) {
   $myPage = $_GET['page'];
@@ -31,56 +31,56 @@ if (isset($_GET['page'])) {
 
   // Send the content-type header with correct encoding
   if ($myPageDebug === true) {
-    $content_type = 'text/plain';
+    $contentType = 'text/plain';
   } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
-    $content_type = 'application/atom+xml';
+    $contentType = 'application/atom+xml';
   } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
-    $content_type = 'application/rss+xml';
+    $contentType = 'application/rss+xml';
   } else {
-    $content_type = 'application/xml';
+    $contentType = 'application/xml';
   }
-  header('Content-type: ' . $content_type . '; charset=utf-8');
+  header('Content-type: ' . $contentType . '; charset=utf-8');
 
   // Use GMT as the default time zone.
   $date = new \DateTime('now', new \DateTimezone('GMT'));
 
   $newFeed = new \Feed($cfg['feed_format']);
 
-  $newFeed->set_feed_generator_name('Simple HTML DOM');
-  $newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
-  $newFeed->set_feed_icon(url_dir_path() . '/favicon.ico');
-  $newFeed->set_feed_id(url_file_path());
-  $newFeed->set_feed_link(url_file_path());
-  $newFeed->set_feed_link_alternate($myPageConfig['page_url']);
-  $newFeed->set_feed_logo(url_dir_path() . '/favicon.png');
-  $newFeed->set_feed_title($myPageConfig['page_title']);
+  $newFeed->setGeneratorName('Simple HTML DOM');
+  $newFeed->setGeneratorUri($_SERVER['REQUEST_URI']);
+  $newFeed->setIcon(urlDirPath() . '/favicon.ico');
+  $newFeed->setId(urlFilePath());
+  $newFeed->setLink(urlFilePath());
+  $newFeed->setLinkAlternate($myPageConfig['page_url']);
+  $newFeed->setLogo(urlDirPath() . '/favicon.png');
+  $newFeed->setTitle($myPageConfig['page_title']);
   if ($cfg['feed_format'] == 'ATOM') {
     $date_format = DATE_ATOM;
   } elseif ($cfg['feed_format'] == 'RSS') {
     $date_format = DATE_RSS;
   }
-  $newFeed->set_feed_updated($date->format($date_format));
+  $newFeed->setUpdated($date->format($date_format));
 
   $parsed_url = parse_url($myPageConfig['page_url']);
   $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
-  $newFeed->set_feed_website_link($website_link);
+  $newFeed->setWebsiteLink($website_link);
 
   // Display or Debug feed
   if ($myPageDebug === true) {
-    $newFeed->debug_feed();
+    $newFeed->debug();
   } else {
-    $newFeed->open_feed();
+    $newFeed->open();
   }
 
   // PHP Simple HTML DOM
   //  http://simplehtmldom.sourceforge.net/
 
   // Set a default context browser
-  $context = stream_context_create(array(
-    'http' => array(
-      'header' => array('User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'),
-    ),
-  ));
+  $context = stream_context_create([
+    'http' => [
+      'header' => ['User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'],
+    ],
+  ]);
 
   // Load HTML from an URL, Create a DOM object
   $newDomHtml = file_get_html($myPageConfig['page_url'], false, $context);
@@ -95,10 +95,10 @@ if (isset($_GET['page'])) {
       $parsed_page_url = parse_url($myPageConfig['page_url']);
 
       // Set Published Date
-      $newEntry->set_entry_published($date->format(DATE_ATOM));
+      $newEntry->setPublished($date->format(DATE_ATOM));
 
       // Set Updated Date
-      $newEntry->set_entry_updated($date->format(DATE_ATOM));
+      $newEntry->setUpdated($date->format(DATE_ATOM));
 
       if (isset($myPageConfig['link'])) {
         // Set Link
@@ -111,16 +111,16 @@ if (isset($_GET['page'])) {
         }
 
         $link ? $link : $link = null;
-        $newEntry->set_entry_link($link);
+        $newEntry->setLink($link);
 
         // Set Id
-        $newEntry->set_entry_id($link);
+        $newEntry->setId($link);
 
         // Set Identifier
         //$identifier = basename($link) . '@' . parse_url($link)['host'];
         //$identifier ? $identifier : $identifier = null;
         //$newEntry->set_entry_identifier($identifier);
-        $newEntry->set_entry_identifier($link);
+        $newEntry->setIdentifier($link);
       } else {
         echo 'A "link" could not be found in the configuration file for: ' . $myPage;
         break;
@@ -139,7 +139,7 @@ if (isset($_GET['page'])) {
         $title = preg_replace('#' . '\s+' . '#', ' ', $title);
         $title = html_entity_decode($title, ENT_NOQUOTES, 'UTF-8');
         $title ? $title : $title = null;
-        $newEntry->set_entry_title($title);
+        $newEntry->setTitle($title);
       } else {
         echo 'An "title" could not be found in the configuration file for: ' . $myPage;
         break;
@@ -158,7 +158,7 @@ if (isset($_GET['page'])) {
         $thumbnail ? $thumbnail : $thumbnail = null;
 
         // Set Enclosure
-        $newEntry->set_entry_enclosure_link($thumbnail);
+        $newEntry->setEnclosureLink($thumbnail);
       }
 
       if (isset($myPageConfig['author'])) {
@@ -173,7 +173,7 @@ if (isset($_GET['page'])) {
       } else {
         $authors = $myPageConfig['page_title'];
       }
-      $newEntry->set_entry_authors(array($authors));
+      $newEntry->setAuthors([$authors]);
 
       if (isset($myPageConfig['category'])) {
         // Set Categories
@@ -182,7 +182,7 @@ if (isset($_GET['page'])) {
         $categories = html_entity_decode($categories);
         if (isset($categories)) {
           $categories = str_replace('&', '', $categories);
-          $categories = remove_accents($categories);
+          $categories = removeAccents($categories);
           $categories = explode(' ', $categories);
           $categories = array_map('strtolower', $categories);
           $categories = array_unique($categories);
@@ -194,7 +194,7 @@ if (isset($_GET['page'])) {
       } else {
         $categories = null;
       }
-      $newEntry->set_entry_categories($categories);
+      $newEntry->setCategories($categories);
 
       if (isset($myPageConfig['description'])) {
         // Set Summary
@@ -212,9 +212,9 @@ if (isset($_GET['page'])) {
           $summary .= '        <br />Author(s) : ' . $authors . PHP_EOL;
         }
         if ($categories) {
-          $summary .= '        <br />Categories: ' . get_array_as_string($categories) . PHP_EOL;
+          $summary .= '        <br />Categories: ' . convertArrayToCommaSeparatedString($categories) . PHP_EOL;
         }
-        $newEntry->set_entry_summary($summary);
+        $newEntry->setSummary($summary);
 
         // Set Content
         /*
@@ -231,7 +231,7 @@ if (isset($_GET['page'])) {
 
       // Debug or display entry
       if ($myPageDebug === true) {
-        $newEntry->debug_entry();
+        $newEntry->debug();
 
         $newDomHtml->clear();
         unset($newDomHtml);
@@ -240,14 +240,14 @@ if (isset($_GET['page'])) {
 
         return;
       } else {
-        $newEntry->create_entry();
+        $newEntry->add();
       }
       unset($newEntry);
     }
   } else {
     echo 'An "entry" could not be found in the configuration file for: ' . $myPage;
   }
-  $newFeed->close_feed();
+  $newFeed->close();
 
   $newDomHtml->clear();
   unset($newDomHtml);
