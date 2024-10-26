@@ -4,10 +4,10 @@
 // ?category=xxx&sortBy=xxx&pageSize=xxx&pageNumber=xxx&sortOrder=xxx
 
 // This code is specific to VS Code Extensions in order to retrieve a JSON file listing extensions based on feedfilter.php
-$myFeedConfig['title'] = 'VS Code Extensions';
+$feedConfig['title'] = 'VS Code Extensions';
 
-// Include configuration file
-require_once 'include/inc.lib.php';
+// Include libraries
+require_once __DIR__ . '/library/inc.lib.php';
 
 $url = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery";
 
@@ -17,7 +17,7 @@ $categoryValue = '';
 if (isset($_GET['category'])) {
   $categorySelection = $_GET['category'];
 
-  $categoryArray = array(
+  $categoryArray = [
     "All categories",
     "Azure",
     "Data Science",
@@ -37,7 +37,7 @@ if (isset($_GET['category'])) {
     "Testing",
     "Themes",
     "Visualization"
-  );
+  ];
 
   if ($key = array_search(strtolower($categorySelection), array_map('strtolower', $categoryArray))) {
     $categoryValue = '
@@ -56,7 +56,7 @@ $sortByValue = 5;
 if (isset($_GET['sortBy'])) {
   $sortBySelection = $_GET['sortBy'];
 
-  $sortByArray = array(
+  $sortByArray = [
     1 => "UpdatedDate",
     2 => "Name",
     3 => "Publisher",
@@ -64,7 +64,7 @@ if (isset($_GET['sortBy'])) {
     5 => "PublishedDate",
     6 => "Rating",
     7 => "Trending"
-  );
+  ];
 
   if ($key = array_search(strtolower($sortBySelection), array_map('strtolower', $sortByArray))) {
     $sortByValue = $sortByArray[$key];
@@ -123,81 +123,81 @@ $json_data = '
 }
 ';
 
-$rest_api_post_header = array(
+$rest_api_post_header = [
   'Accept: application/json; charset=utf-8; api-version=7.1-preview.1',
   'Content-Length: ' . strlen($json_data),
   'Cache-Control: no-cache',
   'Content-Type: application/json; charset=utf-8',
   'Pragma: no-cache',
   'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
-);
+];
 
 if ((isset($_GET['debug'])) && ($_GET['debug'] === 'true')) {
-  $myFeedDebug = true;
+  $debug = true;
 } else {
-  $myFeedDebug = false;
+  $debug = false;
 }
 
-if (!isset($myFeedConfig['title'])) {
-  echo 'A "title" could not be found in the configuration file for: ' . $myFeed;
+if (!isset($feedConfig['title'])) {
+  echo 'A "title" could not be found in the configuration file for: ' . $feed;
   return;
 }
 
 // Set the URL of the feed(s) you want to parse
 if (isset($url)) {
-  $result_json = CallRestAPI("POST", $url, $rest_api_post_header, $json_data);
+  $result_json = callRestAPI("POST", $url, $rest_api_post_header, $json_data);
   $json = json_decode($result_json, true);
 } else {
-  echo 'A "url" could not be found in the configuration file for: ' . $myFeed;
+  echo 'A "url" could not be found in the configuration file for: ' . $feed;
   return;
 }
 
 // Send the content-type header with correct encoding
-if ($myFeedDebug === true) {
-  $content_type = 'text/plain';
+if ($debug === true) {
+  $contentType = 'text/plain';
 } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
-  $content_type = 'application/atom+xml';
+  $contentType = 'application/atom+xml';
 } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
-  $content_type = 'application/rss+xml';
+  $contentType = 'application/rss+xml';
 } else {
-  $content_type = 'application/xml';
+  $contentType = 'application/xml';
 }
-header('Content-type: ' . $content_type . '; charset=utf-8');
+header('Content-type: ' . $contentType . '; charset=utf-8');
 
 // Use GMT as the default time zone.
 $date = new DateTime('now', new DateTimezone('GMT'));
 
 $newFeed = new Feed($cfg['feed_format']);
 
-$newFeed->set_feed_generator_name(\SimplePie\SimplePie::NAME);
-$newFeed->set_feed_generator_uri($_SERVER['REQUEST_URI']);
-$newFeed->set_feed_generator_version(\SimplePie\SimplePie::VERSION);
-$newFeed->set_feed_icon(url_dir_path() . '/favicon.ico');
-$newFeed->set_feed_id(url_file_path());
-$newFeed->set_feed_link(url_file_path());
-$newFeed->set_feed_link_alternate($url);
-$newFeed->set_feed_logo(url_dir_path() . '/favicon.png');
-$newFeed->set_feed_title($myFeedConfig['title']);
+$newFeed->setGeneratorName(\SimplePie\SimplePie::NAME);
+$newFeed->setGeneratorUri($_SERVER['REQUEST_URI']);
+$newFeed->setGeneratorVersion(\SimplePie\SimplePie::VERSION);
+$newFeed->setIcon(urlDirPath() . '/favicon.ico');
+$newFeed->setId(urlFilePath());
+$newFeed->setLink(urlFilePath());
+$newFeed->setLinkAlternate($url);
+$newFeed->setLogo(urlDirPath() . '/favicon.png');
+$newFeed->setTitle($feedConfig['title']);
 if ($cfg['feed_format'] == 'ATOM') {
   $date_format = DATE_ATOM;
 } elseif ($cfg['feed_format'] == 'RSS') {
   $date_format = DATE_RSS;
 }
-$newFeed->set_feed_updated($date->format($date_format));
+$newFeed->setUpdated($date->format($date_format));
 
 $parsed_url = parse_url($url);
 $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
-$newFeed->set_feed_website_link($website_link);
+$newFeed->setWebsiteLink($website_link);
 
 // Display or Debug feed
-if ($myFeedDebug === true) {
-  $newFeed->debug_feed();
+if ($debug === true) {
+  $newFeed->debug();
 } else {
-  $newFeed->open_feed();
+  $newFeed->open();
 }
 
 // Create an array of unique identifiers to skip duplicate entries
-$identifier_list = array();
+$identifier_list = [];
 $number_of_entry = 0;
 
 foreach ($json['results'][0]['extensions'] as $entry) {
@@ -205,44 +205,43 @@ foreach ($json['results'][0]['extensions'] as $entry) {
     $newEntry = new Entry($cfg['feed_format']);
 
     // Set Id
-    $newEntry->set_entry_id($entry['publisher']['publisherId']);
+    $newEntry->setId($entry['publisher']['publisherId']);
 
     // Set Link
     $entry_link = 'https://marketplace.visualstudio.com/items?itemName=' . $entry['publisher']['publisherName'] . '.' . $entry['extensionName'];
-    $newEntry->set_entry_link($entry_link);
-    $newEntry->set_entry_link_original($url);
+    $newEntry->setLink($entry_link);
 
     // Set Identifier
-    $newEntry->set_entry_identifier($entry_link);
+    $newEntry->setIdentifier($entry_link);
 
     // Check if the identifier of the entry already exists
     // If it already exists then we skip it(remove duplicates)
-    if (in_array($newEntry->get_entry_identifier(), $identifier_list) === false) {
+    if (in_array($newEntry->getIdentifier(), $identifier_list) === false) {
       // Set Published Date
-      $newEntry->set_entry_published($entry['publishedDate']);
+      $newEntry->setPublished($entry['publishedDate']);
 
       // Set Updated Date
-      $newEntry->set_entry_updated($entry['lastUpdated']);
+      $newEntry->setUpdated($entry['lastUpdated']);
 
       // Set Title
-      $newEntry->set_entry_title($entry['displayName']);
+      $newEntry->setTitle($entry['displayName']);
 
       // Set Authors
       $authors = explode(',', $entry['publisher']['displayName']);
-      $newEntry->set_entry_authors($authors);
+      $newEntry->setAuthors($authors);
 
       // Set Categories
-      $categories = array();
+      $categories = [];
       if (is_array($entry['categories'])) {
         $categories = array_merge($categories, $entry['categories']);
       }
       if (is_array($entry['tags'])) {
         $categories = array_merge($categories, $entry['tags']);
       }
-      $newEntry->set_entry_categories($categories);
+      $newEntry->setCategories($categories);
 
       // Set Summary
-      $newEntry->set_entry_summary($entry['shortDescription']);
+      $newEntry->setSummary($entry['shortDescription']);
 
       if ($entry['versions'][0]['files']) {
         foreach ($entry['versions'][0]['files'] as $key => $value) {
@@ -337,32 +336,32 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       if ($details != null && $sortByValue != 10) {
         $parsedown = new Parsedown();
         $parsedown->setSafeMode(true);
-        $rest_api_get_header = array(
+        $rest_api_get_header = [
           'Accept: text/markdown; charset=utf-8; api-version=5.0-preview.1',
           'Cache-Control: no-cache',
           'Content-Type: text/markdown; charset=utf-8',
           'Pragma: no-cache',
           'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:112.0) Gecko/20100101 Firefox/112.0'
-        );
-        $markdown = CallRestAPI("GET", $details, $rest_api_get_header);
+        ];
+        $markdown = callRestAPI("GET", $details, $rest_api_get_header);
         $content .= $parsedown->text($markdown);
       }
-      $newEntry->set_entry_content($content);
+      $newEntry->setContent($content);
 
       // Display debug view
-      if ($myFeedDebug === true) {
-        $newEntry->debug_entry();
+      if ($debug === true) {
+        $newEntry->debug();
 
         unset($newEntry);
         unset($newFeed);
 
         return;
       } else {
-        $newEntry->create_entry();
+        $newEntry->add();
       }
 
       // Add the entry identifier to the identifier_list
-      array_push($identifier_list, $newEntry->get_entry_identifier());
+      array_push($identifier_list, $newEntry->getIdentifier());
     }
     $number_of_entry++;
 
@@ -387,5 +386,5 @@ foreach ($json['results'][0]['extensions'] as $entry) {
     unset($VSIXPackage);
   }
 }
-$newFeed->close_feed();
+$newFeed->close();
 unset($newFeed);

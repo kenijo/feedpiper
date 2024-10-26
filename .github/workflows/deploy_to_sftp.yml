@@ -41,8 +41,8 @@ jobs:
           find . -name '_config.yml' -type f -delete
       - name: Cleaning up - Delete specific files
         run: |
-          rm -f './include/simplehtmldom/release.sh'
-          rm -f './include/update_submodules.cmd'
+          rm -f './library/simplehtmldom/release.sh'
+          rm -f './library/update_submodules.cmd'
       - name: Cleaning up - Delete folders recursively from all subfolders
         run: |
           find . -path '*/.git/*' -delete
@@ -53,15 +53,15 @@ jobs:
           find . -type d -name '.vscode' -empty -delete
       - name: Cleaning up - Delete specific folders
         run: |
-          rm -rf './include/parsedown/test/'
-          rm -rf './include/simplehtmldom/.mkdocs'
-          rm -rf './include/simplehtmldom/docs'
-          rm -rf './include/simplehtmldom/example'
-          rm -rf './include/simplehtmldom/tests'
-          rm -rf './include/simplepie/build/'
-          rm -rf './include/simplepie/compatibility_test/'
-          rm -rf './include/simplepie/demo/'
-          rm -rf './include/simplepie/tests/'
+          rm -rf './library/parsedown/test/'
+          rm -rf './library/simplehtmldom/.mkdocs'
+          rm -rf './library/simplehtmldom/docs'
+          rm -rf './library/simplehtmldom/example'
+          rm -rf './library/simplehtmldom/tests'
+          rm -rf './library/simplepie/build/'
+          rm -rf './library/simplepie/compatibility_test/'
+          rm -rf './library/simplepie/demo/'
+          rm -rf './library/simplepie/tests/'
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
         uses: sand4rt/ftp-deployer@v1.7
