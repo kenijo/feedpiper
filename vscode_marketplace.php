@@ -39,12 +39,12 @@ if (isset($_GET['category'])) {
     "Visualization"
   ];
 
-  if ($key = array_search(strtolower($categorySelection), array_map('strtolower', $categoryArray))) {
+  if ($nppKey = array_search(strtolower($categorySelection), array_map('strtolower', $categoryArray))) {
     $categoryValue = '
     ,
     {
       "filterType": 5,
-      "value": "' . $categoryArray[$key] . '"
+      "value": "' . $categoryArray[$nppKey] . '"
     }
     ';
   }
@@ -66,8 +66,8 @@ if (isset($_GET['sortBy'])) {
     7 => "Trending"
   ];
 
-  if ($key = array_search(strtolower($sortBySelection), array_map('strtolower', $sortByArray))) {
-    $sortByValue = $sortByArray[$key];
+  if ($nppKey = array_search(strtolower($sortBySelection), array_map('strtolower', $sortByArray))) {
+    $sortByValue = $sortByArray[$nppKey];
   }
 }
 
@@ -244,36 +244,36 @@ foreach ($json['results'][0]['extensions'] as $entry) {
       $newEntry->setSummary($entry['shortDescription']);
 
       if ($entry['versions'][0]['files']) {
-        foreach ($entry['versions'][0]['files'] as $key => $value) {
-          if ($value["assetType"] == "Microsoft.VisualStudio.Services.Content.Changelog") {
+        foreach ($entry['versions'][0]['files'] as $nppKey => $vscodeKey) {
+          if ($vscodeKey["assetType"] == "Microsoft.VisualStudio.Services.Content.Changelog") {
             // $changelog = $value["source"];
-          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.Content.Details") {
-            $details = $value["source"];
-          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.Icons.Default") {
+          } elseif ($vscodeKey["assetType"] == "Microsoft.VisualStudio.Services.Content.Details") {
+            $details = $vscodeKey["source"];
+          } elseif ($vscodeKey["assetType"] == "Microsoft.VisualStudio.Services.Icons.Default") {
             // $icon_default = $value["source"];
-          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.Icons.Small") {
-            $icon_small = $value["source"];
-          } elseif ($value["assetType"] == "Microsoft.VisualStudio.Services.VSIXPackage") {
-            $VSIXPackage = $value["source"];
+          } elseif ($vscodeKey["assetType"] == "Microsoft.VisualStudio.Services.Icons.Small") {
+            $icon_small = $vscodeKey["source"];
+          } elseif ($vscodeKey["assetType"] == "Microsoft.VisualStudio.Services.VSIXPackage") {
+            $VSIXPackage = $vscodeKey["source"];
           }
         }
       }
 
       if ($entry['statistics']) {
-        foreach ($entry['statistics'] as $key => $value) {
-          if ($value["statisticName"] == "install") {
-            $install = $value["value"];
-          } elseif ($value["statisticName"] == "averagerating") {
-            $averagerating = $value["value"];
-          } elseif ($value["statisticName"] == "ratingcount") {
-            $ratingcount = $value["value"];
-          } elseif ($value["statisticName"] == "trendingdaily") {
+        foreach ($entry['statistics'] as $nppKey => $vscodeKey) {
+          if ($vscodeKey["statisticName"] == "install") {
+            $install = $vscodeKey["value"];
+          } elseif ($vscodeKey["statisticName"] == "averagerating") {
+            $averagerating = $vscodeKey["value"];
+          } elseif ($vscodeKey["statisticName"] == "ratingcount") {
+            $ratingcount = $vscodeKey["value"];
+          } elseif ($vscodeKey["statisticName"] == "trendingdaily") {
             // $trendingdaily = $value["value"];
-          } elseif ($value["statisticName"] == "trendingmonthly") {
+          } elseif ($vscodeKey["statisticName"] == "trendingmonthly") {
             // $trendingmonthly = $value["value"];
-          } elseif ($value["statisticName"] == "trendingweekly") {
+          } elseif ($vscodeKey["statisticName"] == "trendingweekly") {
             // $trendingweekly = $value["value"];
-          } elseif ($value["statisticName"] == "updateCount") {
+          } elseif ($vscodeKey["statisticName"] == "updateCount") {
             // $updateCount = $value["value"];
           }
         }
@@ -374,7 +374,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
     unset($entry_link);
     unset($icon_small);
     unset($install);
-    unset($key);
+    unset($nppKey);
     unset($markdown);
     unset($newEntry);
     unset($parsedown);
@@ -382,7 +382,7 @@ foreach ($json['results'][0]['extensions'] as $entry) {
     unset($ratingcount);
     unset($tag);
     unset($url);
-    unset($value);
+    unset($vscodeKey);
     unset($VSIXPackage);
   }
 }

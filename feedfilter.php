@@ -12,6 +12,7 @@ if (isset($_GET['feed'])) {
     $debug = false;
   }
 
+
   if (isset($_GET['error']) && $_GET['error'] === 'true') {
     // Enable error reporting
     error_reporting(E_ALL);
