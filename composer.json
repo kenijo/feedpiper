@@ -1,0 +1,7 @@
+{
+    "require": {
+        "simplehtmldom/simplehtmldom": "^2.0-RC2",
+        "erusev/parsedown": "^1.7",
+        "simplepie/simplepie": "^1.8"
+    }
+}

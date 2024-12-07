@@ -1,9 +1,0 @@
-[submodule "include/parsedown"]
-	path = include/parsedown
-	url = https://github.com/erusev/parsedown
-[submodule "include/simplehtmldom"]
-	path = include/simplehtmldom
-	url = https://github.com/simplehtmldom/simplehtmldom
-[submodule "include/simplepie"]
-	path = include/simplepie
-	url = https://github.com/simplepie/simplepie
