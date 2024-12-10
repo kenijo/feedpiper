@@ -9,10 +9,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - name: Build Composer vendor folder
         run: composer install
+
       - name: Initializing feedpiper-config repository - Delete default config folder
         run: rm -rf './config/'
+
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
         # https://github.com/actions/checkout
@@ -22,6 +25,7 @@ jobs:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: config
+
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/sftp-upload
         uses: Dylan700/sftp-upload-action@latest
@@ -31,7 +35,8 @@ jobs:
           username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           uploads: |
-            './' => '/web/feedpiper/'
+            ./ => /web/feedpiper/
+
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
         uses: appleboy/ssh-action@v1.2.0
