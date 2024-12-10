@@ -26,6 +26,20 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: config
 
+      - name: Cleaning up - Delete folders we do not want to upload
+        run: |
+          find . -type d -name '*/.git*/' -prune -exec rm -rf {} \;
+          find . -type d -name '*/.vscode*/' -prune -exec rm -rf {} \;
+          rm -rf '*/simplehtmldom/manual/'
+          rm -rf '*/simplehtmldom/example/'
+          rm -rf '*/simplepie/src/'
+
+      - name: Cleaning up - Delete files we do not want to upload
+        run: |
+          find . -type f -name '.git' -delete
+          find . -type f -name '.gitattributes' -delete
+          find . -type f -name '.gitignore' -delete
+
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/sftp-uploader
         uses: wangyucode/sftp-upload-action@v2.0.4
@@ -36,7 +50,6 @@ jobs:
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           localDir: './'
           remoteDir: '/web/feedpiper/'
-          exclude: '**/.git*,**/.git*/*,**/simplehtmldom/manual/*,**/simplehtmldom/example/*,**/simplepie/src/*'
 
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
