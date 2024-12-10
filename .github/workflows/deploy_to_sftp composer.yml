@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           remote_folder: '/web/feedpiper/config/'
           local_folder: './'
-          exclude: '{"**/.git*/**"}'
+          exclude: '["**/.git*/**"]'
           cleanup: true
 
       - name: Creating cache folder
