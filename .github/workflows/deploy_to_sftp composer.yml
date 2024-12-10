@@ -28,17 +28,16 @@ jobs:
 
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/sftp-upload
-        uses: sand4rt/ftp-deployer@v1.8
+        uses: Dylan700/sftp-upload-action@latest
         with:
-          sftp: true
-          host: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
+          server: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
           username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
-          remote_folder: '/web/feedpiper/config/'
-          local_folder: './'
-          exclude: '["**/.git*/**"]'
-          cleanup: true
+          uploads: |
+            './' => '/web/feedpiper/'
+          ignore: |
+            '**/.git*/**'
 
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
