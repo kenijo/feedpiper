@@ -22,3 +22,27 @@ jobs:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: config
+      - name: Deploying to SFTP Server
+        # https://github.com/marketplace/actions/ftp-deployer
+        uses: sand4rt/ftp-deployer@v1.7
+        with:
+          sftp: true
+          host: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
+          port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
+          username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
+          password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
+          remote_folder: '/web/feedpiper/'
+          local_folder: './'
+          cleanup: true
+      - name: Creating cache folder
+        # https://github.com/marketplace/actions/ssh-remote-commands
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
+          username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
+          password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
+          port: ${{ secrets.SYNOLOGY_SERVER_PORT_SFTP }}
+          script: |
+            cd '/volume1/web/feedpiper/'
+            mkdir -p './cache/'
+            chmod 777 './cache/'
