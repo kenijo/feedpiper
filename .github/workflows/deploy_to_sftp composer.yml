@@ -1,4 +1,4 @@
-name: Deploy to SFTP
+name: Deploy to SFTP Composer
 on: push
 jobs:
   Deploy-SFTP:
