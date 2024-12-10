@@ -37,8 +37,7 @@ jobs:
           uploads: |
             './' => '/web/feedpiper/'
           ignore: |
-            *.git
-            */**/*git*
+            **/.git*/**
 
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
