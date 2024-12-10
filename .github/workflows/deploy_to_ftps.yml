@@ -20,9 +20,29 @@ jobs:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: config
-      - name: Initializing feedpiper-config repository - Rename configuration file
-        continue-on-error: true
-        run: mv './config/server-synology.conf.php' './config/conf.php'
+      - name: Cleaning up - Delete specific folders
+        run: |
+          rm -rf './library/parsedown/test/'
+          rm -rf './library/simplehtmldom/.mkdocs'
+          rm -rf './library/simplehtmldom/docs'
+          rm -rf './library/simplehtmldom/example'
+          rm -rf './library/simplehtmldom/tests'
+          rm -rf './library/simplepie/build/'
+          rm -rf './library/simplepie/compatibility_test/'
+          rm -rf './library/simplepie/demo/'
+          rm -rf './library/simplepie/tests/'
+      - name: Cleaning up - Delete folders recursively from all subfolders
+        run: |
+          find . -path '*/.git/*' -delete
+          find . -type d -name '.git' -empty -delete
+          find . -path '*/.github/*' -delete
+          find . -type d -name '.github' -empty -delete
+          find . -path '*/.vscode/*' -delete
+          find . -type d -name '.vscode' -empty -delete
+      - name: Cleaning up - Delete specific files
+        run: |
+          rm -f './library/simplehtmldom/release.sh'
+          rm -f './library/update_submodules.cmd'
       - name: Cleaning up - Delete files recursively from all subfolders
         run: |
           find . -name '.editorconfig' -type f -delete
@@ -39,29 +59,6 @@ jobs:
           find . -name 'phpunit.xml' -type f -delete
           find . -name 'phpunit.xml.dist' -type f -delete
           find . -name '_config.yml' -type f -delete
-      - name: Cleaning up - Delete specific files
-        run: |
-          rm -f './library/simplehtmldom/release.sh'
-          rm -f './library/update_submodules.cmd'
-      - name: Cleaning up - Delete folders recursively from all subfolders
-        run: |
-          find . -path '*/.git/*' -delete
-          find . -type d -name '.git' -empty -delete
-          find . -path '*/.github/*' -delete
-          find . -type d -name '.github' -empty -delete
-          find . -path '*/.vscode/*' -delete
-          find . -type d -name '.vscode' -empty -delete
-      - name: Cleaning up - Delete specific folders
-        run: |
-          rm -rf './library/parsedown/test/'
-          rm -rf './library/simplehtmldom/.mkdocs'
-          rm -rf './library/simplehtmldom/docs'
-          rm -rf './library/simplehtmldom/example'
-          rm -rf './library/simplehtmldom/tests'
-          rm -rf './library/simplepie/build/'
-          rm -rf './library/simplepie/compatibility_test/'
-          rm -rf './library/simplepie/demo/'
-          rm -rf './library/simplepie/tests/'
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
