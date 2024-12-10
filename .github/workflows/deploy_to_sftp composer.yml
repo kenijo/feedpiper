@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           localDir: './'
           remoteDir: '/web/feedpiper/'
-          exclude: '**/.git*,**/.git*/,**/simplehtmldom/manual/,**/simplehtmldom/example/,**/simplepie/src/'
+          exclude: '**/.git*,**/.git*/*,**/simplehtmldom/manual/*,**/simplehtmldom/example/*,**/simplepie/src/*'
 
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
