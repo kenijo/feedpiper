@@ -27,7 +27,7 @@ jobs:
           path: config
 
       - name: Deploying to SFTP Server
-        # https://github.com/marketplace/actions/sftp-upload
+        # https://github.com/marketplace/actions/sftp-uploader
         uses: wangyucode/sftp-upload-action@v2.0.4
         with:
           host: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
           localDir: './'
           remoteDir: '/web/feedpiper/'
-          exclude: '**/.git*, **/.git*/**, **/simplehtmldom/manual/**, **/simplehtmldom/example/**, **/simplepie/src/**'
+          exclude: '**/.git*,**/.git*/**,**/simplehtmldom/manual/**,**/simplehtmldom/example/**,**/simplepie/src/**'
 
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
