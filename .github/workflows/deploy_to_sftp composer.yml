@@ -24,7 +24,7 @@ jobs:
           path: config
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/ftp-deployer
-        uses: sand4rt/ftp-deployer@v1.7
+        uses: sand4rt/ftp-deployer@v1.8
         with:
           sftp: true
           host: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
