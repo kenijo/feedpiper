@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: Initializing feedpiper repository
         # https://github.com/actions/checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Initializing feedpiper-config repository - Delete default config folder
@@ -14,7 +14,7 @@ jobs:
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
         # https://github.com/actions/checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         continue-on-error: true
         with:
           repository: kenijo/feedpiper-config
@@ -61,7 +61,7 @@ jobs:
           find . -name '_config.yml' -type f -delete
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           protocol: ftps
           server: ${{ secrets.SYNOLOGY_SERVER_HOSTNAME }}
