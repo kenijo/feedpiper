@@ -42,7 +42,6 @@ jobs:
           rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
           rm -rf './vendor/simplepie/simplepie/src/'
-          ls -al
 
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
