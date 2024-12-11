@@ -28,8 +28,8 @@ jobs:
 
       - name: Cleaning up - Delete folders we do not want to upload
         run: |
-          find . -type d -name '*/.git*/' -prune -exec rm -rf {} \;
-          find . -type d -name '*/.vscode*/' -prune -exec rm -rf {} \;
+          find . -type d -name '*/.git*/*' -prune -exec rm -rf {} \;
+          find . -type d -name '*/.vscode*/*' -prune -exec rm -rf {} \;
           rm -rf '*/simplehtmldom/manual/'
           rm -rf '*/simplehtmldom/example/'
           rm -rf '*/simplepie/src/'
