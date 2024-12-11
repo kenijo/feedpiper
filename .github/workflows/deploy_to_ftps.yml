@@ -1,16 +1,18 @@
-﻿name: Deploy to FTP/FTPS
-on: push
+﻿name: Deploy to SFTP
+on:
+  push:
+  workflow_dispatch:
 jobs:
-  Deploy-FTP-FTPS:
+  Deploy-SFTP:
     runs-on: ubuntu-latest
     steps:
       - name: Initializing feedpiper repository
         # https://github.com/actions/checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
       - name: Initializing feedpiper-config repository - Delete default config folder
         run: rm -rf './config/'
+
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
         # https://github.com/actions/checkout
@@ -20,45 +22,27 @@ jobs:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: config
-      - name: Cleaning up - Delete specific folders
+
+      - name: Importing Composer dependancies
+        run: composer install
+
+      - name: Cleaning up files and folders we do not want to upload
         run: |
-          rm -rf './library/parsedown/test/'
-          rm -rf './library/simplehtmldom/.mkdocs'
-          rm -rf './library/simplehtmldom/docs'
-          rm -rf './library/simplehtmldom/example'
-          rm -rf './library/simplehtmldom/tests'
-          rm -rf './library/simplepie/build/'
-          rm -rf './library/simplepie/compatibility_test/'
-          rm -rf './library/simplepie/demo/'
-          rm -rf './library/simplepie/tests/'
-      - name: Cleaning up - Delete folders recursively from all subfolders
-        run: |
-          find . -path '*/.git/*' -delete
-          find . -type d -name '.git' -empty -delete
-          find . -path '*/.github/*' -delete
-          find . -type d -name '.github' -empty -delete
-          find . -path '*/.vscode/*' -delete
-          find . -type d -name '.vscode' -empty -delete
-      - name: Cleaning up - Delete specific files
-        run: |
-          rm -f './library/simplehtmldom/release.sh'
-          rm -f './library/update_submodules.cmd'
-      - name: Cleaning up - Delete files recursively from all subfolders
-        run: |
-          find . -name '.editorconfig' -type f -delete
-          find . -name '.git' -type f -delete
-          find . -name '.gitattributes' -type f -delete
-          find . -name '.gitignore' -type f -delete
-          find . -name '.gitmodules' -type f -delete
-          find . -name '.travis.yml' -type f -delete
-          find . -name 'composer.json' -type f -delete
-          find . -name 'composer.lock' -type f -delete
-          find . -name 'mkdocs.yml' -type f -delete
-          find . -name 'phpcompatibility.xml' -type f -delete
-          find . -name 'phpcs.xml' -type f -delete
-          find . -name 'phpunit.xml' -type f -delete
-          find . -name 'phpunit.xml.dist' -type f -delete
-          find . -name '_config.yml' -type f -delete
+          rm -rf './_config.yml'
+          rm -rf './.git'
+          rm -rf './.gitattributes'
+          rm -rf './.github'
+          rm -rf './.gitignore'
+          rm -rf './composer.json'
+          rm -rf './composer.lock'
+          rm -rf './config/.git'
+          rm -rf './config/.gitattributes'
+          rm -rf './config/.github'
+          rm -rf './config/.gitignore'
+          rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
+          rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
+          rm -rf './vendor/simplepie/simplepie/src/'
+
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -68,8 +52,9 @@ jobs:
           port: ${{ secrets.SYNOLOGY_SERVER_PORT_FTPS }}
           username: ${{ secrets.SYNOLOGY_SERVER_USERNAME }}
           password: ${{ secrets.SYNOLOGY_SERVER_PASSWORD }}
-          server-dir: '/web/feedpiper/'
           local-dir: './'
+          server-dir: '/web/feedpiper/'
+
       - name: Creating cache folder
         # https://github.com/marketplace/actions/ssh-remote-commands
         uses: appleboy/ssh-action@v0.1.10
