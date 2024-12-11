@@ -26,19 +26,22 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: config
 
-      - name: Cleaning up - Delete folders we do not want to upload
+      - name: Cleaning up files and folders we do not want to upload
         run: |
-          find . -type d -name '*/.git*/*' -prune -exec rm -rf {} \;
-          find . -type d -name '*/.vscode*/*' -prune -exec rm -rf {} \;
-          rm -rf '*/simplehtmldom/manual/'
-          rm -rf '*/simplehtmldom/example/'
-          rm -rf '*/simplepie/src/'
-
-      - name: Cleaning up - Delete files we do not want to upload
-        run: |
-          find . -type f -name '.git' -delete
-          find . -type f -name '.gitattributes' -delete
-          find . -type f -name '.gitignore' -delete
+          rm -rf '.git'
+          rm -rf '.gitattributes'
+          rm -rf '.gitignore'
+          rm -rf './config/git'
+          rm -rf './config/gitattributes'
+          rm -rf './config/gitignore'
+          rm -rf './.git/'
+          rm -rf './.github/'
+          rm -rf './config/.git/'
+          rm -rf './config.github/'
+          rm -rf './vendor/simplehtmldom/manual/'
+          rm -rf './vendor/simplehtmldom/manual/'
+          rm -rf './vendor/simplehtmldom/example/'
+          rm -rf './vendor/simplepie/src/'
 
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/sftp-uploader
