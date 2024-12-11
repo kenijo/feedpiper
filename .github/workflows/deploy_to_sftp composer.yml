@@ -29,19 +29,16 @@ jobs:
       - name: Cleaning up files and folders we do not want to upload
         run: |
           rm -rf '.git'
+          rm -rf '.github'
           rm -rf '.gitattributes'
           rm -rf '.gitignore'
-          rm -rf './config/git'
-          rm -rf './config/gitattributes'
-          rm -rf './config/gitignore'
-          rm -rf './.git/'
-          rm -rf './.github/'
-          rm -rf './config/.git/'
-          rm -rf './config.github/'
-          rm -rf './vendor/simplehtmldom/manual/'
-          rm -rf './vendor/simplehtmldom/manual/'
-          rm -rf './vendor/simplehtmldom/example/'
-          rm -rf './vendor/simplepie/src/'
+          rm -rf './config/.git'
+          rm -rf './config/.github'
+          rm -rf './config/.gitattributes'
+          rm -rf './config/.gitignore'
+          rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
+          rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
+          rm -rf './vendor/simplepie/simplepie/src/'
 
       - name: Deploying to SFTP Server
         # https://github.com/marketplace/actions/sftp-uploader
