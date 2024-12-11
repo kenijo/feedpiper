@@ -1,7 +1,7 @@
 ﻿<?php
 
 // Include libraries
-require_once __DIR__ . '/library/inc.lib.php';
+require_once __DIR__ . '/library/includes.php';
 
 if (isset($_GET['page'])) {
   $myPage = $_GET['page'];

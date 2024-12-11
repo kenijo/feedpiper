@@ -7,7 +7,7 @@
 $feedConfig['title'] = 'VS Code Extensions';
 
 // Include libraries
-require_once __DIR__ . '/library/inc.lib.php';
+require_once __DIR__ . '/library/includes.php';
 
 $url = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery";
 
