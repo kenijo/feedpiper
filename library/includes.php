@@ -16,21 +16,21 @@ $configFiles = [
 
 // Library files
 $libFiles = [
+    'library/class.entry.php',
+    'library/class.feed.php',
+    'library/class.filteredfeed.php',
     'library/func.array.php',
     'library/func.curl-emu.php',
     'library/func.rest.php',
     'library/func.string.php',
     'library/func.url.php',
-    'library/class.entry.php',
-    'library/class.feed.php',
-    'library/class.filteredfeed.php',
 ];
 
 // External libraries
 $extLibs = [
-    'vendor/simplepie/autoloader.php',
-    'vendor/simplehtmldom/simple_html_dom.php',
-    'vendor/parsedown/Parsedown.php',
+    'vendor/erusev/parsedown/Parsedown.php',
+    'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php',
+    'vendor/simplepie/simplepie/autoloader.php',
 ];
 
 // Require all files
