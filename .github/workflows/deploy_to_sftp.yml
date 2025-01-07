@@ -1,6 +1,6 @@
 name: Deploy to SFTP
 on:
-  push:
+  #push:
   workflow_dispatch:
 jobs:
   Deploy-SFTP:
