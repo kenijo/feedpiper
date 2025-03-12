@@ -21,7 +21,6 @@ jobs:
         with:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: config
 
       - name: Importing Composer dependancies
         run: composer install
@@ -29,16 +28,9 @@ jobs:
       - name: Cleaning up files and folders we do not want to upload
         run: |
           rm -rf './_config.yml'
-          rm -rf './.git'
-          rm -rf './.gitattributes'
-          rm -rf './.github'
-          rm -rf './.gitignore'
-          rm -rf './composer.json'
-          rm -rf './composer.lock'
-          rm -rf './config/.git'
-          rm -rf './config/.gitattributes'
-          rm -rf './config/.github'
-          rm -rf './config/.gitignore'
+          rm -rf './.git*'
+          rm -rf './*.code-workspace'
+          rm -rf './composer.*'
           rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
 
