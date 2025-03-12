@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * Force SimplePie to use fsockopen() instead of cURL
+ * If cURL doesn't work, set variable to false to use fsockopen()
+ * Default value is true
+ */
+$useCurl = true;
+
+/**
  * HTML2FEED Configuration
  * Used to turn a page into a feed.
  *
