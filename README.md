@@ -33,13 +33,13 @@ Configuration files are in the config folder.
 * Upload the project to your server
 
 * Clone the feedpiper repository
-  * git clone https://github.com/kenijo/feedpiper
+  * `git clone https://github.com/kenijo/feedpiper`
 
 * Add the composer dependancies
-  * composer install
+  * `composer install`
 
 * Update the composer dependancies
-  * composer update
+  * `composer update`
 
 ## Credits - This project relies on the following dependancies
 
