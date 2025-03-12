@@ -2,35 +2,34 @@
 
 FeedPiper is a toolbox that provides two services:
 
+* FEED merges feeds and filters them
 * HTML2FEED converts a page into a feed
-* FEEDPIPER merges feeds and filters them
 
 ## Usage
+
+### FEEDPIPER
+
+* https://DOMAIN/feed.php?feed=feed_name
+* https://DOMAIN/feed.php?feed=feed_name&debug=true
+* https://DOMAIN/feed.php?feed=feed_name&debug=true&entry=2
 
 ### HTML2FEED
 
 * https://DOMAIN/html2feed.php?page=feed_name
 * https://DOMAIN/html2feed.php?page=feed_name&debug=true
 
-### FEEDPIPER
-
-* https://DOMAIN/feedpiper.php?feed=feed_name
-* https://DOMAIN/feedpiper.php?feed=feed_name&debug=true
-* https://DOMAIN/feedpiper.php?feed=feed_name&debug=true&entry=1
-
 ## Configuration
 
 Configuration files are in the config folder.
 
-* conf.php is the global application configuration
-* html2feed.conf.php and feedfilter.conf.php are the individual application configurations
+* Rename `feedfilter.conf.default.php` to `feedfilter.conf.php` to configure `feed.php` feeds and and filters.
+
+* Rename `html2feed.conf.default.php` to `html2feed.conf.php` to configure `html2feed.php` websites to convert into feeds.
 
 ## Requirements
 
-* PHP 7.2+
-* Cache System (folder or db)
-  * Writable cache folder (chmod 777)
-  * MySQL/MariaDB
+* PHP 7.4+
+* Writable cache folder (chmod 777)
 * Upload the project to your server
 
 * Clone the feedpiper repository
