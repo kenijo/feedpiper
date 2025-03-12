@@ -1,6 +1,13 @@
 <?php
 
-/* A quick emulator for common curl function so code based on CURL works on curl free hosting */
+/**
+ * A quick emulator for common curl functions so code based on CURL works on curl-free hosting.
+ * This class and its associated functions provide a way to mimic cURL functionality using PHP's native stream functions.
+ *
+ * @package Library
+ * @subpackage CurlEmu
+ */
+
 if (!function_exists('curl_init')) {
     // The curl option constants
     define('CURLOPT_RETURNTRANSFER', 19913);
@@ -38,6 +45,11 @@ if (!function_exists('curl_init')) {
     define('CURLE_OPERATION_TIMEOUTED', 28);
     define('CURLE_COULDNT_RESOLVE_HOST', 6);
 
+    /**
+     * Class CurlEmu
+     *
+     * Emulates cURL functionality using PHP's native stream functions.
+     */
     class CurlEmu
     {
         // Storing the result in here
@@ -52,16 +64,32 @@ if (!function_exists('curl_init')) {
         // options
         private $options = [];
 
+        /**
+         * CurlEmu constructor.
+         *
+         * @param string|null $url The URL to request.
+         */
         public function __construct($url = null)
         {
             $this->url = $url;
         }
 
+        /**
+         * Set a cURL option.
+         *
+         * @param int $option The CURL option to set.
+         * @param mixed $value The value to set for the option.
+         */
         public function setOpt($option, $value)
         {
             $this->options[$option] = $value;
         }
 
+        /**
+         * Set multiple cURL options at once.
+         *
+         * @param array $options An associative array of options and their values.
+         */
         public function setOptArray($options)
         {
             foreach ($options as $option => $value) {
@@ -69,6 +97,12 @@ if (!function_exists('curl_init')) {
             }
         }
 
+        /**
+         * Get information regarding a specific transfer.
+         *
+         * @param int $opt The CURLINFO constant to retrieve.
+         * @return mixed The value of the requested information.
+         */
         public function getInfo($opt = 0)
         {
             if (!$this->result) {
@@ -117,6 +151,11 @@ if (!function_exists('curl_init')) {
             ];
         }
 
+        /**
+         * Execute the request.
+         *
+         * @return mixed The result of the request.
+         */
         public function exec()
         {
             $this->fetchResult();
@@ -130,6 +169,9 @@ if (!function_exists('curl_init')) {
             return $this->getValue(CURLOPT_RETURNTRANSFER, false) ? $fullResult : print ($fullResult);
         }
 
+        /**
+         * Fetch the result of the request.
+         */
         private function fetchResult()
         {
             // Create the context for this request based on the curl parameters
@@ -215,6 +257,13 @@ if (!function_exists('curl_init')) {
             $this->responseHeader = $http_response_header ?? [];
         }
 
+        /**
+         * Get the value of a cURL option.
+         *
+         * @param int $value The CURL option to get.
+         * @param mixed $default The default value to return if the option is not set.
+         * @return mixed The value of the option.
+         */
         private function getValue($value, $default = null)
         {
             if (isset($this->options[$value]) && $this->options[$value]) {
@@ -223,6 +272,11 @@ if (!function_exists('curl_init')) {
             return $default;
         }
 
+        /**
+         * Get the error number of the last cURL error.
+         *
+         * @return int The error number.
+         */
         public function errNo()
         {
             if (isset($this->lastError)) {
@@ -231,6 +285,11 @@ if (!function_exists('curl_init')) {
             return 0;
         }
 
+        /**
+         * Get the error message of the last cURL error.
+         *
+         * @return string The error message.
+         */
         public function error()
         {
             if (isset($this->lastError)) {
@@ -239,51 +298,108 @@ if (!function_exists('curl_init')) {
             return "";
         }
 
+        /**
+         * Close the cURL session.
+         */
         public function close()
         {
         }
     }
 
+    /**
+     * Initialize a cURL session.
+     *
+     * @param string|null $url The URL to request.
+     * @return CurlEmu The cURL session handle.
+     */
     function curl_init($url = null)
     {
         return new CurlEmu($url);
     }
 
+    /**
+     * Set a cURL option.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     * @param int $option The CURL option to set.
+     * @param mixed $value The value to set for the option.
+     */
     function curl_setopt($ch, $option, $value)
     {
         $ch->setOpt($option, $value);
     }
 
+    /**
+     * Execute the cURL session.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     * @return mixed The result of the request.
+     */
     function curl_exec($ch)
     {
         return $ch->exec();
     }
 
+    /**
+     * Get information regarding a specific transfer.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     * @param int $option The CURLINFO constant to retrieve.
+     * @return mixed The value of the requested information.
+     */
     function curl_getinfo($ch, $option = 0)
     {
         return $ch->getInfo($option);
     }
 
+    /**
+     * Get the error number of the last cURL error.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     * @return int The error number.
+     */
     function curl_errno($ch)
     {
         return $ch->errNo();
     }
 
+    /**
+     * Get the error message of the last cURL error.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     * @return string The error message.
+     */
     function curl_error($ch)
     {
         return $ch->error();
     }
 
+    /**
+     * Close the cURL session.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     */
     function curl_close($ch)
     {
         return $ch->close();
     }
 
+    /**
+     * Set multiple cURL options at once.
+     *
+     * @param CurlEmu $ch The cURL session handle.
+     * @param array $options An associative array of options and their values.
+     */
     function curl_setopt_array($ch, $options)
     {
         $ch->setOptArray($options);
     }
 
+    /**
+     * Get the version information of the cURL library.
+     *
+     * @return array The version information.
+     */
     function curl_version()
     {
         return [

@@ -1,11 +1,15 @@
 <?php
 
 /**
- * URL parsing functions
+ * Path and URL parsing functions
  */
 
 /**
- * Get URL
+ * Get the current URL.
+ *
+ * This function constructs the current URL based on the server protocol (HTTP or HTTPS)
+ * and the host name. It optionally includes the port number if it is not the default port
+ * for the protocol.
  *
  * @param bool $includePort Whether to include the port number in the URL
  * @return string The current URL
@@ -23,7 +27,10 @@ function url($includePort = false)
 }
 
 /**
- * Get directory path
+ * Get the directory path of the current script.
+ *
+ * This function returns the directory path of the current script,
+ * trimming any trailing slashes.
  *
  * @return string The directory path
  */
@@ -33,7 +40,9 @@ function dirPath()
 }
 
 /**
- * Get file path
+ * Get the file path of the current request.
+ *
+ * This function returns the file path part of the current request URI.
  *
  * @return string The file path
  */
@@ -43,10 +52,13 @@ function filePath()
 }
 
 /**
- * Combine URL and file path
+ * Combine the current URL and the file path.
+ *
+ * This function combines the current URL (optionally including the port number)
+ * with the file path of the current request.
  *
  * @param bool $includePort Whether to include the port number in the URL
- * @return string The full URL including file path
+ * @return string The full URL including the file path
  */
 function urlFilePath($includePort = false)
 {
@@ -54,10 +66,13 @@ function urlFilePath($includePort = false)
 }
 
 /**
- * Combine URL and directory path
+ * Combine the current URL and the directory path.
+ *
+ * This function combines the current URL (optionally including the port number)
+ * with the directory path of the current script.
  *
  * @param bool $includePort Whether to include the port number in the URL
- * @return string The full URL including directory path
+ * @return string The full URL including the directory path
  */
 function urlDirPath($includePort = false)
 {
@@ -65,7 +80,11 @@ function urlDirPath($includePort = false)
 }
 
 /**
- * Build a URL with query parameters
+ * Build a URL with query parameters.
+ *
+ * This function appends query parameters to a base URL. If the base URL already
+ * contains query parameters, the new parameters are appended with an '&'.
+ * Otherwise, they are appended with a '?'.
  *
  * @param string $url The base URL
  * @param array $params An associative array of query parameters
@@ -84,11 +103,74 @@ function buildUrl($url, array $params = [])
 }
 
 /**
- * Check if the current request is using HTTPS
+ * Check if the current request is using HTTPS.
+ *
+ * This function checks if the current request is being made over HTTPS.
  *
  * @return bool True if HTTPS is being used, false otherwise
  */
 function isHttps()
 {
     return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+}
+
+/**
+ * Cleans query parameters in a URL.
+ *
+ * @param string $url The URL to clean.
+ * @return string The cleaned URL.
+ */
+function clean_query_params($url)
+{
+    $url = query_params_decode($url);
+    $url = query_params_encode($url);
+    return $url;
+}
+
+/**
+ * Encodes query parameters in a URL.
+ *
+ * @param string $url The URL to encode.
+ * @return string The encoded URL.
+ */
+function query_params_encode($url)
+{
+    $url = parse_url($url);
+    $url_str = "";
+    if (isset($url['scheme']))
+        $url_str .= $url['scheme'] . '://';
+    if (isset($url['host']))
+        $url_str .= $url['host'];
+    if (isset($url['path']))
+        $url_str .= htmlentities($url['path']);
+    if (isset($url['query']))
+        $url_str .= '?' . htmlentities($url['query']);
+    if (isset($url['fragment']))
+        $url_str .= '#' . htmlentities($url['fragment']);
+
+    return $url_str;
+}
+
+/**
+ * Decodes query parameters in a URL.
+ *
+ * @param string $url The URL to decode.
+ * @return string The decoded URL.
+ */
+function query_params_decode($url)
+{
+    $url = parse_url($url);
+    $url_str = "";
+    if (isset($url['scheme']))
+        $url_str .= $url['scheme'] . '://';
+    if (isset($url['host']))
+        $url_str .= $url['host'];
+    if (isset($url['path']))
+        $url_str .= html_entity_decode($url['path']);
+    if (isset($url['query']))
+        $url_str .= '?' . html_entity_decode($url['query']);
+    if (isset($url['fragment']))
+        $url_str .= '#' . html_entity_decode($url['fragment']);
+
+    return $url_str;
 }

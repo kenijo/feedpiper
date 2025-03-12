@@ -2,6 +2,17 @@
 
 /**
  * Call REST API function
+ *
+ * This function makes a REST API call using cURL. It supports GET, POST, and PUT methods.
+ * If the cURL call fails, it falls back to using file_get_contents.
+ *
+ * @param string $method The HTTP method to use (GET, POST, PUT).
+ * @param string $url The URL to send the request to.
+ * @param array|false $header Optional. An array of headers to send with the request.
+ * @param array|null $data Optional. Data to send with the request (for POST and PUT methods).
+ * @param bool $check_ssl Optional. Whether to check the SSL certificate. Default is true.
+ * @return string The response from the API call.
+ * @throws Exception If both cURL and file_get_contents fail.
  */
 function callRestAPI($method, $url, $header = false, $data = null, $check_ssl = true)
 {
@@ -50,6 +61,16 @@ function callRestAPI($method, $url, $header = false, $data = null, $check_ssl = 
 
 /**
  * Fallback function using file_get_contents
+ *
+ * This function is used as a fallback when the cURL call fails. It uses file_get_contents
+ * to make the HTTP request.
+ *
+ * @param string $method The HTTP method to use (GET, POST, PUT).
+ * @param string $url The URL to send the request to.
+ * @param array|false $header Optional. An array of headers to send with the request.
+ * @param array|null $data Optional. Data to send with the request (for POST and PUT methods).
+ * @return string The response from the API call.
+ * @throws Exception If the file_get_contents call fails.
  */
 function fallbackFileGetContents($method, $url, $header, $data)
 {

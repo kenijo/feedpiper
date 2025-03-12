@@ -5,9 +5,13 @@
  */
 
 /**
+ * Extracts the substring after the first occurrence of a specified character.
  * after('@', 'biohazard@online.ge');
- * returns 'online.ge'
- * from the first occurrence of '@'
+ * returns 'online.ge' from the first occurrence of '@'
+ *
+ * @param string $this_one The character to search for.
+ * @param string $in_that The string to search within.
+ * @return string The substring after the first occurrence of $this_one, or an empty string if not found.
  */
 function after($this_one, $in_that)
 {
@@ -16,9 +20,13 @@ function after($this_one, $in_that)
 }
 
 /**
+ * Extracts the substring after the last occurrence of a specified character.
  * afterLast('[', 'sin[90]*cos[180]');
- * returns '180]'
- * from the last occurrence of '['
+ * returns '180]' from the last occurrence of '['
+ *
+ * @param string $this_one The character to search for.
+ * @param string $in_that The string to search within.
+ * @return string The substring after the last occurrence of $this_one, or an empty string if not found.
  */
 function afterLast($this_one, $in_that)
 {
@@ -27,9 +35,13 @@ function afterLast($this_one, $in_that)
 }
 
 /**
+ * Extracts the substring before the first occurrence of a specified character.
  * before('@', 'biohazard@online.ge');
- * returns 'biohazard'
- * from the first occurrence of '@'
+ * returns 'biohazard' from the first occurrence of '@'
+ *
+ * @param string $this_one The character to search for.
+ * @param string $in_that The string to search within.
+ * @return string The substring before the first occurrence of $this_one, or an empty string if not found.
  */
 function before($this_one, $in_that)
 {
@@ -38,9 +50,13 @@ function before($this_one, $in_that)
 }
 
 /**
+ * Extracts the substring before the last occurrence of a specified character.
  * beforeLast('[', 'sin[90]*cos[180]');
- * returns 'sin[90]*cos['
- * from the last occurrence of '['
+ * returns 'sin[90]*cos[' from the last occurrence of '['
+ *
+ * @param string $this_one The character to search for.
+ * @param string $in_that The string to search within.
+ * @return string The substring before the last occurrence of $this_one, or an empty string if not found.
  */
 function beforeLast($this_one, $in_that)
 {
@@ -49,9 +65,14 @@ function beforeLast($this_one, $in_that)
 }
 
 /**
+ * Extracts the substring between the first occurrences of two specified characters.
  * between('@', '.', 'biohazard@online.ge');
- * returns 'online'
- * from the first occurrence of '@'
+ * returns 'online' from the first occurrence of '@'
+ *
+ * @param string $this_one The starting character to search for.
+ * @param string $that The ending character to search for.
+ * @param string $in_that The string to search within.
+ * @return string The substring between the first occurrences of $this_one and $that, or an empty string if not found.
  */
 function between($this_one, $that, $in_that)
 {
@@ -59,9 +80,14 @@ function between($this_one, $that, $in_that)
 }
 
 /**
+ * Extracts the substring between the last occurrences of two specified characters.
  * betweenLast('[', ']', 'sin[90]*cos[180]');
- * returns '180'
- * from the last occurrence of '['
+ * returns '180' from the last occurrence of '['
+ *
+ * @param string $this_one The starting character to search for.
+ * @param string $that The ending character to search for.
+ * @param string $in_that The string to search within.
+ * @return string The substring between the last occurrences of $this_one and $that, or an empty string if not found.
  */
 function betweenLast($this_one, $that, $in_that)
 {
@@ -465,7 +491,7 @@ function betweenLast($this_one, $that, $in_that)
  *                       Defaults to the current locale.
  * @return string Filtered string with replaced "nice" characters.
  */
-function removeAccents($text, $locale = '')
+function removeAccents($text, $locale = 'en_US')
 {
     if (!preg_match('/[\x80-\xff]/', $text)) {
         return $text;
@@ -816,11 +842,6 @@ function removeAccents($text, $locale = '')
             'ǜ' => 'u',
         ];
 
-        // Used for locale-specific rules.
-        if (empty($locale)) {
-            $locale = getLocale();
-        }
-
         /*
          * German has various locales (de_DE, de_CH, de_AT, ...) with formal and informal variants.
          * There is no 3-letter locale like 'def', so checking for 'de' instead of 'de_' is safe,
@@ -882,7 +903,7 @@ function removeAccents($text, $locale = '')
  * Checks to see if a string is utf8 encoded.
  *
  * NOTE: This function checks for 5-Byte sequences, UTF8
- *       has Bytes Sequences with a maximum length of 4.
+ *       has Byte Sequences with a maximum length of 4.
  *
  * @author bmorel at ssi dot fr (modified)
  * @since 1.2.1
@@ -914,15 +935,4 @@ function seemsUtf8(string $str): bool
         }
     }
     return true;
-}
-
-
-/**
- * Retrieves the current locale.
- * But modified to return the locale set in conf.php
- */
-function getLocale()
-{
-    global $cfg;
-    return $cfg['locale'] ?? 'en_US';
 }

@@ -2,49 +2,54 @@
 
 /**
  * Inclusion of all the configuration and library files
+ *
+ * This script defines the base path for the application and includes all necessary
+ * configuration files, internal library files, and external libraries. It ensures that
+ * all required files are loaded before the application starts.
  */
 
-// Define the base path
+// Define the base path for the application
 define('BASE_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
-// Configuration files
+// List of configuration files to be included
 $configFiles = [
-    'config/conf.php',
-    'config/feedfilter.conf.php',
-    'config/html2feed.conf.php',
+    'config/feedfilter.conf.php',       // Configuration for feed filtering
+    'config/html2feed.conf.php',        // Configuration for HTML to feed conversion
 ];
 
-// Library files
+// List of internal library files to be included
 $libFiles = [
-    'library/class.entry.php',
-    'library/class.feed.php',
-    'library/class.filteredfeed.php',
-    'library/func.array.php',
-    'library/func.curl-emu.php',
-    'library/func.rest.php',
-    'library/func.string.php',
-    'library/func.url.php',
+    'library/class.feedfilter.php',     // Class for feed filtering
+    'library/func.array.php',           // Array utility functions
+    'library/func.curl-emu.php',        // cURL emulation functions
+    'library/func.rest.php',            // REST API functions
+    'library/func.string.php',          // String utility functions
+    'library/func.url.php',             // URL utility functions
 ];
 
-// External libraries
+// List of external libraries to be included
 $extLibs = [
-    'vendor/erusev/parsedown/Parsedown.php',
-    'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php',
-    'vendor/simplepie/simplepie/autoloader.php',
+    'vendor/erusev/parsedown/Parsedown.php',                    // Markdown parser
+    'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php',   // HTML DOM parser
+    'vendor/simplepie/simplepie/autoloader.php',                // RSS and Atom feed parser
 ];
 
 // Require all files
 try {
+    // Merge all file lists into one array
     $files = array_merge($configFiles, $libFiles, $extLibs);
 
+    // Loop through each file and require it
     foreach ($files as $file) {
         $filePath = BASE_PATH . $file;
         if (file_exists($filePath)) {
             require_once $filePath;
         } else {
+            // Throw an exception if the file does not exist
             throw new Exception("Required file not found: $filePath");
         }
     }
 } catch (Exception $e) {
+    // Handle exceptions by displaying an error message and stopping the script
     die("Error loading required files: " . $e->getMessage());
 }
