@@ -13,19 +13,8 @@ jobs:
       - name: Importing Composer dependancies
         run: composer install
 
-      - name: Initializing feedpiper-config repository
-        # This repository is meant to deploy my personal configuration stored in a separate repository
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v4
-        continue-on-error: true
-        with:
-          repository: kenijo/feedpiper-config
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: feedpiper-config
-
-      - name: Move personal config in place and cleanup what we do not want to upload
+      - name: Cleanup what we do not want to upload
         run: |
-          rsync -a './feedpiper-config/' '.'
           rm -rf './_config.yml'
           rm -rf './.git'
           rm -rf './.gitattributes'
@@ -34,7 +23,6 @@ jobs:
           rm -rf './*.code-workspace'
           rm -rf './composer.json'
           rm -rf './composer.lock'
-          rm -rf './feedpiper-config/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
 
