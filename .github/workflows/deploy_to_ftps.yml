@@ -25,7 +25,7 @@ jobs:
 
       - name: Delete default config folder, move personal config in place, and cleanup what we do not want to upload
         run: |
-          cp -r './feedpiper-config/*' '.'
+          cp -R './feedpiper-config/*' '.'
           rm -rf './_config.yml'
           rm -rf './.git'
           rm -rf './.gitattributes'
