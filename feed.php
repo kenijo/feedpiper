@@ -224,7 +224,7 @@ foreach ($entries as $batch) {
         // Add feed entry
         if ($paramDebug) {
             $newFeed->debugFeedEntry();
-            break;
+            break 2;
         } elseif ($newFeed->getFeedEntrySkip()) {
             continue;
         } else {
