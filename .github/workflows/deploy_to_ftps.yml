@@ -1,7 +1,7 @@
 ﻿name: Deploy to FTP/FTPS
 on:
-  #push:
-  workflow_dispatch:
+  push:               # Triggers the workflow on push events but only for the master branch
+  workflow_dispatch:  # Allows you to manually trigger the workflow
 jobs:
   Deploy-SFTP:
     runs-on: ubuntu-latest
@@ -12,9 +12,6 @@ jobs:
 
       - name: Importing Composer dependancies
         run: composer install
-
-      - name: list files and folders
-        run: ls -al
 
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
@@ -28,12 +25,12 @@ jobs:
 
       - name: Delete default config folder, move personal config in place, and cleanup what we do not want to upload
         run: |
-          rm -rf './config/'
           mv ./feedpiper-config/* ./
           rm -rf './_config.yml'
           rm -rf './.git*'
           rm -rf './*.code-workspace'
           rm -rf './composer.*'
+          rm -rf './feedpiper-config/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
 
