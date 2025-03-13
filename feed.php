@@ -60,18 +60,18 @@ if (isset($feed['whitelist'])) {
     $newFeed->setFeedWhitelist($whitelist);
 }
 
-$blacklist = isset($feed['blacklist']) ? $feed['blacklist'] : [];
-$globalBlacklist = isset($feedConf['globalBlacklist']) ? $feedConf['globalBlacklist'] : [];
-$mergedBlacklists = mergeArrays($blacklist, $globalBlacklist);
-$mergedBlacklists = cleanArray($mergedBlacklists, 'strtolower');
-$newFeed->setFeedBlacklist($mergedBlacklists);
+if (isset($feedConf['blacklist'])) {
+    $globalBlacklist = isset($feedConf['globalBlacklist']) ? $feedConf['globalBlacklist'] : [];
+    $blacklist = mergeArrays($blacklist, $globalBlacklist);
+    $blacklist = cleanArray($blacklist, 'strtolower');
+    $newFeed->setFeedBlacklist($blacklist);
+}
 
 // Process entries in batches
 const BATCH_SIZE = 50;
 $entries = array_chunk($simplePieMergedItems, BATCH_SIZE);
 
 $feedEntryListById = [];
-
 foreach ($entries as $batch) {
     foreach ($batch as $entry) {
         // Add a new (filtered) feed entry
