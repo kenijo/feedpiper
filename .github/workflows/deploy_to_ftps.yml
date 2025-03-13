@@ -1,6 +1,6 @@
 ﻿name: Deploy to FTP/FTPS
 on:
-  push:               # Triggers the workflow on push events but only for the master branch
+  #push:               # Triggers the workflow on push events but only for the master branch
   workflow_dispatch:  # Allows you to manually trigger the workflow
 jobs:
   Deploy-SFTP:
