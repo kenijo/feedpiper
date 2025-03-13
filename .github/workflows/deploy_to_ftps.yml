@@ -23,7 +23,7 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: feedpiper-config
 
-      - name: Delete default config folder, move personal config in place, and cleanup what we do not want to upload
+      - name: Move personal config in place and cleanup what we do not want to upload
         run: |
           rsync -a './feedpiper-config/' '.'
           rm -rf './_config.yml'
