@@ -97,8 +97,8 @@ foreach ($entries as $batch) {
             $content = null;
         }
 
-        $description = cleanContent($description);
-        $content = cleanContent($content);
+        $description = cleanEntryContent($description);
+        $content = cleanEntryContent($content);
 
         $newFeed->setFeedEntryDescription($description);
         $newFeed->setFeedEntryContent($content);
@@ -283,7 +283,7 @@ function initializeFeed($feedName, $feedUrl, $useCurl)
  * @param string $entry The entry content or description
  * @return string The cleaned content or description
  */
-function cleanContent($entry)
+function cleanEntryContent($entry)
 {
     $patterns = [
         '#<br clear="all">.*#imu' => '',    // Remove tracking links if present
