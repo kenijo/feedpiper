@@ -13,12 +13,6 @@ jobs:
       - name: Importing Composer dependancies
         run: composer install
 
-      - name: Initializing feedpiper-config repository - Delete default config folder
-        run: rm -rf './config/'
-
-      - name: Importing Composer dependancies
-        run: composer install
-
       - name: list files and folders
         run: ls -al
 
@@ -30,13 +24,12 @@ jobs:
         with:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: .
+          path: feedpiper-config
 
-      - name: list files and folders
-        run: ls -al
-
-      - name: Cleaning up files and folders we do not want to upload
+      - name: Delete default config folder, move personal config in place, and cleanup what we do not want to upload
         run: |
+          rm -rf './config/'
+          mv ./feedpiper-config/* ./
           rm -rf './_config.yml'
           rm -rf './.git*'
           rm -rf './*.code-workspace'
