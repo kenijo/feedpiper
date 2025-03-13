@@ -10,11 +10,17 @@ jobs:
         # https://github.com/actions/checkout
         uses: actions/checkout@v4
 
+      - name: Importing Composer dependancies
+        run: composer install
+
       - name: Initializing feedpiper-config repository - Delete default config folder
         run: rm -rf './config/'
 
       - name: Importing Composer dependancies
         run: composer install
+
+      - name: list files and folders
+        run: ls -al
 
       - name: Initializing feedpiper-config repository
         # This repository is meant to deploy my personal configuration stored in a separate repository
@@ -24,6 +30,7 @@ jobs:
         with:
           repository: kenijo/feedpiper-config
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: .
 
       - name: list files and folders
         run: ls -al
