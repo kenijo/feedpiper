@@ -327,10 +327,10 @@ class FeedFilter
                 if (isset($list[$entryType][$condition])) {
                     foreach ($list[$entryType][$condition] as $value) {
                         if (
-                            ($condition === 'starts' && strpos($entryValue, $value) === 0) ||
-                            ($condition === 'contains' && strpos($entryValue, $value) !== false) ||
-                            ($condition === 'ends' && substr($entryValue, -strlen($value)) === $value) ||
-                            ($condition === 'regex' && preg_match('#' . $value . '#imu', $entryValue))
+                            ($condition === 'starts' && preg_match('#^\b' . preg_quote($value, '#') . '\b#imu', $entryValue)) ||
+                            ($condition === 'contains' && preg_match('#\b' . preg_quote($value, '#') . '\b#imu', $entryValue)) ||
+                            ($condition === 'ends' && preg_match('#\b' . preg_quote($value, '#') . '\b$#imu', $entryValue)) ||
+                            ($condition === 'regex' && preg_match('#' . preg_quote($value, '#') . '#imu', $entryValue))
                         ) {
                             return true; // Skip entry if a match is found
                         }
