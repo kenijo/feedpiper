@@ -330,7 +330,7 @@ class FeedFilter
                             ($condition === 'starts' && preg_match('#^\b' . preg_quote($value, '#') . '\b#imu', $entryValue)) ||
                             ($condition === 'contains' && preg_match('#\b' . preg_quote($value, '#') . '\b#imu', $entryValue)) ||
                             ($condition === 'ends' && preg_match('#\b' . preg_quote($value, '#') . '\b$#imu', $entryValue)) ||
-                            ($condition === 'regex' && preg_match('#' . preg_quote($value, '#') . '#imu', $entryValue))
+                            ($condition === 'regex' && preg_match('#' . $value . '#imu', $entryValue))
                         ) {
                             return true; // Skip entry if a match is found
                         }
