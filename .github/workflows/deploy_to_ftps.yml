@@ -25,8 +25,7 @@ jobs:
 
       - name: Delete default config folder, move personal config in place, and cleanup what we do not want to upload
         run: |
-          rm -rf './config/'
-          mv -f ./feedpiper-config/* ./
+          cp -r './feedpiper-config/*' '.'
           rm -rf './_config.yml'
           rm -rf './.git'
           rm -rf './.gitattributes'
@@ -38,9 +37,6 @@ jobs:
           rm -rf './feedpiper-config/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/example/'
           rm -rf './vendor/simplehtmldom/simplehtmldom/manual/'
-
-      - name: list files and folders
-        run: ls -al
 
       - name: Deploying to FTP/FTPS Server
         # https://github.com/SamKirkland/FTP-Deploy-Action
