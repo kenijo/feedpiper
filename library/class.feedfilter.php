@@ -273,12 +273,12 @@ class FeedFilter
         echo '-->' . PHP_EOL;
     }
 
+
     /**
      * Filters feed entries based on whitelist and blacklist criteria.
-     * Never skip an entry if it matches a whitelist filter (takes precedence over blacklist)
-     * Always skip an entry if it matches a blacklist filter.
      *
-     * @param array $entries The feed entries to filter.
+     * @param array $entries The feed entries to be filtered.
+     * @return void
      */
     public function filterEntries($entries)
     {
@@ -287,20 +287,32 @@ class FeedFilter
             if (is_string($entryValues)) {
                 $entryValues = [$entryValues];
             }
+
             foreach ($entryValues as $entryValue) {
-                $keep = $this->checkEntryAgainstList($entryValue, $entryType, $this->getFeedWhitelist());
-                if ($keep) {
-                    $this->setFeedEntrySkip(false);
-                    return; // Stop further processing if a match is found in the whitelist
+                $keep = null;
+                $skip = null;
+
+                if ($this->getFeedWhitelist() !== null) {
+                    $keep = $this->checkEntryAgainstList($entryValue, $entryType, $this->getFeedWhitelist());
+                    if ($keep === true) {
+                        $this->setFeedEntrySkip(false);
+                        return;
+                    } elseif ($keep === false) {
+                        $this->setFeedEntrySkip(true);
+                    }
                 }
-                $skip = $this->checkEntryAgainstList($entryValue, $entryType, $this->getFeedBlacklist());
-                if ($skip) {
-                    $this->setFeedEntrySkip(true);
-                    return; // Stop further processing if a match is found in the blacklist
+
+                if ($this->getFeedBlacklist() !== null) {
+                    $skip = $this->checkEntryAgainstList($entryValue, $entryType, $this->getFeedBlacklist());
+                    if ($skip === true) {
+                        $this->setFeedEntrySkip(true);
+                        return;
+                    } elseif ($skip === false) {
+                        $this->setFeedEntrySkip(false);
+                    }
                 }
             }
         }
-        $this->setFeedEntrySkip(false);
     }
 
     /**
