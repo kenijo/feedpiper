@@ -60,9 +60,9 @@ if (isset($feed['whitelist'])) {
     $newFeed->setFeedWhitelist($whitelist);
 }
 
-if (isset($feedConf['blacklist'])) {
+if (isset($feed['blacklist'])) {
     $globalBlacklist = isset($feedConf['globalBlacklist']) ? $feedConf['globalBlacklist'] : [];
-    $blacklist = mergeArrays($blacklist, $globalBlacklist);
+    $blacklist = mergeArrays($feed['blacklist'], $globalBlacklist);
     $blacklist = cleanArray($blacklist, 'strtolower');
     $newFeed->setFeedBlacklist($blacklist);
 }
