@@ -293,6 +293,10 @@ class FeedFilter
                 $entryValues = [$entryValues];
             }
 
+            if ($entryValues === null) {
+                continue;
+            }
+
             foreach ($entryValues as $entryValue) {
                 $keep = null;
                 $skip = null;
