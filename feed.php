@@ -74,15 +74,14 @@ $entries = array_chunk($simplePieMergedItems, BATCH_SIZE);
 $feedEntryListById = [];
 foreach ($entries as $batch) {
     foreach ($batch as $entry) {
-        // Add a new (filtered) feed entry
-        $newFeed->setFeedEntrySkip(false);
-
         // Track existing entries and skip duplicate ones
         if (in_array($entry->get_id(true), $feedEntryListById)) {
             continue;
-        } else {
-            $feedEntryListById[] = $entry->get_id(true);
         }
+        $feedEntryListById[] = $entry->get_id(true);
+
+        // Add a new (filtered) feed entry
+        $newFeed->setFeedEntrySkip(false);
 
         $entry = $paramDebugEntry ? $simplePieMergedItems[$paramDebugEntry] : $entry;
         $newFeed->setFeedEntryTitle($entry->get_title());
@@ -252,8 +251,6 @@ if (!$paramDebug) {
 function initializeFeed($feedName, $feedUrl, $useCurl)
 {
     $simplePie = new SimplePie();
-
-    $simplePie->set_cache_duration(259200); // 3 days
 
     // Force SimplePie to use fsockopen() instead of cURL if configured
     if (isset($useCurl) && $useCurl === false) {
