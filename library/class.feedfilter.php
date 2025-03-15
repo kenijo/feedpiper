@@ -67,8 +67,10 @@ class FeedFilter
         echo '<rss version="' . self::RSS_VERSION . '" xmlns:atom="' . self::ATOM_NAMESPACE . '" xmlns:content="' . self::CONTENT_NAMESPACE . '" xmlns:dc="' . self::DC_NAMESPACE . '">' . PHP_EOL;
         $this->feedEntryPrint(1, 'channel', '');
         $this->feedEntryPrint(2, 'title', $this->getFeedTitle(), true);
-        $this->feedEntryPrint(2, 'description', $this->getFeedDescription(), true);
-        $this->feedEntryPrint(2, 'link', $this->getFeedLink());
+        //$this->feedEntryPrint(2, 'description', $this->getFeedDescription(), true);
+        foreach($this->getFeedLink() as $link) {
+            $this->feedEntryPrint(2, 'link', $link);
+        }
         $this->feedEntryPrint(2, 'language', $this->getFeedLanguage());
         $this->feedEntryPrint(2, 'lastBuildDate', $this->getFeedLastBuildDate());
         $this->feedEntryPrint(2, 'generator', $this->getFeedGenerator(), true);
@@ -189,7 +191,10 @@ class FeedFilter
     {
         $this->debugPrint('Feed Title:', $this->getFeedTitle());
         $this->debugPrint('Feed Description:', $this->getFeedDescription());
-        $this->debugPrint('Feed Link:', $this->getFeedLink());
+        foreach($this->getFeedLink() as $link) {
+            $this->debugPrint('Feed Link:', $link);
+        }
+        //$this->debugPrint('Feed Link:', $this->getFeedLink());
         $this->debugPrint('Feed Language:', $this->getFeedLanguage());
         $this->debugPrint('Feed Last Build Date:', $this->getFeedLastBuildDate());
         $this->debugPrint('Feed Generator:', $this->getFeedGenerator());

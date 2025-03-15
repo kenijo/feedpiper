@@ -39,6 +39,7 @@ $simplePieMergedItems = SimplePie::merge_items($simplePieFeedList);
 // Initialize new feed
 $newFeed = new FeedFilter($simplePieFeedList[0]);
 $newFeed->setFeedTitle($feed['title']);
+$newFeed->setFeedLink($feed['url']);
 
 // Open feed
 if ($paramDebug) {
