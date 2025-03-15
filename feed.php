@@ -284,9 +284,7 @@ function initializeFeed($feedName, $feedUrl, $useCurl)
 function cleanEntryContent($entry)
 {
     $patterns = [
-        '#<br clear="all">.*#imu' => '',    // Remove tracking links if present
-        '#<div.*?></div>#imu' => '',        // Remove tracking links if present
-        '#(\s)+#imu' => ' ',                // Remove left over spaces// Remove left over spaces
+        '#(\s)+#imu' => ' ',                // Remove left over spaces
     ];
 
     foreach ($patterns as $pattern => $replacement) {
