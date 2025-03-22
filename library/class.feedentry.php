@@ -86,11 +86,13 @@ class FeedEntry
                     $attributes[] = 'length="' . $length . '"';
                 }
 
-                $attributes[] = 'url="' . $enclosure->get_link() . '"';
+                $attributes[] = 'url="' . htmlspecialchars($enclosure->get_link()) . '"';
 
                 if ($type = $enclosure->get_type()) {
                     $attributes[] = 'type="' . $type . '"';
                 }
+
+                $attributes[] = '/';
 
                 $this->printFormat(3, implode(' ', $attributes));
             }
@@ -162,7 +164,7 @@ class FeedEntry
 
         $enclosure = $this->getEnclosure();
         if ($enclosure && $enclosure->get_link()) {
-            $this->printFormatDebug('Entry Enclosure Link:', $enclosure->get_link());
+            $this->printFormatDebug('Entry Enclosure Link:', htmlspecialchars($enclosure->get_link()));
             $this->printFormatDebug('Entry Enclosure Type:', $enclosure->get_type());
             $this->printFormatDebug('Entry Enclosure Length:', $enclosure->get_length());
             echo PHP_EOL;
