@@ -1,256 +1,45 @@
 <?php
+/**
+ * FeedPiper - Feed Merger and Filter
+ *
+ * This script processes RSS/Atom feeds according to configuration,
+ * merges multiple feeds, and applies filtering rules.
+ *
+ * URL Parameters:
+ * - feed: Required. The name of the feed configuration to use
+ * - debug: Optional. Set to true to enable debug mode
+ * - entry: Optional. Used with debug to specify which entry to examine
+ */
 
-// Enable debug mode and error reporting
+// Enable debug mode and error reporting if debug parameter is provided
 if ($paramDebug = filter_input(INPUT_GET, 'debug', FILTER_VALIDATE_BOOLEAN)) {
     error_reporting(E_ALL);
     ini_set('display_errors', true);
 
-    $paramDebugEntry = filter_input(INPUT_GET, 'entry', FILTER_VALIDATE_INT);
+    // Get specific entry number for debugging, defaults to 0
+    $paramDebugEntry = filter_input(INPUT_GET, 'entry', FILTER_VALIDATE_INT) ?? 0;
 }
 
-// Include libraries
+// Include required libraries and dependencies
 require_once __DIR__ . '/library/includes.php';
 
+// Validate that a feed parameter was provided
 if (!$paramFeedName = filter_input(INPUT_GET, 'feed', FILTER_SANITIZE_STRING)) {
-    echo 'Please provide a "feed" parameter.';
+    echo 'Provide a "feed" parameter.';
     return;
 }
 
+// Check if the requested feed exists in configuration
 if (!isset($feedConf[$paramFeedName])) {
-    echo 'Configuration not found for: ' . $paramFeedName;
+    echo 'Configuration not found for feed: ' . $paramFeedName;
     return;
 }
 
-// Create a list of feeds and initialize them for a given feedId
-$simplePieFeedList = [];
-$feed = $feedConf[$paramFeedName];
-foreach ($feed['url'] as $feedUrl) {
-    $simplePieFeed = initializeFeed($paramFeedName, $feedUrl, $useCurl);
-    if ($simplePieFeed) {
-        $simplePieFeedList[] = $simplePieFeed;
-    } else {
-        echo 'Failed to initialize feed for URL: ' . $feedUrl;
-    }
-}
+// Get the specific feed configuration
+$feedConfig = $feedConf[$paramFeedName];
 
-// Merge all feeds
-$simplePieMergedItems = SimplePie::merge_items($simplePieFeedList);
-
-// Initialize new feed
-$newFeed = new FeedFilter($simplePieFeedList[0]);
-$newFeed->setFeedTitle($feed['title']);
-$newFeed->setFeedLink($feed['url']);
-
-// Open feed
-if ($paramDebug) {
-    header('Content-type: text/plain; charset=utf-8');
-    $newFeed->debugPrint('Debug Mode:', $paramDebug);
-    $newFeed->debugPrint('Debug Entry: ', $paramDebugEntry);
-    $newFeed->debugPrint('Feed URL: ', 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    echo PHP_EOL;
-    $newFeed->debugFeed();
-} else {
-    // header('Content-type: application/rss+xml; charset=utf-8');
-    header('Content-type: application/xml; charset=utf-8');
-    $newFeed->openFeed();
-}
-
-// Set whitelist and blacklist filters
-if (isset($feed['whitelist'])) {
-    $whitelist = cleanArray($feed['whitelist'], 'strtolower');
-    $newFeed->setFeedWhitelist($whitelist);
-}
-
-if (isset($feed['blacklist'])) {
-    $globalBlacklist = isset($feedConf['globalBlacklist']) ? $feedConf['globalBlacklist'] : [];
-    $blacklist = mergeArrays($feed['blacklist'], $globalBlacklist);
-    $blacklist = cleanArray($blacklist, 'strtolower');
-    $newFeed->setFeedBlacklist($blacklist);
-}
-
-// Process entries in batches
-const BATCH_SIZE = 50;
-$entries = array_chunk($simplePieMergedItems, BATCH_SIZE);
-
-$feedEntryListById = [];
-foreach ($entries as $batch) {
-    foreach ($batch as $entry) {
-        // Track existing entries and skip duplicate ones
-        if (in_array($entry->get_id(true), $feedEntryListById)) {
-            continue;
-        }
-        $feedEntryListById[] = $entry->get_id(true);
-
-        // Add a new (filtered) feed entry
-        $newFeed->setFeedEntrySkip(false);
-
-        $entry = $paramDebugEntry ? $simplePieMergedItems[$paramDebugEntry] : $entry;
-        $newFeed->setFeedEntryTitle($entry->get_title());
-
-        $description = $entry->get_description() ?: null;
-        $newFeed->setFeedEntryDescription($entry->get_description());
-        if ($entry->get_item_tags('', 'body')) {
-            $content = $entry->get_item_tags('', 'body')[0]['data'];
-        } elseif ($entry->get_content() != $entry->get_description()) {
-            $content = $entry->get_content();
-        } else {
-            $content = null;
-        }
-
-        $description = cleanEntryContent($description);
-        $content = cleanEntryContent($content);
-
-        $newFeed->setFeedEntryDescription($description);
-        $newFeed->setFeedEntryContent($content);
-
-        $newFeed->setFeedEntryLink($entry->get_link());
-        $newFeed->setfeedEntryId($entry->get_id(true));
-        $newFeed->setFeedEntryPubDate($entry->get_date(DATE_RSS));
-
-        // Create a sorted unique list of authors by combining Authors and Contributors
-        $authors = [];
-        if ($entry->get_authors()) {
-            foreach ($entry->get_authors() as $author) {
-                if ($author->get_email()) {
-                    $authors[] = $author->get_email();
-                }
-                if ($author->get_name()) {
-                    $authors[] = $author->get_name();
-                }
-            }
-        }
-        if ($entry->get_contributors()) {
-            foreach ($entry->get_contributors() as $contributor) {
-                if ($contributor->get_email()) {
-                    $authors[] = $contributor->get_email();
-                }
-                if ($contributor->get_name()) {
-                    $authors[] = $contributor->get_name();
-                }
-            }
-        }
-        $authors = cleanArray($authors);
-
-        if ($authors) {
-            $newFeed->setFeedEntryAuthors($authors);
-        } else {
-            $newFeed->setFeedEntryAuthors(null);
-        }
-
-        // Create a sorted unique list of categories
-        $categories = [];
-        if ($entry->get_categories()) {
-            foreach ($entry->get_categories() as $category) {
-                if ($category->get_label()) {
-                    $categories[] = $category->get_label();
-                }
-                if ($category->get_term()) {
-                    $categories[] = $category->get_term();
-                }
-            }
-        }
-
-        // If we don't have categories defined then generate some based on the link and title
-        if (!$categories) {
-            // NOTE START - Uncomment this section if you want to generate categories from links
-            if ($link = $entry->get_link()) {
-                $link = urldecode($link);
-                $link = substr($link, strpos($link, '//') + 2);
-                $link = substr($link, strpos($link, '/') + 1);
-                $link = substr($link, 0, strrpos($link, '/'));
-                $link = parse_url($link)['path'];
-                $link = preg_replace('#' . '[[:punct:]]' . '#imu', ' ', $link);
-                $categories = explode(' ', $link);
-            }
-            // NOTE END - Uncomment this section if you want to generate categories from links
-
-            // NOTE START - Uncomment this section if you want to generate categories from titles
-            /*
-            if ($title = $this->getFeedEntryTitle())
-            {
-              $title = html_entity_decode($title);
-              $title = strip_tags($title);
-              $title = remove_accents($title);
-
-              $colon    = before(':', $title);
-              $dot      = before('.', $title);
-              $bracket  = between('[', ']', $title);
-              $curly    = between('{', '}', $title);
-
-              $title    =  $colon . ' ' . $dot . ' ' . $bracket . ' ' . $curly;
-              $title    = preg_replace('#'.'[[:punct:]]'.'#imu', ' ', $title);
-
-              $categories = explode(' ', $title);
-            }
-            */
-            // NOTE END - Uncomment this section if you want to generate categories from titles
-
-            // Get rid of categories that are null, empty, false, < 3 and numbers only
-            $categories = array_filter($categories, function ($key) {
-                return strlen($key) > 3 && !preg_match('#' . '\d+' . '#imu', $key);
-            });
-        }
-        // Remove categories with a pipe (|) (i.e. engadget feeds )
-        $categories = array_filter($categories, fn($item) => strpos($item, '|') === false);
-        $categories = cleanArray($categories, 'ucwords');
-
-        if ($categories) {
-            $newFeed->setFeedEntryCategories($categories);
-        } else {
-            $newFeed->setFeedEntryCategories(null);
-        }
-
-        // Set media link based on enclosure, media:thumbnail, or image_link
-        if (!$entry->get_enclosure()->get_link()) {
-            if ($thumbnail = $entry->get_item_tags('http://search.yahoo.com/mrss/', 'thumbnail')) {
-                $entry->get_enclosure()->link = $thumbnail[0]['attribs']['']['url'];
-                $newFeed->setFeedEntryEnclosure($entry->get_enclosure());
-            } elseif ($thumbnail = $entry->get_item_tags('http://base.google.com/ns/1.0', 'image_link')) {
-                $entry->get_enclosure()->link = $thumbnail[0]['data'];
-                $newFeed->setFeedEntryEnclosure($entry->get_enclosure());
-            }
-        } else {
-            $newFeed->setFeedEntryEnclosure($entry->get_enclosure());
-        }
-
-        $entries = [
-            'author' => $newFeed->getFeedEntryAuthors(),
-            'category' => $newFeed->getFeedEntryCategories(),
-            'content' => $newFeed->getFeedEntryContent() ?: $newFeed->getFeedEntryDescription(),
-            'title' => $newFeed->getFeedEntryTitle()
-        ];
-        $newFeed->filterEntries($entries);
-
-        // Add feed entry
-        if ($paramDebug) {
-            $newFeed->debugFeedEntry();
-            break 2;
-        } elseif ($newFeed->getFeedEntrySkip()) {
-            continue;
-        } else {
-            $newFeed->addFeedEntry();
-        }
-    }
-
-    // After processing each batch
-    gc_collect_cycles();
-}
-
-// Close feed
-if (!$paramDebug) {
-    $newFeed->closeFeed();
-}
-
-/**
- * Function to initialize SimplePie feed
- *
- * @param string $feedName The name of the feed
- * @param string $feedUrl The URL of the feed
- * @param bool $useCurl Whether to use cURL or not
- * @return SimplePie|null The initialized SimplePie object or null if an error occurred
- */
-function initializeFeed($feedName, $feedUrl, $useCurl)
-{
+try {
+    // Initialize SimplePie for feed parsing
     $simplePie = new SimplePie();
 
     // Force SimplePie to use fsockopen() instead of cURL if configured
@@ -258,33 +47,165 @@ function initializeFeed($feedName, $feedUrl, $useCurl)
         $simplePie->force_fsockopen(true);
     }
 
-    // Set cache location
+    // Set up cache location for SimplePie
     $location = BASE_PATH . 'cache';
-    if (!file_exists($location)) {
-        mkdir($location, 0777, true);
+    if (is_dir($location) && is_writable($location)) {
+        if (!file_exists($location)) {
+            // Create cache directory if it doesn't exist
+            mkdir($location, 0777, true);
+        }
+    } else {
+        // Fallback to system temp directory if cache folder isn't writable
+        $location = sys_get_temp_dir();
     }
+
+    // Configure SimplePie with cache location and feed URL
     $simplePie->set_cache_location($location);
-
-    // Set feed URL
-    $simplePie->set_feed_url($feedUrl);
-
-    // Initialize SimplePie
+    $simplePie->set_feed_url($feedConfig['url']);
     $simplePie->init();
-    $simplePie->handle_content_type();
+    $simplePie->set_output_encoding('utf-8');
+} catch (Exception $e) {
+    echo 'Failed to initialize SimplePie: ' . $e->getMessage();
+}
 
-    return $simplePie->error() ? null : $simplePie;
+// Create new feed object
+$feed = new Feed();
+$feed->setTitle($feedConfig['title']);
+$feed->setDescription($feedConfig['title']);
+$feed->setLink($feedConfig['url']);
+
+// Process blacklist configuration
+// Merge feed-specific blacklist with global blacklist if they exist
+$blacklist = isset($feedConfig['blacklist']) ? $feedConfig['blacklist'] : [];
+$globalBlacklist = isset($feedConf['globalBlacklist']) ? $feedConf['globalBlacklist'] : [];
+$mergedBlacklists = mergeArrays($blacklist, $globalBlacklist);
+if (isset($mergedBlacklists)) {
+    $blacklist = cleanArray($mergedBlacklists, 'strtolower');
+}
+
+// Process whitelist configuration
+$whitelist = isset($feedConfig['whitelist']) ? $feedConfig['whitelist'] : [];
+$whitelist = cleanArray($whitelist, 'strtolower');
+
+// Open feed - either in debug or normal mode
+if ($paramDebug) {
+    // Debug mode outputs plain text
+    $simplePie->handle_content_type('text/plain');
+    $feed->printFormatDebug('Debug Mode', 'Entry ' . $paramDebugEntry);
+    $feed->printFormatDebug('Feed URL: ', 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    echo PHP_EOL;
+    $feed->printOpenDebug();
+    // Only select the specific entry for debugging
+    $simplePieItems = [$simplePie->get_items()[$paramDebugEntry]];
+} else {
+    // Normal mode outputs XML
+    //$simplePie->handle_content_type('application/rss+xml');
+    $simplePie->handle_content_type('application/xml');
+    $feed->printOpen();
+    $simplePieItems = $simplePie->get_items();
+}
+
+// Process entries in batches of 50 to manage memory usage
+$SimplePieBatch = array_chunk($simplePieItems, 50);
+
+$itemList = [];
+foreach ($SimplePieBatch as $items) {
+    foreach ($items as $item) {
+        // TODO: Do I need to track existing entries to skip duplicate ones?
+
+        // Create a new feed entry for each item
+        $feedEntry = new FeedEntry();
+        $feedEntry->setTitle($item->get_title());
+
+        // Process description and content
+        $description = $item->get_description();
+        $content = $item->get_content();
+
+        // Check for body tag and use it as fallback for description/content
+        $bodyTags = $item->get_item_tags('', 'body');
+        if ($bodyTags) {
+            $body = $bodyTags[0]['data'];
+            if (!$description) {
+                $description = $body;
+            }
+            if (!$content) {
+                $content = $body;
+            }
+        }
+
+        // If description and content are identical, don't duplicate content
+        if ($description == $content) {
+            $content = '';
+        }
+        // TODO: Do I need cleanEntryContent()? If so, make cleanEntryContent() part of class.feedentry.php
+        $feedEntry->setDescription($description);
+        $feedEntry->setContent($content);
+
+        // Set metadata for the entry
+        $feedEntry->setAuthors($item->get_authors(), $item->get_contributors());
+        $feedEntry->setCategories($item->get_categories());
+
+        // Handle media enclosures and thumbnails
+        // Try to find a thumbnail if no enclosure is present
+        if (!$item->get_enclosure()->get_link()) {
+            if ($thumbnail = $item->get_item_tags('http://search.yahoo.com/mrss/', 'thumbnail')) {
+                $item->get_enclosure()->link = $thumbnail[0]['attribs']['']['url'];
+            } elseif ($thumbnail = $item->get_item_tags('http://base.google.com/ns/1.0', 'image_link')) {
+                $item->get_enclosure()->link = $thumbnail[0]['data'];
+            }
+        }
+        $feedEntry->setEnclosure($item->get_enclosure());
+
+        // Set remaining entry properties
+        $feedEntry->setLink($item->get_link());
+        $feedEntry->setId($item->get_id(true));
+        $feedEntry->setPubDate($item->get_date(DATE_RSS));
+
+        // Apply filtering rules
+        $feedEntry->setBlacklist($blacklist);
+        $feedEntry->setWhitelist($whitelist);
+
+        // Filter entries based on configured rules
+        $feedEntry->filterEntries();
+
+        // Print feed entry
+        if ($paramDebug) {
+            // In debug mode, print detailed information about the entry and exit
+            $feedEntry->printDebug();
+            exit;
+        } elseif ($feedEntry->getSkip()) {
+            // Skip entries that don't pass filters
+            continue;
+        } else {
+            // In normal mode, add the entry to the feed
+            $feedEntry->print();
+        }
+
+        // Clean up to free memory
+        unset($feedEntry);
+    }
+
+    // Run garbage collection after each batch to manage memory
+    gc_collect_cycles();
+}
+
+// Close the feed in normal mode
+if (!$paramDebug) {
+    $feed->printClose();
 }
 
 /**
  * Function to clean content and description
  *
+ * Removes excessive whitespace and performs other cleanup on entry content
+ *
  * @param string $entry The entry content or description
  * @return string The cleaned content or description
  */
-function cleanEntryContent($entry)
+function cleanEntryContent(string $entry): string
 {
     $patterns = [
-        '#(\s)+#imu' => ' ',                // Remove left over spaces
+        '#(\s)+#imu' => ' ',    // Remove left over spaces
     ];
 
     foreach ($patterns as $pattern => $replacement) {
@@ -304,7 +225,7 @@ function cleanEntryContent($entry)
  * @param array $array2 The second array to merge.
  * @return array The merged array.
  */
-function mergeArrays($array1, $array2)
+function mergeArrays(array $array1, array $array2): array
 {
     $mergedArrays = $array2;
 
