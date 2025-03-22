@@ -19,7 +19,8 @@ $configFiles = [
 
 // List of internal library files to be included
 $libFiles = [
-    'library/class.feedfilter.php',     // Class for feed filtering
+    'library/class.feed.php',           // Class for feed creation and management
+    'library/class.feedentry.php',      // Class for feed entry creation and management
     'library/func.array.php',           // Array utility functions
     'library/func.curl-emu.php',        // cURL emulation functions
     'library/func.rest.php',            // REST API functions
