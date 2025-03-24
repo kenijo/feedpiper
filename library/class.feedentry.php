@@ -304,51 +304,47 @@ class FeedEntry
         ];
 
         // Check all entries against whitelist first
-        if (array_filter($this->getWhitelist())) {
-            $this->setSkip(true);
-            foreach ($entries as $entryType => $entryValues) {
-                if (is_string($entryValues)) {
-                    $entryValues = [$entryValues];
-                }
+        $this->setSkip(true);
+        foreach ($entries as $entryType => $entryValues) {
+            if (is_string($entryValues)) {
+                $entryValues = [$entryValues];
+            }
 
-                if (empty($entryValues)) {
-                    continue;
-                }
+            if (empty($entryValues)) {
+                continue;
+            }
 
-                foreach ($entryValues as $entryValue) {
-                    if (!empty($this->getWhitelist())) {
-                        $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getWhitelist());
-                        if ($found === true) {
-                            // If we found a match, we stop checking and keep the entry
-                            $this->setSkip(false);
-                            return;
-                        }
+            foreach ($entryValues as $entryValue) {
+                if (!empty($this->getWhitelist())) {
+                    $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getWhitelist());
+                    if ($found === true) {
+                        // If we found a match, we stop checking and keep the entry
+                        $this->setSkip(false);
+                        return;
                     }
                 }
-
             }
+
         }
 
         // Then check all entries against blacklist
-        if (array_filter($this->getBlacklist())) {
-            $this->setSkip(false);
-            foreach ($entries as $entryType => $entryValues) {
-                if (is_string($entryValues)) {
-                    $entryValues = [$entryValues];
-                }
+        $this->setSkip(false);
+        foreach ($entries as $entryType => $entryValues) {
+            if (is_string($entryValues)) {
+                $entryValues = [$entryValues];
+            }
 
-                if (empty($entryValues)) {
-                    continue;
-                }
+            if (empty($entryValues)) {
+                continue;
+            }
 
-                foreach ($entryValues as $entryValue) {
-                    if (!empty($this->getBlacklist())) {
-                        $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getBlacklist());
-                        if ($found === true) {
-                            // If we found a match, we stop checking and skip the entry
-                            $this->setSkip(true);
-                            return;
-                        }
+            foreach ($entryValues as $entryValue) {
+                if (!empty($this->getBlacklist())) {
+                    $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getBlacklist());
+                    if ($found === true) {
+                        // If we found a match, we stop checking and skip the entry
+                        $this->setSkip(true);
+                        return;
                     }
                 }
             }
@@ -612,6 +608,9 @@ class FeedEntry
                 $arrCategories[] = $category->get_term();
             }
         }
+
+        $arrCategories = array_filter($arrCategories);
+
         // If no categories defined, generate from link and/or title
         if (empty($arrCategories)) {
             $arrCategories = $this->createCategoriesFromLink();     // Create categories from links
