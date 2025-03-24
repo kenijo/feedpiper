@@ -248,9 +248,12 @@ class FeedEntry
         $link = substr($link, strpos($link, '/') + 1);
         $link = substr($link, 0, strrpos($link, '/'));
         $link = parse_url($link)['path'] ?? '';
-        $link = preg_replace('#' . '[[:punct:]]' . '#imu', ' ', $link);
 
-        return explode(' ', $link);
+        $arrLink = explode('/', $link);
+        foreach ($arrLink as &$value) {
+            $value = preg_replace('#' . '[[:punct:]]' . '#imu', ' ', $value);
+        }
+        return $arrLink;
     }
 
     /**
@@ -293,8 +296,6 @@ class FeedEntry
      */
     public function filterEntries(): void
     {
-        // TODO: whitelist logic doesn't work yet
-
         $entries = [
             'author' => $this->getAuthors(),
             'category' => $this->getCategories(),
@@ -302,35 +303,52 @@ class FeedEntry
             'title' => $this->getTitle()
         ];
 
-        foreach ($entries as $entryType => $entryValues) {
-            if (is_string($entryValues)) {
-                $entryValues = [$entryValues];
-            }
+        // Check all entries against whitelist first
+        if (array_filter($this->getWhitelist())) {
+            $this->setSkip(true);
+            foreach ($entries as $entryType => $entryValues) {
+                if (is_string($entryValues)) {
+                    $entryValues = [$entryValues];
+                }
 
-            if (empty($entryValues)) {
-                continue;
-            }
+                if (empty($entryValues)) {
+                    continue;
+                }
 
-            foreach ($entryValues as $entryValue) {
-                // Check whitelist first
-                if (!empty($this->getWhitelist())) {
-                    $keep = $this->checkEntryAgainstList($entryValue, $entryType, $this->getWhitelist());
-                    if ($keep === true) {
-                        $this->setSkip(false);
-                        return;
-                    } elseif ($keep === false) {
-                        $this->setSkip(true);
+                foreach ($entryValues as $entryValue) {
+                    if (!empty($this->getWhitelist())) {
+                        $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getWhitelist());
+                        if ($found === true) {
+                            // If we found a match, we stop checking and keep the entry
+                            $this->setSkip(false);
+                            return;
+                        }
                     }
                 }
 
-                // Then check blacklist
-                if (!empty($this->getBlacklist())) {
-                    $skip = $this->checkEntryAgainstList($entryValue, $entryType, $this->getBlacklist());
-                    if ($skip === true) {
-                        $this->setSkip(true);
-                        return;
-                    } elseif ($skip === false) {
-                        $this->setSkip(false);
+            }
+        }
+
+        // Then check all entries against blacklist
+        if (array_filter($this->getBlacklist())) {
+            $this->setSkip(false);
+            foreach ($entries as $entryType => $entryValues) {
+                if (is_string($entryValues)) {
+                    $entryValues = [$entryValues];
+                }
+
+                if (empty($entryValues)) {
+                    continue;
+                }
+
+                foreach ($entryValues as $entryValue) {
+                    if (!empty($this->getBlacklist())) {
+                        $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getBlacklist());
+                        if ($found === true) {
+                            // If we found a match, we stop checking and skip the entry
+                            $this->setSkip(true);
+                            return;
+                        }
                     }
                 }
             }
@@ -594,7 +612,6 @@ class FeedEntry
                 $arrCategories[] = $category->get_term();
             }
         }
-
         // If no categories defined, generate from link and/or title
         if (empty($arrCategories)) {
             $arrCategories = $this->createCategoriesFromLink();     // Create categories from links
