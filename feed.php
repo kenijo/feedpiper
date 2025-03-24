@@ -116,6 +116,9 @@ foreach ($SimplePieBatch as $items) {
         // Create a new feed entry for each item
         $feedEntry = new FeedEntry();
         $feedEntry->setTitle($item->get_title());
+        $feedEntry->setLink($item->get_link());
+        $feedEntry->setId($item->get_id());
+        $feedEntry->setPubDate($item->get_date(DATE_RSS));
 
         // Process description and content
         $description = $item->get_description();
@@ -155,11 +158,6 @@ foreach ($SimplePieBatch as $items) {
             }
         }
         $feedEntry->setEnclosure($item->get_enclosure());
-
-        // Set remaining entry properties
-        $feedEntry->setLink($item->get_link());
-        $feedEntry->setId($item->get_id(true));
-        $feedEntry->setPubDate($item->get_date(DATE_RSS));
 
         // Apply filtering rules
         $feedEntry->setBlacklist($blacklist);
