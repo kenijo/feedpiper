@@ -166,6 +166,10 @@ foreach ($SimplePieBatch as $items) {
         // Filter entries based on configured rules
         $feedEntry->filterEntries();
 
+        if ($feedEntry->getDescription() === null) {
+           $feedEntry->setSkip(true);
+        }
+
         // Print feed entry
         if ($paramDebug) {
             // In debug mode, print detailed information about the entry and exit
