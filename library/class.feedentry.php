@@ -177,6 +177,32 @@ class FeedEntry
     }
 
     /**
+     * Prints a debug line with proper formatting
+     *
+     * Creates consistently formatted debug output with aligned values.
+     * Used by printDebug and can be used by other debug methods.
+     *
+     * @param string $element Element name/label to display
+     * @param mixed $value Element value (can be string or array)
+     * @return void
+     */
+    public function printFormatDebug(string $element, $value = ''): void
+    {
+        if (empty($element) || $value === null) {
+            return;
+        }
+
+        $indent = str_repeat(' ', self::DEBUG_PADDING_LENGTH - strlen($element));
+        if (is_array($value)) {
+            foreach ($value as $v) {
+                echo $element . $indent . $v . PHP_EOL;
+            }
+        } else {
+            echo $element . $indent . $value . PHP_EOL;
+        }
+    }
+
+    /**
      * Prints debug information for a list (whitelist or blacklist)
      *
      * Formats and displays filtering rules in a readable format.
@@ -200,32 +226,6 @@ class FeedEntry
                 );
             }
             echo PHP_EOL;
-        }
-    }
-
-    /**
-     * Prints a debug line with proper formatting
-     *
-     * Creates consistently formatted debug output with aligned values.
-     * Used by printDebug and can be used by other debug methods.
-     *
-     * @param string $element Element name/label to display
-     * @param mixed $value Element value (can be string or array)
-     * @return void
-     */
-    public function printFormatDebug(string $element, $value = ''): void
-    {
-        if (empty($element) || $value === null) {
-            return;
-        }
-
-        $indent = str_repeat(' ', self::DEBUG_PADDING_LENGTH - strlen($element));
-        if (is_array($value)) {
-            foreach ($value as $v) {
-                echo $element . $indent . $v . PHP_EOL;
-            }
-        } else {
-            echo $element . $indent . $value . PHP_EOL;
         }
     }
 
@@ -303,51 +303,58 @@ class FeedEntry
             'title' => $this->getTitle()
         ];
 
-        // Check all entries against whitelist first
-        $this->setSkip(true);
-        foreach ($entries as $entryType => $entryValues) {
-            if (is_string($entryValues)) {
-                $entryValues = [$entryValues];
-            }
+        if (!empty($this->getWhitelist())) {
+            // Check all entries against whitelist
+            $this->setSkip(true);
+            foreach ($entries as $entryType => $entryValues) {
+                if (is_string($entryValues)) {
+                    $entryValues = [$entryValues];
+                }
 
-            if (empty($entryValues)) {
-                continue;
-            }
+                if (empty($entryValues)) {
+                    continue;
+                }
 
-            foreach ($entryValues as $entryValue) {
-                if (!empty($this->getWhitelist())) {
-                    $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getWhitelist());
-                    if ($found === true) {
-                        // If we found a match, we stop checking and keep the entry
-                        $this->setSkip(false);
-                        return;
+                foreach ($entryValues as $entryValue) {
+                    if (!empty($this->getWhitelist())) {
+                        $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getWhitelist());
+                        if ($found === true) {
+                            // If we found a match, we stop checking and keep the entry
+                            $this->setSkip(false);
+                            return;
+                        }
                     }
                 }
             }
+            // If we didn't find a match, we skip the entry
+            $this->setSkip(true);
+            return;
+        } elseif (!empty($this->getBlacklist())) {
+            // Check all entries against blacklist
+            $this->setSkip(false);
+            foreach ($entries as $entryType => $entryValues) {
+                if (is_string($entryValues)) {
+                    $entryValues = [$entryValues];
+                }
 
-        }
+                if (empty($entryValues)) {
+                    continue;
+                }
 
-        // Then check all entries against blacklist
-        $this->setSkip(false);
-        foreach ($entries as $entryType => $entryValues) {
-            if (is_string($entryValues)) {
-                $entryValues = [$entryValues];
-            }
-
-            if (empty($entryValues)) {
-                continue;
-            }
-
-            foreach ($entryValues as $entryValue) {
-                if (!empty($this->getBlacklist())) {
-                    $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getBlacklist());
-                    if ($found === true) {
-                        // If we found a match, we stop checking and skip the entry
-                        $this->setSkip(true);
-                        return;
+                foreach ($entryValues as $entryValue) {
+                    if (!empty($this->getBlacklist())) {
+                        $found = $this->checkEntryAgainstList($entryValue, $entryType, $this->getBlacklist());
+                        if ($found === true) {
+                            // If we found a match, we stop checking and skip the entry
+                            $this->setSkip(true);
+                            return;
+                        }
                     }
                 }
             }
+            // If we didn't find a match, we keep the entry
+            $this->setSkip(false);
+            return;
         }
     }
 
@@ -637,7 +644,7 @@ class FeedEntry
      * @param string $content The entry content
      * @return void
      */
-    public function setContent(string $content): void
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
@@ -651,7 +658,7 @@ class FeedEntry
      * @param string $description The entry description
      * @return void
      */
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
@@ -665,7 +672,7 @@ class FeedEntry
      * @param object|null $enclosure The SimplePie enclosure object
      * @return void
      */
-    public function setEnclosure($enclosure): void
+    public function setEnclosure(?$enclosure): void
     {
         $this->enclosure = $enclosure;
     }
@@ -679,7 +686,7 @@ class FeedEntry
      * @param string $id The entry ID
      * @return void
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -693,7 +700,7 @@ class FeedEntry
      * @param string $link The entry link URL
      * @return void
      */
-    public function setLink(string $link): void
+    public function setLink(?string $link): void
     {
         $this->link = $link;
     }
@@ -707,7 +714,7 @@ class FeedEntry
      * @param string|\DateTime $pubDate The entry publication date
      * @return void
      */
-    public function setPubDate($pubDate): void
+    public function setPubDate(?$pubDate): void
     {
         $this->pubDate = $pubDate;
     }
@@ -721,7 +728,7 @@ class FeedEntry
      * @param bool $skip Whether to skip this entry
      * @return void
      */
-    public function setSkip(bool $skip): void
+    public function setSkip(?bool $skip): void
     {
         $this->skip = $skip;
     }
@@ -735,7 +742,7 @@ class FeedEntry
      * @param string $title The entry title
      * @return void
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
