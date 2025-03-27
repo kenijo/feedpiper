@@ -641,7 +641,7 @@ class FeedEntry
      * Defines the full content/body of the entry, which may include HTML.
      * This is typically the complete article content.
      *
-     * @param string $content The entry content
+     * @param string|null $content The entry content
      * @return void
      */
     public function setContent(?string $content): void
@@ -655,7 +655,7 @@ class FeedEntry
      * Defines the summary or excerpt of the entry content.
      * This is typically a shorter version of the full content.
      *
-     * @param string $description The entry description
+     * @param string|null $description The entry description
      * @return void
      */
     public function setDescription(?string $description): void
@@ -672,7 +672,7 @@ class FeedEntry
      * @param object|null $enclosure The SimplePie enclosure object
      * @return void
      */
-    public function setEnclosure(?$enclosure): void
+    public function setEnclosure(?object $enclosure): void
     {
         $this->enclosure = $enclosure;
     }
@@ -683,7 +683,7 @@ class FeedEntry
      * Defines the unique identifier for this entry, typically a permalink URL.
      * This ID should remain consistent across feed updates.
      *
-     * @param string $id The entry ID
+     * @param string|null $id The entry ID
      * @return void
      */
     public function setId(?string $id): void
@@ -697,7 +697,7 @@ class FeedEntry
      * Defines the URL to the original content this entry represents.
      * This link allows readers to view the full content on the source website.
      *
-     * @param string $link The entry link URL
+     * @param string|null $link The entry link URL
      * @return void
      */
     public function setLink(?string $link): void
@@ -711,10 +711,10 @@ class FeedEntry
      * Defines when this entry was published, in RSS format.
      * This helps readers determine the freshness of the content.
      *
-     * @param string|\DateTime $pubDate The entry publication date
+     * @param string|null $pubDate The entry publication date
      * @return void
      */
-    public function setPubDate(?$pubDate): void
+    public function setPubDate(?string $pubDate): void
     {
         $this->pubDate = $pubDate;
     }
@@ -728,7 +728,7 @@ class FeedEntry
      * @param bool $skip Whether to skip this entry
      * @return void
      */
-    public function setSkip(?bool $skip): void
+    public function setSkip(bool $skip): void
     {
         $this->skip = $skip;
     }
@@ -739,7 +739,7 @@ class FeedEntry
      * Defines the headline or title of this entry.
      * This is typically the most prominent text displayed in feed readers.
      *
-     * @param string $title The entry title
+     * @param string|null $title The entry title
      * @return void
      */
     public function setTitle(?string $title): void

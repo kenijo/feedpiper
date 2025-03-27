@@ -6,9 +6,9 @@
  * merges multiple feeds, and applies filtering rules.
  *
  * URL Parameters:
- * - feed: Required. The name of the feed configuration to use
- * - debug: Optional. Set to true to enable debug mode
- * - entry: Optional. Used with debug to specify which entry to examine
+ * - feed: Required. The name of the feed configuration to use.
+ * - debug: Optional. Set to true to enable debug mode.
+ * - entry: Optional. Used with debug to specify which entry to examine.
  */
 
 // Enable debug mode and error reporting if debug parameter is provided
