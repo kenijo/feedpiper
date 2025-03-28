@@ -8,6 +8,21 @@
 $useCurl = true;
 
 /**
+ * Global filters, works as an anti-spam
+ * Skip any feed that contains the following keywords
+ * Blacklist: exclude entries matching the rule (no global whitelist)
+*/
+$globalBlacklist = [
+    'cartoon',
+    'coupe du monde',
+    'football',
+    'people',
+    'sport',
+    'sports',
+    'world cup',
+];
+
+/**
  * ATOM Filter Configuration
  *
  * Used to merge feeds together and output a single feed.
@@ -34,40 +49,15 @@ $useCurl = true;
  */
 
 $feedConf = [
-    // Global filters, works as an anti-spam
-    // Skip any feed that contains the following keywords
-    // Blacklist: exclude entries matching the rule (no global whitelist)
     'globalBlacklist' => [
-        'author' => [
-            'starts' => ['keyword', 'excludes', 'entry'],
-            'contains' => ['keyword', 'excludes', 'entry'],
-            'ends' => ['keyword', 'excludes', 'entry'],
-            'regex' => ['keyword', 'excludes', 'entry'],
-        ],
-        'category' => [
-            'starts' => ['keyword', 'excludes', 'entry'],
-            'contains' => ['keyword', 'excludes', 'entry'],
-            'ends' => ['keyword', 'excludes', 'entry'],
-            'regex' => ['keyword', 'excludes', 'entry'],
-        ],
-        'content' => [
-            'starts' => ['keyword', 'excludes', 'entry'],
-            'contains' => ['keyword', 'excludes', 'entry'],
-            'ends' => ['keyword', 'excludes', 'entry'],
-            'regex' => ['keyword', 'excludes', 'entry'],
-        ],
-        'title' => [
-            'starts' => ['keyword', 'excludes', 'entry'],
-            'contains' => ['keyword', 'excludes', 'entry'],
-            'ends' => ['keyword', 'excludes', 'entry'],
-            'regex' => ['keyword', 'excludes', 'entry'],
-        ],
+        'category' => ['contains' => $globalBlacklist],
+        'title' => ['contains' => $globalBlacklist],
     ],
 
     'feed_name' => [
-        'title' => 'Feedpiper Example - GitHub Trends',
+        'title' => 'Feed Example',
         'url' => [
-            'http://github-trends.ryotarai.info/rss/github_trends_all_daily.rss',
+            'https://DOMAIN/feed.rss',
         ],
         // Whitelist: never exclude an entry matching the rules (executed before blacklisting)
         'whitelist' => [
