@@ -24,6 +24,8 @@ Configuration files are in the config folder.
 
 * Rename `feedfilter.conf.default.php` to `feedfilter.conf.php` to configure `feed.php` feeds and and filters.
 
+* You can use the `feed_manager.php` to manage your feeds and filters. Be careful, the file is not protected.
+
 * Rename `html2feed.conf.default.php` to `html2feed.conf.php` to configure `html2feed.php` websites to convert into feeds.
 
 ## Requirements
