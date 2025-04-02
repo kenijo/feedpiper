@@ -22,6 +22,7 @@ class Feed
     private const DEBUG_PADDING_LENGTH = 35;                                            // Character padding for debug output formatting
 
     // Feed properties (core RSS channel elements)
+    private ?string $cache_location = null; // Feed cache location
     private ?string $description = null;    // Feed description - explains the feed's purpose
     private string $generator = 'FeedPiper using ' . SimplePie::NAME . ' ' . SimplePie::VERSION;    // Generator information - identifies the software creating the feed
     private ?string $language = null;       // Feed language - identifies the language the feed is written in (e.g., 'en-us')
@@ -147,6 +148,8 @@ class Feed
         $this->printFormatDebug('Feed Last Build Date:', $this->getLastBuildDate());
         $this->printFormatDebug('Feed Generator:', $this->getGenerator());
         echo PHP_EOL;
+        $this->printFormatDebug('Feed Cache Location:', $this->getCacheLocation());
+        echo PHP_EOL;
     }
 
     /**
@@ -180,6 +183,16 @@ class Feed
     }
 
     // Getter methods - provide access to private properties
+
+    /**
+     * Gets the feed cache location
+     *
+     * @return string|null Feed cache location
+     */
+    public function getCacheLocation(): ?string
+    {
+        return $this->cache_location;
+    }
 
     /**
      * Gets the feed description
@@ -254,6 +267,17 @@ class Feed
     }
 
     // Setter methods - allow modification of private properties
+
+    /**
+     * Sets the feed cache location
+     *
+     * @param string|null $cache_location Feed cache location
+     * @return void
+     */
+    public function setCacheLocation(?string $cache_location): void
+    {
+        $this->cache_location = $cache_location;
+    }
 
     /**
      * Sets the feed description

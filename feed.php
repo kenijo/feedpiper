@@ -49,13 +49,14 @@ try {
 
     // Set up cache location for SimplePie
     $location = BASE_PATH . 'cache';
-    if (is_dir($location) && is_writable($location)) {
-        if (!file_exists($location)) {
-            // Create cache directory if it doesn't exist
-            mkdir($location, 0777, true);
+    // Check if cache directory exists, if not try to create it
+    if (!file_exists($location)) {
+        if (is_dir(BASE_PATH) && is_writable(BASE_PATH)) {
+            mkdir($location, 0755, true);
         }
-    } else {
-        // Fallback to system temp directory if cache folder isn't writable
+    }
+    // Fallback to system temp directory if cache location isn't writable
+    if (!is_dir($location) || !is_writable($location)) {
         $location = sys_get_temp_dir();
     }
 
@@ -73,6 +74,7 @@ $feed = new Feed();
 $feed->setTitle($feedConfig['title']);
 $feed->setDescription($feedConfig['title']);
 $feed->setLink($feedConfig['url']);
+$feed->setCacheLocation($simplePie->cache_location);
 
 // Process blacklist configuration
 // Merge feed-specific blacklist with global blacklist if they exist
@@ -167,7 +169,7 @@ foreach ($SimplePieBatch as $items) {
         $feedEntry->filterEntries();
 
         if ($feedEntry->getDescription() === null) {
-           $feedEntry->setSkip(true);
+            $feedEntry->setSkip(true);
         }
 
         // Print feed entry
