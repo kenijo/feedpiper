@@ -113,8 +113,6 @@ $SimplePieBatch = array_chunk($simplePieItems, 50);
 $itemList = [];
 foreach ($SimplePieBatch as $items) {
     foreach ($items as $item) {
-        // TODO: Do I need to track existing entries to skip duplicate ones?
-
         // Create a new feed entry for each item
         $feedEntry = new FeedEntry();
         $feedEntry->setTitle($item->get_title());
@@ -167,6 +165,10 @@ foreach ($SimplePieBatch as $items) {
 
         // Filter entries based on configured rules
         $feedEntry->filterEntries();
+
+        if ($feedEntry->getTitle() === null) {
+            $feedEntry->setSkip(true);
+        }
 
         if ($feedEntry->getDescription() === null) {
             $feedEntry->setSkip(true);
