@@ -166,11 +166,11 @@ foreach ($SimplePieBatch as $items) {
         // Filter entries based on configured rules
         $feedEntry->filterEntries();
 
-        if ($feedEntry->getTitle() === null) {
+        if (empty($feedEntry->getTitle())) {
             $feedEntry->setSkip(true);
         }
 
-        if ($feedEntry->getDescription() === null) {
+        if (empty($feedEntry->getDescription())) {
             $feedEntry->setSkip(true);
         }
 
