@@ -309,6 +309,11 @@ class Feed
      */
     public function setLink(?array $link): void
     {
+        if(is_array($link)) {
+            $link = array_map('htmlspecialchars', $link);
+        } else {
+            $link = htmlspecialchars($link);
+        }
         $this->link = $link;
     }
 
