@@ -55,10 +55,15 @@ class Feed
         // Add helpful debug instructions as XML comments
         echo '<!--' . PHP_EOL;
         echo '  ########################################################################################################################' . PHP_EOL;
-        echo '    To enable debug mode, use the following link:                                                                           ' . PHP_EOL;
-        echo '      https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '&debug=true                                            ' . PHP_EOL;
-        echo '    To debug a specific entry, specify an entry number:                                                                     ' . PHP_EOL;
-        echo '      https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '&debug=true&entry=2                                    ' . PHP_EOL;
+        if (!file_exists(BASE_PATH . 'cache')) {
+        echo '    -> Cache directory does not exist.                                                                                    ' . PHP_EOL;
+        echo '    -> Please create it or ensure it is writable (chmod 755) by the web server (chown http:http).                         ' . PHP_EOL;
+        echo PHP_EOL;
+        }
+        echo '    To enable debug mode, use the following link:                                                                         ' . PHP_EOL;
+        echo '      https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '&debug=true                                          ' . PHP_EOL;
+        echo '    To debug a specific entry, specify an entry number:                                                                   ' . PHP_EOL;
+        echo '      https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '&debug=true&entry=2                                  ' . PHP_EOL;
         echo '  ########################################################################################################################' . PHP_EOL;
         echo '-->' . PHP_EOL;
 
