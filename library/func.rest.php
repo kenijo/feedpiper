@@ -55,7 +55,6 @@ function callRestAPI($method, $url, $header = false, $data = null, $check_ssl = 
         $result = fallbackFileGetContents($method, $url, $header, $data);
     }
 
-    curl_close($curl);
     return $result;
 }
 

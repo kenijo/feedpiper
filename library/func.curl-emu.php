@@ -375,16 +375,6 @@ if (!function_exists('curl_init')) {
     }
 
     /**
-     * Close the cURL session.
-     *
-     * @param CurlEmu $ch The cURL session handle.
-     */
-    function curl_close($ch)
-    {
-        return $ch->close();
-    }
-
-    /**
      * Set multiple cURL options at once.
      *
      * @param CurlEmu $ch The cURL session handle.
