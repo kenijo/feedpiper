@@ -38,7 +38,7 @@ class Feed
      */
     public function __construct()
     {
-        $this->lastBuildDate = (new DateTime('now', new DateTimeZone('GMT')))->format(DATE_RSS);
+        $this->lastBuildDate = (new DateTime('now', new DateTimeZone('GMT')))->format('D, d M Y H:i:s');
     }
 
     /**
