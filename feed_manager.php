@@ -17,25 +17,16 @@ function readConfigFile($filePath)
 
     // Return the config variables
     return [
-        'useCurl' => isset($useCurl) ? $useCurl : true,
         'globalBlacklist' => isset($globalBlacklist) ? $globalBlacklist : [],
         'feedConf' => isset($feedConf) ? $feedConf : []
     ];
 }
 
 // Function to save the config file
-function saveConfigFile($filePath, $useCurl, $globalBlacklist, $feedConf)
+function saveConfigFile($filePath, $globalBlacklist, $feedConf)
 {
-    // Create the PHP code to write to the file
-    $content = "<?php\n\n";
-    $content .= "/**\n";
-    $content .= " * Force SimplePie to use fsockopen() instead of cURL\n";
-    $content .= " * If cURL doesn't work, set variable to false to use fsockopen()\n";
-    $content .= " * Default value is true\n";
-    $content .= " */\n";
-    $content .= "\$useCurl = " . ($useCurl ? 'true' : 'false') . ";\n\n";
-
     // Add global blacklist
+    $content = "<?php\n\n";
     $content .= "/**\n";
     $content .= " * Global filters, works as an anti-spam\n";
     $content .= " * Skip any feed that contains the following keywords\n";
@@ -44,7 +35,7 @@ function saveConfigFile($filePath, $useCurl, $globalBlacklist, $feedConf)
     $content .= "\$globalBlacklist = " . var_export($globalBlacklist, true) . ";\n\n";
 
     $content .= "/**\n";
-    $content .= " * ATOM Filter Configuration\n";
+    $content .= " * RSS Filter Configuration\n";
     $content .= " *\n";
     $content .= " * Used to merge feeds together and output a single feed.\n";
     $content .= " * As well as filtering feed entries.\n";
@@ -114,7 +105,6 @@ if ($config === false) {
     die("Error: Could not read the configuration file.");
 }
 
-$useCurl = $config['useCurl'];
 $globalBlacklist = $config['globalBlacklist'];
 $feedConf = $config['feedConf'];
 
@@ -184,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $feedConf[$feedName] = $feedConfig;
 
         // Save the configuration
-        if (saveConfigFile($configFile, $useCurl, $globalBlacklist, $feedConf)) {
+        if (saveConfigFile($configFile, $globalBlacklist, $feedConf)) {
             $_SESSION['flash_message'] = "Feed '$feedName' saved successfully.";
             $_SESSION['flash_type'] = 'success';
         } else {
@@ -194,7 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Reload the configuration
         $config = readConfigFile($configFile);
-        $useCurl = $config['useCurl'];
         $globalBlacklist = $config['globalBlacklist'];
         $feedConf = $config['feedConf'];
 
@@ -211,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($feedConf[$feedName]);
 
             // Save the configuration
-            if (saveConfigFile($configFile, $useCurl, $globalBlacklist, $feedConf)) {
+            if (saveConfigFile($configFile, $globalBlacklist, $feedConf)) {
                 $_SESSION['flash_message'] = "Feed '$feedName' deleted successfully.";
                 $_SESSION['flash_type'] = 'success';
             } else {
@@ -221,7 +210,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Reload the configuration
             $config = readConfigFile($configFile);
-            $useCurl = $config['useCurl'];
             $globalBlacklist = $config['globalBlacklist'];
             $feedConf = $config['feedConf'];
         }
@@ -233,8 +221,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Save global settings
     if (isset($_POST['action']) && $_POST['action'] === 'save_global') {
-        $useCurl = isset($_POST['use_curl']) && $_POST['use_curl'] === '1';
-
         // Process global blacklist
         if (isset($_POST['global_blacklist']) && !empty($_POST['global_blacklist'])) {
             $values = explode("\n", $_POST['global_blacklist']);
@@ -246,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Save the configuration
-        if (saveConfigFile($configFile, $useCurl, $globalBlacklist, $feedConf)) {
+        if (saveConfigFile($configFile, $globalBlacklist, $feedConf)) {
             $_SESSION['flash_message'] = "Global settings saved successfully.";
             $_SESSION['flash_type'] = 'success';
         } else {
@@ -256,7 +242,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Reload the configuration
         $config = readConfigFile($configFile);
-        $useCurl = $config['useCurl'];
         $globalBlacklist = $config['globalBlacklist'];
         $feedConf = $config['feedConf'];
 
@@ -590,14 +575,6 @@ sort($feedNames);
 
                     <form method="post" action="">
                         <input type="hidden" name="action" value="save_global">
-
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="use_curl" value="1" <?php echo $useCurl ? 'checked' : ''; ?>>
-                                Use cURL instead of fsockopen
-                            </label>
-                            <p><small>If cURL doesn't work, uncheck to use fsockopen()</small></p>
-                        </div>
 
                         <div class="filter-section">
                             <h3>Global Blacklist</h3>

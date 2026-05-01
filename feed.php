@@ -2,7 +2,7 @@
 /**
  * FeedPiper - Feed Merger and Filter
  *
- * This script processes RSS/Atom feeds according to configuration,
+ * This script processes RSS feeds according to configuration,
  * merges multiple feeds, and applies filtering rules.
  *
  * URL Parameters:
@@ -12,7 +12,7 @@
  */
 
 // Enable debug mode and error reporting if debug parameter is provided
-if ($paramDebug = filter_input(INPUT_GET, 'debug', FILTER_VALIDATE_BOOLEAN)) {
+if ($paramDebug = filter_input(INPUT_GET, 'debug', FILTER_VALIDATE_BOOL)) {
     error_reporting(E_ALL);
     ini_set('display_errors', true);
 
@@ -24,7 +24,7 @@ if ($paramDebug = filter_input(INPUT_GET, 'debug', FILTER_VALIDATE_BOOLEAN)) {
 require_once __DIR__ . '/library/includes.php';
 
 // Validate that a feed parameter was provided
-if (!$paramFeedName = filter_input(INPUT_GET, 'feed', FILTER_SANITIZE_STRING)) {
+if (!$paramFeedName = filter_input(INPUT_GET, 'feed', FILTER_SANITIZE_FULL_SPECIAL_CHARS)) {
     echo 'Provide a "feed" parameter.';
     return;
 }
@@ -39,32 +39,29 @@ if (!isset($feedConf[$paramFeedName])) {
 $feedConfig = $feedConf[$paramFeedName];
 
 try {
-    // Initialize SimplePie for feed parsing
-    $simplePie = new SimplePie();
-
-    // Force SimplePie to use fsockopen() instead of cURL if configured
-    if (isset($useCurl) && $useCurl === false) {
-        $simplePie->force_fsockopen(true);
-    }
-
     // Set up cache location for SimplePie
     $location = BASE_PATH . 'cache';
-    // Check if cache directory exists, if not try to create it
-    if (!file_exists($location)) {
-        if (is_dir(BASE_PATH) && is_writable(BASE_PATH)) {
-            mkdir($location, 0755, true);
-        }
-    }
-    // Fallback to system temp directory if cache location isn't writable
-    if (!is_dir($location) || !is_writable($location)) {
-        $location = sys_get_temp_dir();
+
+    // Initialize our PSR-16 compatible cache
+    $cache = new \FeedPiper\Cache\FileCache($location, 3600);
+
+    // Get the feed URLs, ensuring it's an array
+    $urls = is_array($feedConfig['url']) ? $feedConfig['url'] : [$feedConfig['url']];
+    $simplePieInstances = [];
+
+    // Create one SimplePie instance per feed
+    foreach ($urls as $url) {
+        $simplePie = new \SimplePie\SimplePie();
+        $simplePie->set_cache($cache);
+        $simplePie->set_feed_url($url);
+        $simplePie->init();
+        $simplePie->set_output_encoding('utf-8');
+        $simplePieInstances[] = $simplePie;
     }
 
-    // Configure SimplePie with cache location and feed URL
-    $simplePie->set_cache_location($location);
-    $simplePie->set_feed_url($feedConfig['url']);
-    $simplePie->init();
-    $simplePie->set_output_encoding('utf-8');
+    // Merge items from all instances
+    $mergedItems = \SimplePie\SimplePie::merge_items($simplePieInstances);
+
 } catch (Exception $e) {
     echo 'Failed to initialize SimplePie: ' . $e->getMessage();
 }
@@ -73,8 +70,8 @@ try {
 $feed = new Feed();
 $feed->setTitle($feedConfig['title']);
 $feed->setDescription($feedConfig['title']);
-$feed->setLink($feedConfig['url']);
-$feed->setCacheLocation($simplePie->cache_location);
+$feed->setLink(is_array($feedConfig['url']) ? $feedConfig['url'] : [$feedConfig['url']]);
+$feed->setCacheLocation($location);
 
 // Process blacklist configuration
 // Merge feed-specific blacklist with global blacklist if they exist
@@ -92,19 +89,19 @@ $whitelist = cleanArray($whitelist, 'strtolower');
 // Open feed - either in debug or normal mode
 if ($paramDebug) {
     // Debug mode outputs plain text
-    $simplePie->handle_content_type('text/plain');
+    header('Content-Type: text/plain; charset=utf-8');
     $feed->printFormatDebug('Debug Mode', 'Entry ' . $paramDebugEntry);
     $feed->printFormatDebug('Feed URL: ', 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     echo PHP_EOL;
     $feed->printOpenDebug();
     // Only select the specific entry for debugging
-    $simplePieItems = [$simplePie->get_items()[$paramDebugEntry]];
+    $simplePieItems = [$mergedItems[$paramDebugEntry]];
 } else {
     // Normal mode outputs XML
-    //$simplePie->handle_content_type('application/rss+xml');
-    $simplePie->handle_content_type('application/xml');
+    //header('Content-Type: application/rss+xml; charset=utf-8');
+    header('Content-Type: application/xml; charset=utf-8');
     $feed->printOpen();
-    $simplePieItems = $simplePie->get_items();
+    $simplePieItems = $mergedItems;
 }
 
 // Process entries in batches of 50 to manage memory usage
@@ -118,14 +115,14 @@ foreach ($SimplePieBatch as $items) {
         $feedEntry->setTitle($item->get_title());
         $feedEntry->setLink($item->get_link());
         $feedEntry->setId($item->get_id());
-        $feedEntry->setPubDate($item->get_date(DATE_RSS));
+        $feedEntry->setPubDate($item->get_date('D, d M Y H:i:s'));
 
         // Process description and content
         $description = $item->get_description();
         $content = $item->get_content();
 
         // Check for body tag and use it as fallback for description/content
-        $bodyTags = $item->get_item_tags('', 'body');
+        $bodyTags = $item->get_item_tags('http://www.w3.org/1999/xhtml', 'body');
         if ($bodyTags) {
             $body = $bodyTags[0]['data'];
             if (!$description) {
