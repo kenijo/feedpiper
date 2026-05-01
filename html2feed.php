@@ -31,20 +31,17 @@ if (isset($_GET['page'])) {
 
   // Send the content-type header with correct encoding
   if ($myPageDebug === true) {
-    $contentType = 'text/plain';
-  } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'ATOM') {
-    $contentType = 'application/atom+xml';
-  } elseif (isset($cfg['feed_format']) && $cfg['feed_format'] == 'RSS') {
-    $contentType = 'application/rss+xml';
+    // Debug mode outputs plain text
+    header('Content-Type: text/plain; charset=utf-8');
   } else {
-    $contentType = 'application/xml';
+    //header('Content-Type: application/rss+xml; charset=utf-8');
+    header('Content-Type: application/xml; charset=utf-8');
   }
-  header('Content-type: ' . $contentType . '; charset=utf-8');
 
   // Use GMT as the default time zone.
   $date = new \DateTime('now', new \DateTimezone('GMT'));
 
-  $newFeed = new \Feed($cfg['feed_format']);
+  $newFeed = new \Feed();
 
   $newFeed->setGeneratorName('Simple HTML DOM');
   $newFeed->setGeneratorUri($_SERVER['REQUEST_URI']);
@@ -54,12 +51,7 @@ if (isset($_GET['page'])) {
   $newFeed->setLinkAlternate($myPageConfig['page_url']);
   $newFeed->setLogo(urlDirPath() . '/favicon.png');
   $newFeed->setTitle($myPageConfig['page_title']);
-  if ($cfg['feed_format'] == 'ATOM') {
-    $date_format = DATE_ATOM;
-  } elseif ($cfg['feed_format'] == 'RSS') {
-    $date_format = DATE_RSS;
-  }
-  $newFeed->setUpdated($date->format($date_format));
+  $newFeed->setUpdated($date->format('D, d M Y H:i:s'));
 
   $parsed_url = parse_url($myPageConfig['page_url']);
   $website_link = $parsed_url['scheme'] . '://' . $parsed_url['host'];
@@ -90,15 +82,15 @@ if (isset($_GET['page'])) {
     foreach ($newDomHtml->find($myPageConfig['entry']) as $entry) {
       $date->modify('-1 second');
 
-      $newEntry = new \Entry($cfg['feed_format']);
+      $newEntry = new \FeedEntry();
 
       $parsed_page_url = parse_url($myPageConfig['page_url']);
 
       // Set Published Date
-      $newEntry->setPublished($date->format(DATE_ATOM));
+      $newEntry->setPublished($date->format('D, d M Y H:i:s'));
 
       // Set Updated Date
-      $newEntry->setUpdated($date->format(DATE_ATOM));
+      $newEntry->setUpdated($date->format('D, d M Y H:i:s'));
 
       if (isset($myPageConfig['link'])) {
         // Set Link
