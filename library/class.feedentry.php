@@ -79,22 +79,27 @@ class FeedEntry
 
         // Add enclosure if available
         if ($enclosure = $this->getEnclosure()) {
-            if ($enclosure->get_link()) {
-                $attributes = ['enclosure'];
 
-                if ($length = $enclosure->get_length()) {
-                    $attributes[] = 'length="' . $length . '"';
+            // Skip adding the enclosure if there is already a media in the content or description (to avoid duplicate medias in some RSS readers)
+            if (!str_contains($content, '<img src=') && !str_contains($description, '<img src=')) {
+
+                if ($enclosure->get_link()) {
+                    $attributes = ['enclosure'];
+
+                    if ($length = $enclosure->get_length()) {
+                        $attributes[] = 'length="' . $length . '"';
+                    }
+
+                    $attributes[] = 'url="' . htmlspecialchars($enclosure->get_link()) . '"';
+
+                    if ($type = $enclosure->get_type()) {
+                        $attributes[] = 'type="' . $type . '"';
+                    }
+
+                    $attributes[] = '/';
+
+                    $this->printFormat(3, implode(' ', $attributes));
                 }
-
-                $attributes[] = 'url="' . htmlspecialchars($enclosure->get_link()) . '"';
-
-                if ($type = $enclosure->get_type()) {
-                    $attributes[] = 'type="' . $type . '"';
-                }
-
-                $attributes[] = '/';
-
-                $this->printFormat(3, implode(' ', $attributes));
             }
         }
 
