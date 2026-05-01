@@ -291,7 +291,6 @@ class FeedEntry
      * Applies filtering rules to determine if an entry should be included or excluded.
      * Whitelist rules take precedence over blacklist rules.
      *
-     * @param array $entries The entries to filter (key-value pairs of entry types and their values)
      * @return void
      */
     public function filterEntries(): void
