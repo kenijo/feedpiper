@@ -26,14 +26,11 @@ $libFiles = [
     'library/func.rest.php',            // REST API functions
     'library/func.string.php',          // String utility functions
     'library/func.url.php',             // URL utility functions
+    'library/class.simplecache.php',    // PSR-16 Cache implementation for SimplePie
 ];
 
 // List of external libraries to be included
-$extLibs = [
-    'vendor/erusev/parsedown/Parsedown.php',                    // Markdown parser
-    'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php',   // HTML DOM parser
-    'vendor/simplepie/simplepie/autoloader.php',                // RSS and Atom feed parser
-];
+$extLibs = ['vendor/autoload.php'];
 
 // Require all files
 try {
