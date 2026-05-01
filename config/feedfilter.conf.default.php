@@ -1,13 +1,6 @@
 <?php
 
 /**
- * Force SimplePie to use fsockopen() instead of cURL
- * If cURL doesn't work, set variable to false to use fsockopen()
- * Default value is true
- */
-$useCurl = true;
-
-/**
  * Global filters, works as an anti-spam
  * Skip any feed that contains the following keywords
  * Blacklist: exclude entries matching the rule (no global whitelist)
@@ -23,7 +16,7 @@ $globalBlacklist = [
 ];
 
 /**
- * ATOM Filter Configuration
+ * RSS Filter Configuration
  *
  * Used to merge feeds together and output a single feed.
  * As well as filtering feed entries.
