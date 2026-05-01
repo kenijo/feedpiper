@@ -493,7 +493,7 @@ function betweenLast($this_one, $that, $in_that)
  */
 function removeAccents($text, $locale = 'en_US')
 {
-    if (!preg_match('/[\x80-\xff]/', $text)) {
+    if (!preg_match('/[\x80-\xff]/', $text ?? '')) {
         return $text;
     }
 

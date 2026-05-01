@@ -26,7 +26,7 @@ function cleanArray($array, $array_map_function = null)
         // Combine remove accents, trim, and custom function into a single array_map call
         $array = array_map(function ($value) use ($array_map_function) {
             $value = removeAccents($value); // Remove diacritical marks from characters
-            $value = trim($value); // Remove whitespace from beginning and end
+            $value = trim($value ?? ''); // Remove whitespace from beginning and end
             if (is_callable($array_map_function)) {
                 $value = $array_map_function($value); // Apply custom function (e.g., strtolower)
             }
